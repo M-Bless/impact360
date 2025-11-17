@@ -1,5 +1,13 @@
-import HomePage from "./HomePage";
+import HeroSection from "./HeroSection";
+import AboutSection from "./AboutSection";
+import Footer from "./Footer";
 
 export default function App() {
-  return <HomePage />;
+  return (
+    <>
+      <HeroSection />
+      <AboutSection />
+      <Footer />
+    </>
+  );
 }
