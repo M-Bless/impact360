@@ -7,6 +7,7 @@ export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentPhoto, setCurrentPhoto] = useState(0);
   const [showFooter, setShowFooter] = useState(false);
+  const [showQR, setShowQR] = useState(false);
 
   const photos = [
     "/photo_1.jpg",
@@ -71,7 +72,50 @@ export default function HomePage() {
     <div className="bg-white" style={{ fontFamily: 'DM Sans, sans-serif' }}>
       <Navbar />
 
-    
+      {/* WhatsApp QR Code Modal */}
+      {showQR && (
+        <motion.div
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onClick={() => setShowQR(false)}
+        >
+          <motion.div
+            className="bg-white rounded-3xl p-8 max-w-md w-full relative shadow-2xl"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowQR(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl font-bold"
+            >
+              ×
+            </button>
+            <div className="text-center space-y-6">
+              <h2 className="text-3xl font-bold text-gray-900">Join Our Community</h2>
+              <p className="text-gray-600">Scan the QR code to join our WhatsApp community</p>
+              <div className="bg-gray-100 p-8 rounded-2xl flex items-center justify-center">
+                <img 
+                  src="/frame.png" 
+                  alt="WhatsApp QR Code"
+                  className="w-64 h-64 object-contain"
+                />
+              </div>
+              <p className="text-sm text-gray-500">Or click below to join directly</p>
+              <a
+                href="https://chat.whatsapp.com/I0g8kpCNvSn84yWQxybzHa"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-green-500 text-white px-8 py-3 rounded-full font-bold hover:bg-green-600 transition-all duration-300"
+              >
+                Open WhatsApp
+              </a>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
         
       {/* HERO SECTION */}
       <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20 bg-white">
@@ -134,11 +178,13 @@ export default function HomePage() {
               </button>
             </a>
 
-            <a href="/subscription">
-              <button className="bg-[#306CEC] text-white px-10 py-4 rounded-full font-bold hover:bg-[#1a4d99] transition-all duration-300 shadow-lg hover:shadow-xl" style={{ fontFamily: 'League Spartan, sans-serif' }}>
-                Join Community
-              </button>
-            </a>
+            <button 
+              onClick={() => setShowQR(true)}
+              className="bg-[#306CEC] text-white px-10 py-4 rounded-full font-bold hover:bg-[#1a4d99] transition-all duration-300 shadow-lg hover:shadow-xl" 
+              style={{ fontFamily: 'League Spartan, sans-serif' }}
+            >
+              Join Community
+            </button>
           </div>
         </div>
       </section>
@@ -260,11 +306,13 @@ export default function HomePage() {
             <p className="text-xl mb-10 text-white/90">
               Join our community of innovators and changemakers today
             </p>
-            <a href="/subscription">
-              <button className="bg-white text-[#306CEC] px-12 py-5 rounded-full font-bold text-lg hover:bg-[#FFFEF9] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105" style={{ fontFamily: 'League Spartan, sans-serif' }}>
-                Get Started Now
-              </button>
-            </a>
+            <button 
+              onClick={() => setShowQR(true)}
+              className="bg-white text-[#306CEC] px-12 py-5 rounded-full font-bold text-lg hover:bg-[#FFFEF9] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105" 
+              style={{ fontFamily: 'League Spartan, sans-serif' }}
+            >
+              Get Started Now
+            </button>
           </motion.div>
         </div>
       </section>
@@ -273,9 +321,7 @@ export default function HomePage() {
       <div className="h-32 bg-[#FFFEF9]"></div>
 
       {/* FOOTER - Shows only when scrolled near bottom */}
-     
-        <Footer/>
-      
+      <Footer/>
 
       <style>{`
         @keyframes slideDown {

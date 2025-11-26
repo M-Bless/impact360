@@ -74,14 +74,14 @@ const Navbar = () => {
               <p className="text-gray-600">Scan the QR code to join our WhatsApp community</p>
               <div className="bg-gray-100 p-8 rounded-2xl flex items-center justify-center">
                 <img 
-                  src="/whatsapp-qr.png" 
+                  src="/frame.png" 
                   alt="WhatsApp QR Code"
                   className="w-64 h-64 object-contain"
                 />
               </div>
               <p className="text-sm text-gray-500">Or click below to join directly</p>
               <a
-                href="https://chat.whatsapp.com/YOUR_GROUP_LINK"
+                href="https://chat.whatsapp.com/I0g8kpCNvSn84yWQxybzHa"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block bg-green-500 text-white px-8 py-3 rounded-full font-bold hover:bg-green-600 transition-all duration-300"
