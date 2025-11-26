@@ -29,14 +29,14 @@ export default function HomePage() {
       title: "Incubation & Acceleration",
       description: "We support founders from idea to execution through mentorship, structured programs, and strategic resources.",
       icon: "🚀",
-      image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop",
+      image: "/incubation.png",
       link: "/programs",
     },
     {
       title: "Events",
       description: "We run workshops, bootcamps, and founder meetups to help innovators learn, connect, and grow.",
       icon: "📅",
-      image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop",
+      image: "/event.png",
       link: "/events",
     },
   ];
