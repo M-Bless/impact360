@@ -6,11 +6,11 @@ import Footer from "../components/Footer";
 
 export default function AboutPage() {
   const navigate = useNavigate();
-  
+
   const handleLearnMore = () => {
     navigate('/programs');
   };
-  
+
   const perks = [
     {
       icon: "🚀",
@@ -38,7 +38,7 @@ export default function AboutPage() {
       description: "Legal clinics, advisory, technical guidance, and business development support."
     }
   ];
-  
+
   const approachValues = [
     {
       icon: "🌍",
@@ -66,7 +66,7 @@ export default function AboutPage() {
       description: "Ensuring any ambitious entrepreneur can access opportunities regardless of their location or background."
     }
   ];
-  
+
   const whoWeSupport = [
     "Idea-stage founders",
     "Early-stage startups",
@@ -81,10 +81,10 @@ export default function AboutPage() {
   };
 
   return (
-    <div className="font-sans">
+    <div className="font-sans bg-[#F5F6F8]">
       <Navbar />
 
-      {/* Who We Are Section */}
+      {/* Who We Are */}
       <motion.section
         className="py-28 px-6 bg-[#F5F6F8] transition-colors duration-1000 relative overflow-hidden"
         initial="hidden"
@@ -123,13 +123,15 @@ export default function AboutPage() {
               className="relative"
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+                {/* Image used in original snippet */}
                 <img
-                  src="https://lh3.googleusercontent.com/pw/AP1GczNiCB1-OPYvdnXlL8NkBO4c1IY730DJ6kUQhYWYkffqWTjXj1zsVvodL9l70sjeBz7Vbk0kQHWuy8BOGs3483CL6sW1SmCEefnBJSOmcnqQ2msa_WZWzOjwsdFEvUumgPJMPnr4dWxAxxmw_K5iaVWL=w1335-h890-s-no-gm?authuser=0"
+                  src="/group_photo1.jpeg"
                   alt="Team collaboration"
                   className="w-full h-[500px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#306CEC]/20 to-transparent"></div>
               </div>
+
               <motion.div
                 className="absolute -bottom-6 -left-6 w-32 h-32 bg-[#306CEC] rounded-full blur-3xl opacity-30"
                 animate={{ scale: [1, 1.2, 1] }}
@@ -140,7 +142,7 @@ export default function AboutPage() {
         </div>
       </motion.section>
 
-      {/* Vision & Mission Section */}
+      {/* Vision & Mission */}
       <motion.section
         className="py-28 px-6 bg-[#F5F6F8] transition-colors duration-1000 relative overflow-hidden"
         initial="hidden"
@@ -160,13 +162,15 @@ export default function AboutPage() {
               className="relative order-2 md:order-1"
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+                {/* Vision image used earlier */}
                 <img
-                  src="https://lh3.googleusercontent.com/pw/AP1GczNZxHaJ2lgAt0NcUVxZuxjYO2fgIw9sdclmrabWPPHV_IpO1JjPva1LJkzLXn90q1rAUmQXG2aRx1Ulrdd2RmmF6HblziXYzc7nmpqDI0l3rfbce5MT-mVYF6x3nPUlYCtD7IAZYRefJQlywOKVG0jV=w1335-h890-s-no-gm?authuser=0"
+                  src="/group_photo2.jpeg"
                   alt="Vision for the future"
                   className="w-full h-[500px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#306CEC]/20 to-transparent"></div>
               </div>
+
               <motion.div
                 className="absolute -bottom-6 -right-6 w-32 h-32 bg-[#306CEC] rounded-full blur-3xl opacity-30"
                 animate={{ scale: [1, 1.2, 1] }}
@@ -202,7 +206,7 @@ export default function AboutPage() {
         </div>
       </motion.section>
 
-      {/* Our Approach Section */}
+      {/* Our Approach */}
       <motion.section
         className="py-24 px-6 bg-[#F5F6F8] transition-colors duration-1000"
         initial="hidden"
@@ -250,7 +254,7 @@ export default function AboutPage() {
         </div>
       </motion.section>
 
-      {/* Perks / What We Offer Section */}
+      {/* Perks / What We Offer */}
       <motion.section
         className="py-24 px-6 bg-[#F5F6F8] transition-colors duration-1000"
         initial="hidden"
@@ -295,6 +299,150 @@ export default function AboutPage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </motion.section>
+
+      {/* Who We Support */}
+      <motion.section
+        className="py-24 px-6 bg-[#F5F6F8] transition-colors duration-1000"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.2 }}
+        variants={fadeRise}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: false, amount: 0.2 }}
+              variants={fadeRise}
+              transition={{ duration: 0.8 }}
+            >
+              <h2 className="text-4xl md:text-5xl font-bold text-[#306CEC] mb-6 relative inline-block">
+                Who We Support
+                <span className="absolute left-0 -bottom-2 w-20 h-1 rounded-full bg-[#306CEC]"></span>
+              </h2>
+              <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8">
+                We support entrepreneurs at every stage of their journey, providing the resources and guidance needed to succeed.
+              </p>
+
+              <div className="space-y-4">
+                {whoWeSupport.map((item, i) => (
+                  <motion.div
+                    key={i}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: false, amount: 0.2 }}
+                    variants={fadeRise}
+                    transition={{ delay: i * 0.08, duration: 0.6 }}
+                    className="flex items-center space-x-4 bg-white p-4 rounded-xl shadow-md"
+                  >
+                    <div className="w-3 h-3 rounded-full bg-[#306CEC]"></div>
+                    <p className="text-lg text-gray-700 font-medium">{item}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: false, amount: 0.2 }}
+              variants={fadeRise}
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+                {/* Who We Support image used earlier */}
+                <img
+                  src="/group_photo3.jpeg"
+                  alt="Supporting entrepreneurs"
+                  className="w-full h-[500px] object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#306CEC]/20 to-transparent"></div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Why Impact360 Matters */}
+      <motion.section
+        className="py-28 px-6 bg-[#F5F6F8] text-[#306CEC] relative overflow-hidden transition-colors duration-1000"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.2 }}
+        variants={fadeRise}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="absolute top-10 left-10 w-80 h-80 bg-[#306CEC] rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-80 h-80 bg-[#306CEC] rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-[#306CEC] rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2"></div>
+        </div>
+
+        <div className="relative z-10 max-w-6xl mx-auto text-center">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.2 }}
+            variants={fadeRise}
+            transition={{ duration: 0.8 }}
+            className="mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-extrabold mb-6 relative inline-block" style={{ fontFamily: 'League Spartan, sans-serif' }}>
+              Why Impact360 Matters
+              <span className="absolute left-0 -bottom-2 w-20 h-1 rounded-full bg-[#306CEC]"></span>
+            </h2>
+            <p className="text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto text-gray-700">
+              Opportunities shouldn't be limited to Nairobi or any major capital. Founders in towns and counties deserve equal access to tools and support.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: false, amount: 0.2 }}
+              variants={fadeRise}
+              transition={{ duration: 0.8 }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="bg-white p-10 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-[#d8e2f8]"
+            >
+              <h3 className="text-2xl md:text-3xl font-bold mb-4 text-[#306CEC]">Equal Access for All</h3>
+              <p className="text-gray-700 leading-relaxed text-lg">
+                Every founder, regardless of location, should have access to the tools, mentorship, and community needed to grow.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: false, amount: 0.2 }}
+              variants={fadeRise}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="bg-white p-10 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-[#d8e2f8]"
+            >
+              <h3 className="text-2xl md:text-3xl font-bold mb-4 text-[#306CEC]">Decentralised Growth</h3>
+              <p className="text-gray-700 leading-relaxed text-lg">
+                Africa's next generation of businesses can emerge from anywhere. A decentralized model strengthens ecosystems continent-wide.
+              </p>
+            </motion.div>
+          </div>
+
+          <motion.p
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.2 }}
+            variants={fadeRise}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="mt-12 text-xl md:text-2xl font-bold text-gray-700"
+          >
+            A decentralised model strengthens ecosystems and widens economic participation across the continent.
+          </motion.p>
         </div>
       </motion.section>
 
