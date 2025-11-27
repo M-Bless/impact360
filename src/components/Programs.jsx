@@ -320,73 +320,7 @@ export default function ProgramsPage() {
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section className="relative py-24 px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#306CEC] to-[#1a4d9e]"></div>
-        
-        {/* Animated background elements */}
-        <motion.div
-          className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"
-          animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
-          transition={{ duration: 5, repeat: Infinity }}
-        />
-        <motion.div
-          className="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"
-          animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
-          transition={{ duration: 5, repeat: Infinity }}
-        />
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16 text-[#FFFEF9]"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              whileInView={{ scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className="inline-block mb-4"
-            >
-              <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-2xl">
-                <span className="text-4xl">✨</span>
-              </div>
-            </motion.div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Why Join Our Programs?
-            </h2>
-            <p className="text-xl text-[#FFFEF9]/90 max-w-3xl mx-auto">
-              Benefits that go beyond traditional entrepreneurship programs
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {benefits.map((benefit, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -5, scale: 1.05 }}
-                className="bg-[#FFFEF9]/10 backdrop-blur-sm p-8 rounded-2xl text-center text-[#FFFEF9] border border-white/10"
-              >
-                <motion.div 
-                  className="text-5xl mb-4 inline-block"
-                  whileHover={{ scale: 1.2, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  {benefit.icon}
-                </motion.div>
-                <h3 className="text-xl font-bold mb-3">{benefit.title}</h3>
-                <p className="text-[#FFFEF9]/90 leading-relaxed">{benefit.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+    
 
     
 
