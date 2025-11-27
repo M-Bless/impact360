@@ -17,32 +17,38 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Check if current page should have solid background
-  const shouldHaveSolidBg = () => {
-    const pagesWithSolidBg = ['/about', '/programs', '/events', '/subscription', '/campaign'];
-    return pagesWithSolidBg.includes(location.pathname);
-  };
+  // Pages that should always have solid navbar
+  const pagesWithSolidBg = [
+    "/about",
+    "/programs",
+    "/events",
+    "/subscription",
+    "/campaign",
+  ];
 
-  // Determine navbar background
+  // Navbar Background logic
   const getNavbarBg = () => {
-    if (shouldHaveSolidBg()) {
-      return 'bg-black/80 backdrop-blur-lg shadow-lg';
+    if (pagesWithSolidBg.includes(location.pathname)) {
+      return "bg-[#FFFEF9] shadow-lg";
     }
-    return scrolled ? 'bg-black/80 backdrop-blur-lg shadow-lg' : 'bg-transparent';
+    return scrolled ? "bg-[#FFFEF9] shadow-lg" : "bg-transparent";
   };
 
   // Scroll to section on homepage
   const scrollToSection = (sectionId) => {
     setMenuOpen(false);
-    
-    if (sectionId === 'Join Community') {
+
+    if (sectionId === "Join Community") {
       setShowQR(true);
       return;
     }
-    
-    const element = document.getElementById(sectionId.toLowerCase().replace(/\s+/g, '-'));
+
+    const element = document.getElementById(
+      sectionId.toLowerCase().replace(/\s+/g, "-")
+    );
+
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
@@ -70,16 +76,20 @@ const Navbar = () => {
               ×
             </button>
             <div className="text-center space-y-6">
-              <h2 className="text-3xl font-bold text-gray-900">Join Our Community</h2>
-              <p className="text-gray-600">Scan the QR code to join our WhatsApp community</p>
+              <h2 className="text-3xl font-bold text-gray-900">
+                Join Our Community
+              </h2>
+              <p className="text-gray-600">
+                Scan the QR code to join our WhatsApp community
+              </p>
               <div className="bg-gray-100 p-8 rounded-2xl flex items-center justify-center">
-                <img 
-                  src="/frame.png" 
+                <img
+                  src="/frame.png"
                   alt="WhatsApp QR Code"
                   className="w-64 h-64 object-contain"
                 />
               </div>
-              <p className="text-sm text-gray-500">Or click below to join directly</p>
+              <p className="text-sm text-gray-500">Or click below to join</p>
               <a
                 href="https://chat.whatsapp.com/I0g8kpCNvSn84yWQxybzHa"
                 target="_blank"
@@ -93,138 +103,120 @@ const Navbar = () => {
         </motion.div>
       )}
 
-      {/* NAVBAR - Semi-transparent with backdrop blur */}
-      <nav className={`w-full flex justify-between items-center px-8 fixed top-0 left-0 right-0 z-50 py-3 transition-all duration-300 ${getNavbarBg()}`}>
+      {/* NAVBAR */}
+      <nav
+        className={`w-full flex justify-between items-center px-8 fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-300 ${getNavbarBg()}`}
+      >
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 transition-all duration-500">
+        <Link
+          to="/"
+          className="flex items-center gap-2 transition-all duration-500"
+        >
           <div className="w-10 h-10 flex items-center justify-center">
-            <img 
-              src="/logo2.png" 
+            <img
+              src="/logo2.png"
               alt="Impact360 Logo"
               className="w-full h-full object-contain drop-shadow-lg"
             />
           </div>
-          <h1 className="text-xl font-bold tracking-wide text-white drop-shadow-lg">Impact360</h1>
+          <h1
+            className={`text-xl font-bold tracking-wide ${
+              scrolled || pagesWithSolidBg.includes(location.pathname)
+                ? "text-black"
+                : "text-white"
+            }`}
+          >
+            Impact360
+          </h1>
         </Link>
 
         {/* Desktop Menu */}
-        <ul className="hidden md:flex gap-10 font-semibold text-sm text-white drop-shadow-md">
-          <li className="cursor-pointer hover:text-white/70 transition-all duration-300 relative group drop-shadow-md">
-            <Link to="/" onClick={() => setMenuOpen(false)}>
-              <span>Home</span>
-              <span className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-300 ${
-                location.pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'
-              }`}></span>
-            </Link>
-          </li>
+        <ul
+          className={`hidden md:flex gap-10 font-semibold text-sm transition-all duration-300 ${
+            scrolled || pagesWithSolidBg.includes(location.pathname)
+              ? "text-black"
+              : "text-white"
+          }`}
+        >
+          {[
+            { name: "Home", path: "/" },
+            { name: "About", path: "/about" },
+            { name: "Programs", path: "/programs" },
+            { name: "Events", path: "/events" },
+            { name: "Subscription", path: "/subscription" },
+            { name: "Campaign", path: "/campaign" },
+          ].map((item) => (
+            <li key={item.name} className="relative group cursor-pointer">
+              <Link to={item.path}>
+                <span>{item.name}</span>
+                <span
+                  className={`absolute -bottom-1 left-0 h-0.5 transition-all duration-300 ${
+                    location.pathname === item.path
+                      ? "w-full bg-[#306CEC]"
+                      : "w-0 group-hover:w-full bg-[#306CEC]"
+                  }`}
+                ></span>
+              </Link>
+            </li>
+          ))}
 
-          <li className="cursor-pointer hover:text-white/70 transition-all duration-300 relative group drop-shadow-md">
-            <Link to="/about" onClick={() => setMenuOpen(false)}>
-              <span>About</span>
-              <span className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-300 ${
-                location.pathname === '/about' ? 'w-full' : 'w-0 group-hover:w-full'
-              }`}></span>
-            </Link>
-          </li>
-
-          <li className="cursor-pointer hover:text-white/70 transition-all duration-300 relative group drop-shadow-md">
-            <Link to="/programs" onClick={() => setMenuOpen(false)}>
-              <span>Programs</span>
-              <span className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-300 ${
-                location.pathname === '/programs' ? 'w-full' : 'w-0 group-hover:w-full'
-              }`}></span>
-            </Link>
-          </li>
-
-          <li className="cursor-pointer hover:text-white/70 transition-all duration-300 relative group drop-shadow-md">
-            <Link to="/events" onClick={() => setMenuOpen(false)}>
-              <span>Events</span>
-              <span className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-300 ${
-                location.pathname === '/events' ? 'w-full' : 'w-0 group-hover:w-full'
-              }`}></span>
-            </Link>
-          </li>
-
-          <li className="cursor-pointer hover:text-white/70 transition-all duration-300 relative group drop-shadow-md">
-            <Link to="/subscription" onClick={() => setMenuOpen(false)}>
-              <span>Subscription</span>
-              <span className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-300 ${
-                location.pathname === '/subscription' ? 'w-full' : 'w-0 group-hover:w-full'
-              }`}></span>
-            </Link>
-          </li>
-
-           <li className="cursor-pointer hover:text-white/70 transition-all duration-300 relative group drop-shadow-md">
-            <Link to="/campaign" onClick={() => setMenuOpen(false)}>
-              <span>Campaign</span>
-              <span className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-300 ${
-                location.pathname === '/campaign' ? 'w-full' : 'w-0 group-hover:w-full'
-              }`}></span>
-            </Link>
-          </li>
-
-          <li 
-            onClick={() => scrollToSection('Join Community')}
-            className="cursor-pointer hover:text-white/70 transition-all duration-300 relative group drop-shadow-md"
+          <li
+            onClick={() => scrollToSection("Join Community")}
+            className="relative group cursor-pointer"
           >
             <span>Join Community</span>
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300"></span>
+            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#306CEC] group-hover:w-full transition-all duration-300"></span>
           </li>
         </ul>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Hamburger */}
         <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden text-white text-xl font-semibold drop-shadow-lg"
+          onClick={() => setMenuOpen(true)}
+          className={`md:hidden text-3xl font-bold ${
+            scrolled || pagesWithSolidBg.includes(location.pathname)
+              ? "text-black"
+              : "text-white"
+          }`}
         >
-          {menuOpen ? "✕" : "☰"}
+          ☰
         </button>
       </nav>
 
-      {/* Mobile Dropdown */}
+      {/* MOBILE MENU - CENTERED PANEL */}
       {menuOpen && (
         <motion.div
-          className="md:hidden bg-black/80 backdrop-blur-lg fixed top-12 left-0 right-0 py-4 px-8 space-y-3 text-white text-base font-semibold shadow-2xl z-40"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[99] flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
         >
-          <Link to="/" onClick={() => setMenuOpen(false)}>
-            <p className={`hover:text-white/70 transition cursor-pointer ${
-              location.pathname === '/' ? 'text-yellow-400' : ''
-            }`}>Home</p>
-          </Link>
-          
-          <Link to="/about" onClick={() => setMenuOpen(false)}>
-            <p className={`hover:text-white/70 transition cursor-pointer ${
-              location.pathname === '/about' ? 'text-yellow-400' : ''
-            }`}>About</p>
-          </Link>
-
-          <Link to="/programs" onClick={() => setMenuOpen(false)}>
-            <p className={`hover:text-white/70 transition cursor-pointer ${
-              location.pathname === '/programs' ? 'text-yellow-400' : ''
-            }`}>Programs</p>
-          </Link>
-
-          <Link to="/events" onClick={() => setMenuOpen(false)}>
-            <p className={`hover:text-white/70 transition cursor-pointer ${
-              location.pathname === '/events' ? 'text-yellow-400' : ''
-            }`}>Events</p>
-          </Link>
-
-          <Link to="/subscription" onClick={() => setMenuOpen(false)}>
-            <p className={`hover:text-white/70 transition cursor-pointer ${
-              location.pathname === '/subscription' ? 'text-yellow-400' : ''
-            }`}>Subscription</p>
-          </Link>
-
-          <p 
-            onClick={() => scrollToSection('Join Community')}
-            className="hover:text-white/70 transition cursor-pointer"
+          <motion.div
+            className="bg-[#FFFEF9] w-80 rounded-3xl p-8 shadow-2xl text-center space-y-6 relative"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
           >
-            Join Community
-          </p>
+            <button
+              onClick={() => setMenuOpen(false)}
+              className="absolute top-4 right-4 text-gray-600 text-2xl font-bold"
+            >
+              ×
+            </button>
+
+            <div className="flex flex-col gap-4 text-lg font-semibold text-black">
+              <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
+              <Link to="/about" onClick={() => setMenuOpen(false)}>About</Link>
+              <Link to="/programs" onClick={() => setMenuOpen(false)}>Programs</Link>
+              <Link to="/events" onClick={() => setMenuOpen(false)}>Events</Link>
+              <Link to="/subscription" onClick={() => setMenuOpen(false)}>Subscription</Link>
+              <Link to="/campaign" onClick={() => setMenuOpen(false)}>Campaign</Link>
+
+              <p
+                onClick={() => scrollToSection("Join Community")}
+                className="cursor-pointer text-[#306CEC]"
+              >
+                Join Community
+              </p>
+            </div>
+          </motion.div>
         </motion.div>
       )}
     </>
@@ -232,8 +224,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-
-
-
-
