@@ -289,33 +289,7 @@ export default function HomePage() {
         </div>
       </section>
 
-    
-
-      {/* CALL TO ACTION */}
-      <section className="py-24 px-6 bg-[#306CEC] text-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ fontFamily: 'League Spartan, sans-serif' }}>
-              Ready to Make an Impact?
-            </h2>
-            <p className="text-xl mb-10 text-white/90">
-              Join our community of innovators and changemakers today
-            </p>
-            <button 
-              onClick={() => setShowQR(true)}
-              className="bg-white text-[#306CEC] px-12 py-5 rounded-full font-bold text-lg hover:bg-[#FFFEF9] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105" 
-              style={{ fontFamily: 'League Spartan, sans-serif' }}
-            >
-              Get Started Now
-            </button>
-          </motion.div>
-        </div>
-      </section>
+      
 
       {/* Add spacing before footer */}
       <div className="h-32 bg-[#FFFEF9]"></div>
