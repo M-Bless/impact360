@@ -150,7 +150,7 @@ export default function EventsPage() {
     {
       title: "Round Xchange",
       status: "Upcoming",
-      date: "January 2026",
+      date: "Febuary 7th 2026",
       description:
         "The premier networking and knowledge-sharing event connecting founders, investors, and ecosystem players. Round Xchange brings together the brightest minds in African entrepreneurship for a day of insights, connections, and opportunities.",
       highlights: [
@@ -204,8 +204,8 @@ export default function EventsPage() {
     },
     {
       image: "/gallery/panel-1.jpg",
-      title: "Panel Discussion",
-      category: "Beyond Now"
+      title: "Open mic",
+      category: "Beyond Capital"
     },
     {
       image: "/gallery/networking-1.png",
