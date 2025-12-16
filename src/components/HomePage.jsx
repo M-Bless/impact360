@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Lightbulb, Users, TrendingUp, Rocket, Calendar } from "lucide-react";
+import { useDarkMode } from "../DarkModeContext";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
@@ -9,6 +10,7 @@ export default function HomePage() {
   const [currentPhoto, setCurrentPhoto] = useState(0);
   const [showFooter, setShowFooter] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const { darkMode } = useDarkMode();
 
   const photos = [
     "/photo_1.jpg",
@@ -64,7 +66,7 @@ export default function HomePage() {
   }, [photos.length, imagesLoaded]);
 
   return (
-    <div className="bg-white" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+    <div className={`transition-colors duration-1000 ${darkMode ? 'bg-gray-900' : 'bg-white'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
       <Navbar />
 
       {/* WhatsApp QR Code Modal */}
@@ -76,7 +78,7 @@ export default function HomePage() {
           onClick={() => setShowQR(false)}
         >
           <motion.div
-            className="bg-white rounded-3xl p-8 max-w-md w-full relative shadow-2xl"
+            className={`rounded-3xl p-8 max-w-md w-full relative shadow-2xl ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.1 }}
@@ -84,21 +86,21 @@ export default function HomePage() {
           >
             <button
               onClick={() => setShowQR(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl font-bold"
+              className={`absolute top-4 right-4 text-2xl font-bold ${darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'}`}
             >
               ×
             </button>
             <div className="text-center space-y-6">
-              <h2 className="text-3xl font-bold text-gray-900">Join Our Community</h2>
-              <p className="text-gray-600">Scan the QR code to join our WhatsApp community</p>
-              <div className="bg-gray-100 p-8 rounded-2xl flex items-center justify-center">
+              <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Join Our Community</h2>
+              <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Scan the QR code to join our WhatsApp community</p>
+              <div className={`p-8 rounded-2xl flex items-center justify-center ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
                 <img 
                   src="/frame.png" 
                   alt="WhatsApp QR Code"
                   className="w-64 h-64 object-contain"
                 />
               </div>
-              <p className="text-sm text-gray-500">Or click below to join directly</p>
+              <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>Or click below to join directly</p>
               <a
                 href="https://chat.whatsapp.com/I0g8kpCNvSn84yWQxybzHa"
                 target="_blank"
@@ -113,13 +115,13 @@ export default function HomePage() {
       )}
         
       {/* HERO SECTION */}
-      <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20 bg-gray-900">
+      <section className={`min-h-screen flex items-center justify-center relative overflow-hidden pt-20 ${darkMode ? 'bg-gray-800' : 'bg-gray-900'}`}>
 
         {/* SLIDESHOW BACKGROUND */}
         <div className="absolute inset-0">
           {/* Loading placeholder with gradient */}
           {!imagesLoaded && (
-            <div className="absolute inset-0 bg-[#306CEC] flex items-center justify-center">
+            <div className={`absolute inset-0 flex items-center justify-center ${darkMode ? 'bg-gray-700' : 'bg-[#306CEC]'}`}>
               <div className="text-white text-xl font-semibold">Loading...</div>
             </div>
           )}
@@ -182,7 +184,7 @@ export default function HomePage() {
 
             <button 
               onClick={() => setShowQR(true)}
-              className="bg-[#306CEC] text-white px-10 py-4 rounded-full font-bold hover:bg-[#1a4d99] transition-all duration-300 shadow-lg hover:shadow-xl" 
+              className={`text-white px-10 py-4 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-xl ${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-[#306CEC] hover:bg-[#1a4d99]'}`}
               style={{ fontFamily: 'League Spartan, sans-serif' }}
             >
               Join Community
@@ -194,15 +196,15 @@ export default function HomePage() {
        
     {/* WHAT WE OFFER SECTION */}
     <motion.div
-  initial={{ opacity: 0, y: 40 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8 }}
-  viewport={{ once: false, amount: 0.2 }}
->
-      <section className="py-24 px-6 bg-[#FFFEF9] relative overflow-hidden">
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: false, amount: 0.2 }}
+    >
+      <section className={`py-24 px-6 relative overflow-hidden transition-colors duration-1000 ${darkMode ? 'bg-gray-800' : 'bg-[#FFFEF9]'}`}>
         {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-64 h-64 bg-[#306CEC]/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#306CEC]/5 rounded-full blur-3xl"></div>
+        <div className={`absolute top-0 left-0 w-64 h-64 rounded-full blur-3xl ${darkMode ? 'bg-blue-600/10' : 'bg-[#306CEC]/5'}`}></div>
+        <div className={`absolute bottom-0 right-0 w-96 h-96 rounded-full blur-3xl ${darkMode ? 'bg-blue-600/10' : 'bg-[#306CEC]/5'}`}></div>
         
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
@@ -212,10 +214,10 @@ export default function HomePage() {
             viewport={{ once: true, amount: 0.3 }}
             className="text-center mb-20"
           >
-            <h2 className="text-5xl md:text-6xl font-bold text-[#306CEC] mb-4" style={{ fontFamily: 'League Spartan, sans-serif' }}>
+            <h2 className={`text-5xl md:text-6xl font-bold mb-4 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
               What We Offer
             </h2>
-            <p className="text-xl text-[#000000]/70">
+            <p className={`text-xl ${darkMode ? 'text-gray-400' : 'text-[#000000]/70'}`}>
               Clear, structured pathways for founders to grow
             </p>
           </motion.div>
@@ -233,7 +235,7 @@ export default function HomePage() {
                     ease: [0.25, 0.46, 0.45, 0.94]
                   }}
                   viewport={{ once: true, amount: 0.3 }}
-                  className="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 group"
+                  className={`rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 group ${darkMode ? 'bg-gray-700' : 'bg-white'}`}
                   whileHover={{ y: -12, scale: 1.02 }}
                 >
                   <div className="relative h-64 overflow-hidden">
@@ -242,7 +244,7 @@ export default function HomePage() {
                       alt={offer.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#306CEC]/90 via-[#306CEC]/40 to-transparent flex items-end p-8 transition-all duration-500 group-hover:from-[#306CEC]/95">
+                    <div className={`absolute inset-0 flex items-end p-8 transition-all duration-500 ${darkMode ? 'bg-gradient-to-t from-blue-600/95 via-blue-600/40 to-transparent group-hover:from-blue-600/95' : 'bg-gradient-to-t from-[#306CEC]/90 via-[#306CEC]/40 to-transparent group-hover:from-[#306CEC]/95'}`}>
                       <motion.div 
                         className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 w-20 h-20 flex items-center justify-center"
                         whileHover={{ scale: 1.2, rotate: 5 }}
@@ -253,16 +255,16 @@ export default function HomePage() {
                     </div>
                   </div>
                   <div className="p-8 relative">
-                    <div className="absolute top-0 left-0 w-20 h-1 bg-[#306CEC] transform origin-left transition-all duration-500 group-hover:w-full"></div>
-                    <h3 className="text-3xl font-bold text-[#306CEC] mb-4 mt-2 transition-colors duration-300 group-hover:text-[#1a4d99]" style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                    <div className={`absolute top-0 left-0 w-20 h-1 transform origin-left transition-all duration-500 group-hover:w-full ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></div>
+                    <h3 className={`text-3xl font-bold mb-4 mt-2 transition-colors duration-300 ${darkMode ? 'text-blue-400 group-hover:text-blue-300' : 'text-[#306CEC] group-hover:text-[#1a4d99]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
                       {offer.title}
                     </h3>
-                    <p className="text-[#000000]/70 text-lg mb-6 leading-relaxed">
+                    <p className={`text-lg mb-6 leading-relaxed ${darkMode ? 'text-gray-300' : 'text-[#000000]/70'}`}>
                       {offer.description}
                     </p>
                     <a
                       href={offer.link}
-                      className="inline-flex items-center text-[#306CEC] font-semibold gap-2 transition-all duration-300 group-hover:gap-4 group-hover:text-[#1a4d99]"
+                      className={`inline-flex items-center font-semibold gap-2 transition-all duration-300 group-hover:gap-4 ${darkMode ? 'text-blue-400 group-hover:text-blue-300' : 'text-[#306CEC] group-hover:text-[#1a4d99]'}`}
                       style={{ fontFamily: 'League Spartan, sans-serif' }}
                     >
                       Learn More 
@@ -280,86 +282,77 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-        </motion.div>
+    </motion.div>
       
 
       {/* WHY CHOOSE US SECTION */}
       <motion.section
-  initial={{ opacity: 0, y: 40 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8 }}
-  viewport={{ once: false, amount: 0.2 }}
-  className="py-24 px-6 bg-[#F5F6F8]"
->
-
-<section className="py-24 px-6 bg-[#F5F6F8]">
-  <div className="max-w-7xl mx-auto">
-
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-      className="text-center mb-16"
-    >
-      <h2
-        className="text-5xl md:text-6xl font-bold text-[#306CEC] mb-3"
-        style={{ fontFamily: "League Spartan, sans-serif" }}
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: false, amount: 0.2 }}
+        className={`py-24 px-6 transition-colors duration-1000 ${darkMode ? 'bg-gray-900' : 'bg-[#F5F6F8]'}`}
       >
-        Why Choose Impact360
-      </h2>
-
-      <p className="text-xl text-gray-600">
-        Built for founders who want to make a difference
-      </p>
-    </motion.div>
-
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-      {featuresData.map((item, i) => {
-        const IconComponent = item.icon;
-        return (
+        <div className="max-w-7xl mx-auto">
           <motion.div
-            key={i}
-            className="
-              bg-white
-              border border-[#306CEC]/20
-              p-10 rounded-3xl
-              shadow-lg hover:shadow-xl
-              transition-all duration-300
-              group
-            "
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.2, duration: 0.6 }}
+            transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            whileHover={{ y: -10 }}
+            className="text-center mb-16"
           >
-            {/* Blue top bar */}
-            <div className="h-2 w-full bg-[#306CEC] rounded-full mb-6"></div>
-
-            <IconComponent className="w-16 h-16 mb-6 text-[#306CEC]" strokeWidth={1.5} />
-
-            <h3
-              className="text-3xl font-bold text-[#306CEC] mb-3"
+            <h2
+              className={`text-5xl md:text-6xl font-bold mb-3 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}
               style={{ fontFamily: "League Spartan, sans-serif" }}
             >
-              {item.title}
-            </h3>
+              Why Choose Impact360
+            </h2>
 
-            <p className="text-gray-700 text-lg leading-relaxed">
-              {item.desc}
+            <p className={`text-xl ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              Built for founders who want to make a difference
             </p>
           </motion.div>
-        );
-      })}
-    </div>
 
-  </div>
-</section>
-</motion.section>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {featuresData.map((item, i) => {
+              const IconComponent = item.icon;
+              return (
+                <motion.div
+                  key={i}
+                  className={`border p-10 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 group ${
+                    darkMode 
+                      ? 'bg-gray-800 border-blue-600/30' 
+                      : 'bg-white border-[#306CEC]/20'
+                  }`}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.2, duration: 0.6 }}
+                  viewport={{ once: true }}
+                  whileHover={{ y: -10 }}
+                >
+                  {/* Blue top bar */}
+                  <div className={`h-2 w-full rounded-full mb-6 ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></div>
+
+                  <IconComponent className={`w-16 h-16 mb-6 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`} strokeWidth={1.5} />
+
+                  <h3
+                    className={`text-3xl font-bold mb-3 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}
+                    style={{ fontFamily: "League Spartan, sans-serif" }}
+                  >
+                    {item.title}
+                  </h3>
+
+                  <p className={`text-lg leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                    {item.desc}
+                  </p>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </motion.section>
 
       {/* FOOTER - Shows only when scrolled near bottom */}
-     
       <Footer/>
 
     </div>

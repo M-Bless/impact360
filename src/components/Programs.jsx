@@ -1,11 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Rocket, Zap, GraduationCap, Wrench, Dumbbell, Laptop, Handshake, Mic, Calendar, Users, Globe, Lightbulb, Link } from "lucide-react";
+import { useDarkMode } from "../DarkModeContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 
-const ProgramCard = ({ Icon, title, description, features, gradient, delay = 0 }) => (
+const ProgramCard = ({ Icon, title, description, features, gradient, delay = 0, darkMode }) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -33,14 +34,16 @@ const ProgramCard = ({ Icon, title, description, features, gradient, delay = 0 }
   </motion.div>
 );
 
-const EventCard = ({ type, title, description, image, delay = 0 }) => (
+const EventCard = ({ type, title, description, image, delay = 0, darkMode }) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
     transition={{ delay, duration: 0.2 }}
     viewport={{ once: true }}
     whileHover={{ y: -10 }}
-    className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group"
+    className={`rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group ${
+      darkMode ? 'bg-gray-800' : 'bg-white'
+    }`}
   >
     <div className="relative h-64 overflow-hidden">
       <img
@@ -48,21 +51,26 @@ const EventCard = ({ type, title, description, image, delay = 0 }) => (
         alt={title}
         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#306CEC]/60 to-transparent"></div>
-      <div className="absolute top-4 left-4 bg-[#FFFEF9] text-[#306CEC] px-4 py-2 rounded-full font-bold text-sm">
+      <div className={`absolute inset-0 ${darkMode ? 'bg-gradient-to-t from-blue-600/60 to-transparent' : 'bg-gradient-to-t from-[#306CEC]/60 to-transparent'}`}></div>
+      <div className={`absolute top-4 left-4 px-4 py-2 rounded-full font-bold text-sm ${
+        darkMode
+          ? 'bg-blue-400 text-gray-800'
+          : 'bg-[#FFFEF9] text-[#306CEC]'
+      }`}>
         {type}
       </div>
     </div>
     
     <div className="p-8">
-      <h3 className="text-2xl font-bold text-[#306CEC] mb-3">{title}</h3>
-      <p className="text-gray-600 leading-relaxed mb-6">{description}</p>
+      <h3 className={`text-2xl font-bold mb-3 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}>{title}</h3>
+      <p className={`leading-relaxed mb-6 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{description}</p>
     </div>
   </motion.div>
 );
 
 export default function ProgramsPage() {
   const navigate = useNavigate();
+  const { darkMode } = useDarkMode();
 
   const handleSubscribe = () => {
     navigate("/subscription");
@@ -177,19 +185,19 @@ export default function ProgramsPage() {
   ];
 
   return (
-    <div className="font-sans bg-[#FFFEF9]">
+    <div className={`font-sans transition-colors duration-1000 ${darkMode ? 'bg-gray-900' : 'bg-[#FFFEF9]'}`}>
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-16 px-6 overflow-hidden">
+      <section className={`relative pt-32 pb-16 px-6 overflow-hidden transition-colors duration-1000 ${darkMode ? 'bg-gray-900' : 'bg-[#FFFEF9]'}`}>
         {/* Animated background shapes */}
         <motion.div
-          className="absolute top-20 right-10 w-72 h-72 bg-[#306CEC]/5 rounded-full blur-3xl"
+          className={`absolute top-20 right-10 w-72 h-72 rounded-full blur-3xl ${darkMode ? 'bg-blue-600/10' : 'bg-[#306CEC]/5'}`}
           animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 3, repeat: Infinity }}
         />
         <motion.div
-          className="absolute bottom-10 left-10 w-96 h-96 bg-[#4A80FF]/5 rounded-full blur-3xl"
+          className={`absolute bottom-10 left-10 w-96 h-96 rounded-full blur-3xl ${darkMode ? 'bg-blue-400/10' : 'bg-[#4A80FF]/5'}`}
           animate={{ scale: [1.2, 1, 1.2], opacity: [0.5, 0.3, 0.5] }}
           transition={{ duration: 4, repeat: Infinity }}
         />
@@ -202,11 +210,15 @@ export default function ProgramsPage() {
             className="text-center"
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-[#306CEC] via-[#4A80FF] to-[#306CEC] bg-clip-text text-transparent">
+              <span className={`bg-clip-text text-transparent ${
+                darkMode
+                  ? 'bg-gradient-to-r from-blue-400 via-blue-300 to-blue-400'
+                  : 'bg-gradient-to-r from-[#306CEC] via-[#4A80FF] to-[#306CEC]'
+              }`}>
                 Our Programs
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
+            <p className={`text-xl md:text-2xl max-w-3xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Comprehensive programs designed to support you at every stage of your entrepreneurial journey
             </p>
           </motion.div>
@@ -214,18 +226,22 @@ export default function ProgramsPage() {
       </section>
 
       {/* Main Programs Section */}
-      <section className="py-16 px-6">
+      <section className={`py-16 px-6 transition-colors duration-1000 ${darkMode ? 'bg-gray-900' : 'bg-[#FFFEF9]'}`}>
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12">
             {mainPrograms.map((program, index) => (
-              <ProgramCard key={index} {...program} delay={index * 0.2} />
+              <ProgramCard key={index} {...program} delay={index * 0.2} darkMode={darkMode} />
             ))}
           </div>
         </div>
       </section>
 
       {/* Events Overview Section */}
-      <section className="py-24 px-6 bg-gradient-to-b from-[#F5F5F0] to-[#FFFEF9]">
+      <section className={`py-24 px-6 transition-colors duration-1000 ${
+        darkMode
+          ? 'bg-gradient-to-b from-gray-800 to-gray-900'
+          : 'bg-gradient-to-b from-[#F5F5F0] to-[#FFFEF9]'
+      }`}>
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -240,12 +256,16 @@ export default function ProgramsPage() {
               transition={{ duration: 0.5 }}
               className="inline-block mb-4"
             >
-              <GraduationCap className="w-14 h-14 text-[#306CEC]" strokeWidth={1.5} />
+              <GraduationCap className={`w-14 h-14 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`} strokeWidth={1.5} />
             </motion.div>
-            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#306CEC] to-[#4A80FF] bg-clip-text text-transparent mb-4">
+            <h2 className={`text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent ${
+              darkMode
+                ? 'bg-gradient-to-r from-blue-400 to-blue-300'
+                : 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF]'
+            }`}>
               Learning Events
             </h2>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className={`text-lg md:text-xl max-w-3xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Connect with successful entrepreneurs who share years of experience and answer your questions
             </p>
           </motion.div>
@@ -261,11 +281,23 @@ export default function ProgramsPage() {
                   transition={{ delay: index * 0.1, duration: 0.6 }}
                   viewport={{ once: true }}
                   whileHover={{ y: -5, scale: 1.02 }}
-                  className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group"
+                  className={`p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group ${
+                    darkMode
+                      ? 'bg-gray-800 border border-gray-700'
+                      : 'bg-white border border-gray-100'
+                  }`}
                 >
-                  <IconComponent className="w-14 h-14 mb-4 text-[#306CEC] group-hover:text-[#4A80FF] transition-colors" strokeWidth={1.5} />
-                  <h3 className="text-2xl font-bold text-[#306CEC] mb-3 group-hover:text-[#4A80FF] transition-colors">{type.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{type.description}</p>
+                  <IconComponent className={`w-14 h-14 mb-4 group-hover:transition-colors ${
+                    darkMode
+                      ? 'text-blue-400 group-hover:text-blue-300'
+                      : 'text-[#306CEC] group-hover:text-[#4A80FF]'
+                  }`} strokeWidth={1.5} />
+                  <h3 className={`text-2xl font-bold mb-3 group-hover:transition-colors ${
+                    darkMode
+                      ? 'text-blue-400 group-hover:text-blue-300'
+                      : 'text-[#306CEC] group-hover:text-[#4A80FF]'
+                  }`}>{type.title}</h3>
+                  <p className={`leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{type.description}</p>
                 </motion.div>
               );
             })}
@@ -274,7 +306,7 @@ export default function ProgramsPage() {
       </section>
 
       {/* Upcoming Events Section */}
-      <section className="py-24 px-6">
+      <section className={`py-24 px-6 transition-colors duration-1000 ${darkMode ? 'bg-gray-900' : 'bg-[#FFFEF9]'}`}>
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -289,27 +321,27 @@ export default function ProgramsPage() {
               transition={{ duration: 0.5 }}
               className="inline-block mb-4"
             >
-              <Calendar className="w-14 h-14 text-[#306CEC]" strokeWidth={1.5} />
+              <Calendar className={`w-14 h-14 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`} strokeWidth={1.5} />
             </motion.div>
-            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#306CEC] to-[#4A80FF] bg-clip-text text-transparent mb-4">
+            <h2 className={`text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent ${
+              darkMode
+                ? 'bg-gradient-to-r from-blue-400 to-blue-300'
+                : 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF]'
+            }`}>
               Upcoming Events
             </h2>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className={`text-lg md:text-xl max-w-3xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Join our next events and learn from those who have successfully built businesses
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {upcomingEvents.map((event, index) => (
-              <EventCard key={index} {...event} delay={index * 0.1} />
+              <EventCard key={index} {...event} delay={index * 0.1} darkMode={darkMode} />
             ))}
           </div>
         </div>
       </section>
-
-    
-
-    
 
       <Footer />
     </div>

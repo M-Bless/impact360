@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
+import DarkModeToggle from "./DarkModeToggle";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -29,9 +30,9 @@ const Navbar = () => {
   // Navbar Background logic
   const getNavbarBg = () => {
     if (pagesWithSolidBg.includes(location.pathname)) {
-      return "bg-[#FFFEF9] shadow-lg";
+      return "bg-white dark:bg-gray-800 shadow-lg";
     }
-    return scrolled ? "bg-[#FFFEF9] shadow-lg" : "bg-transparent";
+    return scrolled ? "bg-white dark:bg-gray-800 shadow-lg" : "bg-transparent";
   };
 
   // Scroll to section on homepage
@@ -63,7 +64,7 @@ const Navbar = () => {
           onClick={() => setShowQR(false)}
         >
           <motion.div
-            className="bg-white rounded-3xl p-8 max-w-md w-full relative shadow-2xl"
+            className="bg-white dark:bg-gray-800 rounded-3xl p-8 max-w-md w-full relative shadow-2xl"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.1 }}
@@ -71,25 +72,25 @@ const Navbar = () => {
           >
             <button
               onClick={() => setShowQR(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl font-bold"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl font-bold"
             >
               ×
             </button>
             <div className="text-center space-y-6">
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
                 Join Our Community
               </h2>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 Scan the QR code to join our WhatsApp community
               </p>
-              <div className="bg-gray-100 p-8 rounded-2xl flex items-center justify-center">
+              <div className="bg-gray-100 dark:bg-gray-700 p-8 rounded-2xl flex items-center justify-center">
                 <img
                   src="/frame.png"
                   alt="WhatsApp QR Code"
                   className="w-64 h-64 object-contain"
                 />
               </div>
-              <p className="text-sm text-gray-500">Or click below to join</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Or click below to join</p>
               <a
                 href="https://chat.whatsapp.com/I0g8kpCNvSn84yWQxybzHa"
                 target="_blank"
@@ -122,7 +123,7 @@ const Navbar = () => {
           <h1
             className={`text-xl font-bold tracking-wide ${
               scrolled || pagesWithSolidBg.includes(location.pathname)
-                ? "text-black"
+                ? "text-black dark:text-white"
                 : "text-white"
             }`}
           >
@@ -131,55 +132,63 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Menu */}
-        <ul
-          className={`hidden md:flex gap-10 font-semibold text-sm transition-all duration-300 ${
-            scrolled || pagesWithSolidBg.includes(location.pathname)
-              ? "text-black"
-              : "text-white"
-          }`}
-        >
-          {[
-            { name: "Home", path: "/" },
-            { name: "About", path: "/about" },
-            { name: "Programs", path: "/programs" },
-            { name: "Events", path: "/events" },
-            { name: "Subscription", path: "/subscription" },
-            { name: "Campaign", path: "/campaign" },
-          ].map((item) => (
-            <li key={item.name} className="relative group cursor-pointer">
-              <Link to={item.path}>
-                <span>{item.name}</span>
-                <span
-                  className={`absolute -bottom-1 left-0 h-0.5 transition-all duration-300 ${
-                    location.pathname === item.path
-                      ? "w-full bg-[#306CEC]"
-                      : "w-0 group-hover:w-full bg-[#306CEC]"
-                  }`}
-                ></span>
-              </Link>
-            </li>
-          ))}
-
-          <li
-            onClick={() => scrollToSection("Join Community")}
-            className="relative group cursor-pointer"
+        <div className="hidden md:flex items-center gap-8">
+          <ul
+            className={`flex gap-10 font-semibold text-sm transition-all duration-300 ${
+              scrolled || pagesWithSolidBg.includes(location.pathname)
+                ? "text-black dark:text-white"
+                : "text-white"
+            }`}
           >
-            <span>Join Community</span>
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#306CEC] group-hover:w-full transition-all duration-300"></span>
-          </li>
-        </ul>
+            {[
+              { name: "Home", path: "/" },
+              { name: "About", path: "/about" },
+              { name: "Programs", path: "/programs" },
+              { name: "Events", path: "/events" },
+              { name: "Subscription", path: "/subscription" },
+              { name: "Campaign", path: "/campaign" },
+            ].map((item) => (
+              <li key={item.name} className="relative group cursor-pointer">
+                <Link to={item.path}>
+                  <span>{item.name}</span>
+                  <span
+                    className={`absolute -bottom-1 left-0 h-0.5 transition-all duration-300 ${
+                      location.pathname === item.path
+                        ? "w-full bg-[#306CEC]"
+                        : "w-0 group-hover:w-full bg-[#306CEC]"
+                    }`}
+                  ></span>
+                </Link>
+              </li>
+            ))}
 
-        {/* Mobile Hamburger */}
-        <button
-          onClick={() => setMenuOpen(true)}
-          className={`md:hidden text-3xl font-bold ${
-            scrolled || pagesWithSolidBg.includes(location.pathname)
-              ? "text-black"
-              : "text-white"
-          }`}
-        >
-          ☰
-        </button>
+            <li
+              onClick={() => scrollToSection("Join Community")}
+              className="relative group cursor-pointer"
+            >
+              <span>Join Community</span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#306CEC] group-hover:w-full transition-all duration-300"></span>
+            </li>
+          </ul>
+
+          {/* Dark Mode Toggle */}
+          <DarkModeToggle />
+        </div>
+
+        {/* Mobile Menu Button & Dark Mode */}
+        <div className="md:hidden flex items-center gap-4">
+          <DarkModeToggle />
+          <button
+            onClick={() => setMenuOpen(true)}
+            className={`text-3xl font-bold ${
+              scrolled || pagesWithSolidBg.includes(location.pathname)
+                ? "text-black dark:text-white"
+                : "text-white"
+            }`}
+          >
+            ☰
+          </button>
+        </div>
       </nav>
 
       {/* MOBILE MENU - CENTERED PANEL */}
@@ -190,18 +199,18 @@ const Navbar = () => {
           animate={{ opacity: 1 }}
         >
           <motion.div
-            className="bg-[#FFFEF9] w-80 rounded-3xl p-8 shadow-2xl text-center space-y-6 relative"
+            className="bg-white dark:bg-gray-800 w-80 rounded-3xl p-8 shadow-2xl text-center space-y-6 relative"
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
           >
             <button
               onClick={() => setMenuOpen(false)}
-              className="absolute top-4 right-4 text-gray-600 text-2xl font-bold"
+              className="absolute top-4 right-4 text-gray-600 dark:text-gray-300 text-2xl font-bold"
             >
               ×
             </button>
 
-            <div className="flex flex-col gap-4 text-lg font-semibold text-black">
+            <div className="flex flex-col gap-4 text-lg font-semibold text-black dark:text-white">
               <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
               <Link to="/about" onClick={() => setMenuOpen(false)}>About</Link>
               <Link to="/programs" onClick={() => setMenuOpen(false)}>Programs</Link>
@@ -211,7 +220,7 @@ const Navbar = () => {
 
               <p
                 onClick={() => scrollToSection("Join Community")}
-                className="cursor-pointer text-[#306CEC]"
+                className="cursor-pointer text-[#306CEC] dark:text-blue-400"
               >
                 Join Community
               </p>

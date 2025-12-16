@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Ticket, BookOpen, Users, Gift, Check } from "lucide-react";
+import { useDarkMode } from "../DarkModeContext";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 
 export default function SubscriptionPlans() {
   const [selectedPlan, setSelectedPlan] = useState('monthly');
+  const { darkMode } = useDarkMode();
 
   const subscriptionPlans = {
     monthly: [
@@ -127,18 +129,22 @@ export default function SubscriptionPlans() {
   ];
 
   return (
-    <div className="font-sans bg-[#FFFEF9]">
+    <div className={`font-sans transition-colors duration-1000 ${darkMode ? 'bg-gray-900' : 'bg-[#FFFEF9]'}`}>
       <Navbar />
 
       {/* Header Section */}
-      <section className="relative pt-32 pb-16 px-6 overflow-hidden bg-gradient-to-br from-[#306CEC] to-[#1a4d9e]">
+      <section className={`relative pt-32 pb-16 px-6 overflow-hidden transition-colors duration-1000 ${
+        darkMode
+          ? 'bg-gradient-to-br from-blue-600 to-blue-800'
+          : 'bg-gradient-to-br from-[#306CEC] to-[#1a4d9e]'
+      }`}>
         <motion.div
-          className="absolute top-20 right-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"
+          className={`absolute top-20 right-10 w-72 h-72 rounded-full blur-3xl ${darkMode ? 'bg-blue-400/10' : 'bg-white/10'}`}
           animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 8, repeat: Infinity }}
         />
         <motion.div
-          className="absolute bottom-10 left-10 w-96 h-96 bg-white/10 rounded-full blur-3xl"
+          className={`absolute bottom-10 left-10 w-96 h-96 rounded-full blur-3xl ${darkMode ? 'bg-blue-400/10' : 'bg-white/10'}`}
           animate={{ scale: [1.2, 1, 1.2], opacity: [0.5, 0.3, 0.5] }}
           transition={{ duration: 10, repeat: Infinity }}
         />
@@ -160,7 +166,7 @@ export default function SubscriptionPlans() {
       </section>
 
       {/* Plan Period Selector */}
-      <section className="py-16 px-6">
+      <section className={`py-16 px-6 transition-colors duration-1000 ${darkMode ? 'bg-gray-900' : 'bg-[#FFFEF9]'}`}>
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -183,6 +189,8 @@ export default function SubscriptionPlans() {
                 className={`px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 ${
                   selectedPlan === plan.key
                     ? 'bg-[#306CEC] text-white shadow-xl'
+                    : darkMode
+                    ? 'bg-gray-800 text-gray-300 hover:bg-gray-700 shadow-lg'
                     : 'bg-white text-gray-600 hover:bg-gray-50 shadow-lg'
                 }`}
               >
@@ -201,15 +209,19 @@ export default function SubscriptionPlans() {
                 transition={{ delay: index * 0.1, duration: 0.6 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -10, scale: plan.popular ? 1.02 : 1.05 }}
-                className={`relative rounded-3xl p-8 shadow-2xl flex flex-col ${
+                className={`relative rounded-3xl p-8 shadow-2xl flex flex-col transition-colors duration-1000 ${
                   plan.popular
                     ? 'bg-gradient-to-br from-[#306CEC] to-[#1a4d9e] text-white scale-105'
+                    : darkMode
+                    ? 'bg-gray-800 text-white'
                     : 'bg-white text-gray-900'
                 }`}
               >
                 
                 <div className="text-center mb-8">
-                  <h3 className={`text-3xl font-bold mb-4 ${plan.popular ? 'text-white' : 'text-[#306CEC]'}`}>
+                  <h3 className={`text-3xl font-bold mb-4 ${
+                    plan.popular ? 'text-white' : darkMode ? 'text-blue-400' : 'text-[#306CEC]'
+                  }`}>
                     {plan.name}
                   </h3>
                   
@@ -221,7 +233,7 @@ export default function SubscriptionPlans() {
                       className="mb-4"
                     >
                       <div className={`inline-block px-4 py-2 rounded-full text-sm font-bold ${
-                        plan.popular ? 'bg-yellow-400 text-gray-900' : 'bg-green-100 text-green-700'
+                        plan.popular ? 'bg-yellow-400 text-gray-900' : darkMode ? 'bg-blue-600 text-blue-200' : 'bg-green-100 text-green-700'
                       }`}>
                         Save KES. {plan.save}
                       </div>
@@ -233,7 +245,9 @@ export default function SubscriptionPlans() {
                     <span className="text-5xl font-bold">{plan.price}</span>
                     <span className="text-lg">/{plan.period}</span>
                   </div>
-                  <div className={`text-sm mt-3 ${plan.popular ? 'text-white/80' : 'text-gray-500'}`}>
+                  <div className={`text-sm mt-3 ${
+                    plan.popular ? 'text-white/80' : darkMode ? 'text-gray-400' : 'text-gray-500'
+                  }`}>
                     Subscription
                   </div>
                 </div>
@@ -248,8 +262,12 @@ export default function SubscriptionPlans() {
                       viewport={{ once: true }}
                       className="flex items-start gap-3"
                     >
-                      <Check className={`w-5 h-5 flex-shrink-0 ${plan.popular ? 'text-yellow-300' : 'text-[#306CEC]'}`} strokeWidth={2.5} />
-                      <span className={`${plan.popular ? 'text-white/90' : 'text-gray-600'}`}>
+                      <Check className={`w-5 h-5 flex-shrink-0 ${
+                        plan.popular ? 'text-yellow-300' : darkMode ? 'text-blue-400' : 'text-[#306CEC]'
+                      }`} strokeWidth={2.5} />
+                      <span className={`${
+                        plan.popular ? 'text-white/90' : darkMode ? 'text-gray-300' : 'text-gray-600'
+                      }`}>
                         {feature}
                       </span>
                     </motion.div>
@@ -262,6 +280,8 @@ export default function SubscriptionPlans() {
                   className={`w-full py-4 rounded-full font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl ${
                     plan.popular
                       ? 'bg-white text-[#306CEC] hover:bg-gray-100'
+                      : darkMode
+                      ? 'bg-blue-600 text-white hover:bg-blue-700'
                       : 'bg-[#306CEC] text-white hover:bg-[#1a4d9e]'
                   }`}
                 >
@@ -274,18 +294,22 @@ export default function SubscriptionPlans() {
       </section>
 
       {/* Post-Event Experiences */}
-      <section className="py-16 px-6">
+      <section className={`py-16 px-6 transition-colors duration-1000 ${darkMode ? 'bg-gray-900' : 'bg-[#FFFEF9]'}`}>
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="relative bg-gradient-to-br from-[#306CEC] to-[#1a4d9e] rounded-3xl p-10 md:p-16 shadow-2xl overflow-hidden"
+            className={`relative rounded-3xl p-10 md:p-16 shadow-2xl overflow-hidden transition-colors duration-1000 ${
+              darkMode
+                ? 'bg-gradient-to-br from-blue-600 to-blue-800'
+                : 'bg-gradient-to-br from-[#306CEC] to-[#1a4d9e]'
+            }`}
           >
             {/* Decorative Elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+            <div className={`absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl ${darkMode ? 'bg-blue-400/10' : 'bg-white/10'}`}></div>
+            <div className={`absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl ${darkMode ? 'bg-blue-400/10' : 'bg-white/10'}`}></div>
             
             <div className="relative z-10 text-center">
               <motion.div
@@ -293,7 +317,11 @@ export default function SubscriptionPlans() {
                 whileInView={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
                 viewport={{ once: true }}
-                className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-5 py-2 rounded-full text-sm font-bold mb-6 border border-white/30"
+                className={`inline-flex items-center gap-2 backdrop-blur-sm text-white px-5 py-2 rounded-full text-sm font-bold mb-6 border ${
+                  darkMode
+                    ? 'bg-blue-400/20 border-blue-300/30'
+                    : 'bg-white/20 border-white/30'
+                }`}
               >
                 <span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
                 Optional Add-On
@@ -334,7 +362,11 @@ export default function SubscriptionPlans() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.5 }}
                 viewport={{ once: true }}
-                className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-full font-bold text-lg border-2 border-white/30"
+                className={`inline-flex items-center gap-2 backdrop-blur-sm text-white px-8 py-4 rounded-full font-bold text-lg border-2 ${
+                  darkMode
+                    ? 'bg-blue-400/20 border-blue-300/30'
+                    : 'bg-white/20 border-white/30'
+                }`}
               >
                 <span className="text-2xl">✨</span>
                 Details Coming Soon
@@ -345,7 +377,11 @@ export default function SubscriptionPlans() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-24 px-6 bg-[#F5F5F0]">
+      <section className={`py-24 px-6 transition-colors duration-1000 ${
+        darkMode
+          ? 'bg-gray-800'
+          : 'bg-[#F5F5F0]'
+      }`}>
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -354,10 +390,10 @@ export default function SubscriptionPlans() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#306CEC] mb-4">
+            <h2 className={`text-4xl md:text-5xl font-bold mb-4 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}>
               Why Subscribe?
             </h2>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className={`text-lg md:text-xl max-w-3xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Get exclusive access to events, resources, and a thriving community
             </p>
           </motion.div>
@@ -373,11 +409,15 @@ export default function SubscriptionPlans() {
                   transition={{ delay: index * 0.1, duration: 0.6 }}
                   viewport={{ once: true }}
                   whileHover={{ y: -5 }}
-                  className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-center"
+                  className={`p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-center ${
+                    darkMode
+                      ? 'bg-gray-900'
+                      : 'bg-white'
+                  }`}
                 >
-                  <IconComponent className="w-14 h-14 mx-auto mb-4 text-[#306CEC]" strokeWidth={1.5} />
-                  <h3 className="text-xl font-bold text-[#306CEC] mb-3">{benefit.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{benefit.description}</p>
+                  <IconComponent className={`w-14 h-14 mx-auto mb-4 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`} strokeWidth={1.5} />
+                  <h3 className={`text-xl font-bold mb-3 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}>{benefit.title}</h3>
+                  <p className={`leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{benefit.description}</p>
                 </motion.div>
               );
             })}
@@ -386,7 +426,7 @@ export default function SubscriptionPlans() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-24 px-6">
+      <section className={`py-24 px-6 transition-colors duration-1000 ${darkMode ? 'bg-gray-900' : 'bg-[#FFFEF9]'}`}>
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -395,7 +435,7 @@ export default function SubscriptionPlans() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#306CEC] mb-4">
+            <h2 className={`text-4xl md:text-5xl font-bold mb-4 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}>
               Frequently Asked Questions
             </h2>
           </motion.div>
@@ -425,10 +465,14 @@ export default function SubscriptionPlans() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.6 }}
                 viewport={{ once: true }}
-                className="bg-white p-6 rounded-2xl shadow-lg"
+                className={`p-6 rounded-2xl shadow-lg transition-colors duration-1000 ${
+                  darkMode
+                    ? 'bg-gray-800'
+                    : 'bg-white'
+                }`}
               >
-                <h3 className="text-xl font-bold text-[#306CEC] mb-3">{faq.question}</h3>
-                <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                <h3 className={`text-xl font-bold mb-3 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}>{faq.question}</h3>
+                <p className={`leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{faq.answer}</p>
               </motion.div>
             ))}
           </div>

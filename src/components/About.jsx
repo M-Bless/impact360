@@ -2,11 +2,13 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Rocket, Calendar, Wrench, BookOpen, Briefcase, Globe, Zap, Building2, Users, Sparkles } from "lucide-react";
+import { useDarkMode } from "../DarkModeContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 export default function AboutPage() {
   const navigate = useNavigate();
+  const { darkMode } = useDarkMode();
 
   const handleLearnMore = () => {
     navigate('/programs');
@@ -82,12 +84,12 @@ export default function AboutPage() {
   };
 
   return (
-    <div className="font-sans bg-[#F5F6F8]">
+    <div className={`font-sans transition-colors duration-1000 ${darkMode ? 'bg-gray-900' : 'bg-[#F5F6F8]'}`}>
       <Navbar />
 
       {/* Who We Are */}
       <motion.section
-        className="py-28 px-6 bg-[#F5F6F8] transition-colors duration-1000 relative overflow-hidden"
+        className={`py-28 px-6 transition-colors duration-1000 relative overflow-hidden ${darkMode ? 'bg-gray-900' : 'bg-[#F5F6F8]'}`}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: false, amount: 0.2 }}
@@ -103,14 +105,14 @@ export default function AboutPage() {
               variants={fadeRise}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="text-4xl md:text-5xl font-bold text-[#306CEC] mb-6 relative inline-block">
+              <h2 className={`text-4xl md:text-5xl font-bold mb-6 relative inline-block ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}>
                 Who We Are
-                <span className="absolute left-0 -bottom-2 w-20 h-1 rounded-full bg-[#306CEC]"></span>
+                <span className={`absolute left-0 -bottom-2 w-20 h-1 rounded-full ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></span>
               </h2>
-              <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-6">
+              <p className={`text-lg md:text-xl leading-relaxed mb-6 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 Impact360 is an initiative under the O'Gad Impact Group focused on turning ideas into real businesses, helping existing ventures scale, and expanding tech entrepreneurship opportunities to communities beyond capital cities.
               </p>
-              <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
+              <p className={`text-lg md:text-xl leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 Our work is grounded in practical support programs, events, resources, knowledge, and services delivered in a decentralised way so founders everywhere can participate.
               </p>
             </motion.div>
@@ -124,13 +126,12 @@ export default function AboutPage() {
               className="relative"
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                {/* Image used in original snippet */}
                 <img
                   src="/group_photo1.jpeg"
                   alt="Team collaboration"
                   className="w-full h-[500px] object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#306CEC]/20 to-transparent"></div>
+                <div className={`absolute inset-0 ${darkMode ? 'bg-gradient-to-t from-blue-400/30 to-transparent' : 'bg-gradient-to-t from-[#306CEC]/20 to-transparent'}`}></div>
               </div>
 
               <motion.div
@@ -145,7 +146,7 @@ export default function AboutPage() {
 
       {/* Vision & Mission */}
       <motion.section
-        className="py-28 px-6 bg-[#F5F6F8] transition-colors duration-1000 relative overflow-hidden"
+        className={`py-28 px-6 transition-colors duration-1000 relative overflow-hidden ${darkMode ? 'bg-gray-900' : 'bg-[#F5F6F8]'}`}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: false, amount: 0.2 }}
@@ -163,13 +164,12 @@ export default function AboutPage() {
               className="relative order-2 md:order-1"
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                {/* Vision image used earlier */}
                 <img
                   src="/group_photo2.jpeg"
                   alt="Vision for the future"
                   className="w-full h-[500px] object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#306CEC]/20 to-transparent"></div>
+                <div className={`absolute inset-0 ${darkMode ? 'bg-gradient-to-t from-blue-400/30 to-transparent' : 'bg-gradient-to-t from-[#306CEC]/20 to-transparent'}`}></div>
               </div>
 
               <motion.div
@@ -187,19 +187,19 @@ export default function AboutPage() {
               transition={{ duration: 0.8 }}
               className="order-1 md:order-2"
             >
-              <h2 className="text-4xl md:text-5xl font-bold text-[#306CEC] mb-4 relative inline-block">
+              <h2 className={`text-4xl md:text-5xl font-bold mb-4 relative inline-block ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}>
                 Our Vision
-                <span className="absolute left-0 -bottom-2 w-20 h-1 rounded-full bg-[#306CEC]"></span>
+                <span className={`absolute left-0 -bottom-2 w-20 h-1 rounded-full ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></span>
               </h2>
-              <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8">
+              <p className={`text-lg md:text-xl leading-relaxed mb-8 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 To build ideas into businesses, scale existing ventures, and expand tech entrepreneurship by ensuring opportunities reach communities outside major cities.
               </p>
 
-              <h2 className="text-4xl md:text-5xl font-bold text-[#306CEC] mb-4 relative inline-block">
+              <h2 className={`text-4xl md:text-5xl font-bold mb-4 relative inline-block ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}>
                 Our Mission
-                <span className="absolute left-0 -bottom-2 w-20 h-1 rounded-full bg-[#306CEC]"></span>
+                <span className={`absolute left-0 -bottom-2 w-20 h-1 rounded-full ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></span>
               </h2>
-              <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
+              <p className={`text-lg md:text-xl leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 To provide accessible programs, tools, and support that help entrepreneurs at every stage from concept to growth while taking activities, learning, and resources directly to counties, towns, and underserved regions.
               </p>
             </motion.div>
@@ -209,7 +209,7 @@ export default function AboutPage() {
 
       {/* Our Approach */}
       <motion.section
-        className="py-24 px-6 bg-[#F5F6F8] transition-colors duration-1000"
+        className={`py-24 px-6 transition-colors duration-1000 ${darkMode ? 'bg-gray-900' : 'bg-[#F5F6F8]'}`}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: false, amount: 0.2 }}
@@ -225,11 +225,11 @@ export default function AboutPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#306CEC] mb-4 relative inline-block">
+            <h2 className={`text-4xl md:text-5xl font-bold mb-4 relative inline-block ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}>
               Our Approach
-              <span className="absolute left-0 -bottom-2 w-20 h-1 rounded-full bg-[#306CEC]"></span>
+              <span className={`absolute left-0 -bottom-2 w-20 h-1 rounded-full ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></span>
             </h2>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className={`text-lg md:text-xl max-w-3xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               How we create impact across Africa
             </p>
           </motion.div>
@@ -246,7 +246,11 @@ export default function AboutPage() {
                   variants={fadeRise}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   whileHover={{ y: -10 }}
-                  className="bg-gradient-to-br from-[#306CEC] to-[#1a4d9e] text-[#FFFEF9] p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                  className={`text-[#FFFEF9] p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 ${
+                    darkMode
+                      ? 'bg-gradient-to-br from-blue-600 to-blue-800'
+                      : 'bg-gradient-to-br from-[#306CEC] to-[#1a4d9e]'
+                  }`}
                 >
                   <IconComponent className="w-16 h-16 mb-4" strokeWidth={1.5} />
                   <h3 className="text-2xl font-bold mb-3">{value.title}</h3>
@@ -258,9 +262,9 @@ export default function AboutPage() {
         </div>
       </motion.section>
 
-      {/* Perks / What We Offer */}
+      {/* What We Offer */}
       <motion.section
-        className="py-24 px-6 bg-[#F5F6F8] transition-colors duration-1000"
+        className={`py-24 px-6 transition-colors duration-1000 ${darkMode ? 'bg-gray-900' : 'bg-[#F5F6F8]'}`}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: false, amount: 0.2 }}
@@ -276,11 +280,11 @@ export default function AboutPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#306CEC] mb-4 relative inline-block">
+            <h2 className={`text-4xl md:text-5xl font-bold mb-4 relative inline-block ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}>
               What We Offer
-              <span className="absolute left-0 bottom-0 w-20 h-1 bg-[#306CEC] rounded-full"></span>
+              <span className={`absolute left-0 bottom-0 w-20 h-1 rounded-full ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></span>
             </h2>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className={`text-lg md:text-xl max-w-3xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Everything you need to build, scale, and succeed
             </p>
           </motion.div>
@@ -297,11 +301,15 @@ export default function AboutPage() {
                   variants={fadeRise}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   whileHover={{ y: -10 }}
-                  className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-[#306CEC]/20"
+                  className={`rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 ${
+                    darkMode
+                      ? 'bg-gray-800 text-white border-2 border-gray-700 hover:border-blue-400'
+                      : 'bg-white border-2 border-transparent hover:border-[#306CEC]/20'
+                  }`}
                 >
-                  <IconComponent className="w-16 h-16 mb-4 text-[#306CEC]" strokeWidth={1.5} />
-                  <h3 className="text-2xl font-bold text-[#306CEC] mb-3">{perk.title}</h3>
-                  <p className="text-gray-700 leading-relaxed">{perk.description}</p>
+                  <IconComponent className={`w-16 h-16 mb-4 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`} strokeWidth={1.5} />
+                  <h3 className={`text-2xl font-bold mb-3 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}>{perk.title}</h3>
+                  <p className={`leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{perk.description}</p>
                 </motion.div>
               );
             })}
@@ -311,7 +319,7 @@ export default function AboutPage() {
 
       {/* Who We Support */}
       <motion.section
-        className="py-24 px-6 bg-[#F5F6F8] transition-colors duration-1000"
+        className={`py-24 px-6 transition-colors duration-1000 ${darkMode ? 'bg-gray-900' : 'bg-[#F5F6F8]'}`}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: false, amount: 0.2 }}
@@ -327,11 +335,11 @@ export default function AboutPage() {
               variants={fadeRise}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="text-4xl md:text-5xl font-bold text-[#306CEC] mb-6 relative inline-block">
+              <h2 className={`text-4xl md:text-5xl font-bold mb-6 relative inline-block ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}>
                 Who We Support
-                <span className="absolute left-0 -bottom-2 w-20 h-1 rounded-full bg-[#306CEC]"></span>
+                <span className={`absolute left-0 -bottom-2 w-20 h-1 rounded-full ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></span>
               </h2>
-              <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8">
+              <p className={`text-lg md:text-xl leading-relaxed mb-8 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 We support entrepreneurs at every stage of their journey, providing the resources and guidance needed to succeed.
               </p>
 
@@ -344,10 +352,10 @@ export default function AboutPage() {
                     viewport={{ once: false, amount: 0.2 }}
                     variants={fadeRise}
                     transition={{ delay: i * 0.08, duration: 0.6 }}
-                    className="flex items-center space-x-4 bg-white p-4 rounded-xl shadow-md"
+                    className={`flex items-center space-x-4 p-4 rounded-xl shadow-md ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
                   >
-                    <div className="w-3 h-3 rounded-full bg-[#306CEC]"></div>
-                    <p className="text-lg text-gray-700 font-medium">{item}</p>
+                    <div className={`w-3 h-3 rounded-full ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></div>
+                    <p className={`text-lg font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{item}</p>
                   </motion.div>
                 ))}
               </div>
@@ -362,13 +370,12 @@ export default function AboutPage() {
               className="relative"
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                {/* Who We Support image used earlier */}
                 <img
                   src="/group_photo3.jpeg"
                   alt="Supporting entrepreneurs"
                   className="w-full h-[500px] object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#306CEC]/20 to-transparent"></div>
+                <div className={`absolute inset-0 ${darkMode ? 'bg-gradient-to-t from-blue-400/30 to-transparent' : 'bg-gradient-to-t from-[#306CEC]/20 to-transparent'}`}></div>
               </div>
             </motion.div>
           </div>
@@ -377,17 +384,19 @@ export default function AboutPage() {
 
       {/* Why Impact360 Matters */}
       <motion.section
-        className="py-28 px-6 bg-[#F5F6F8] text-[#306CEC] relative overflow-hidden transition-colors duration-1000"
+        className={`py-28 px-6 relative overflow-hidden transition-colors duration-1000 ${
+          darkMode ? 'bg-gray-900 text-blue-400' : 'bg-[#F5F6F8] text-[#306CEC]'
+        }`}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: false, amount: 0.2 }}
         variants={fadeRise}
         transition={{ duration: 0.8 }}
       >
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-10 left-10 w-80 h-80 bg-[#306CEC] rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 right-10 w-80 h-80 bg-[#306CEC] rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-[#306CEC] rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2"></div>
+        <div className={`absolute inset-0 opacity-10 pointer-events-none ${darkMode ? '' : ''}`}>
+          <div className={`absolute top-10 left-10 w-80 h-80 rounded-full blur-3xl ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></div>
+          <div className={`absolute bottom-10 right-10 w-80 h-80 rounded-full blur-3xl ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></div>
+          <div className={`absolute top-1/2 left-1/2 w-96 h-96 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2 ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></div>
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto text-center">
@@ -399,11 +408,11 @@ export default function AboutPage() {
             transition={{ duration: 0.8 }}
             className="mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-extrabold mb-6 relative inline-block" style={{ fontFamily: 'League Spartan, sans-serif' }}>
+            <h2 className={`text-4xl md:text-5xl font-extrabold mb-6 relative inline-block ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
               Why Impact360 Matters
-              <span className="absolute left-0 -bottom-2 w-20 h-1 rounded-full bg-[#306CEC]"></span>
+              <span className={`absolute left-0 -bottom-2 w-20 h-1 rounded-full ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></span>
             </h2>
-            <p className="text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto text-gray-700">
+            <p className={`text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-700'}`}>
               Opportunities shouldn't be limited to Nairobi or any major capital. Founders in towns and counties deserve equal access to tools and support.
             </p>
           </motion.div>
@@ -416,10 +425,14 @@ export default function AboutPage() {
               variants={fadeRise}
               transition={{ duration: 0.8 }}
               whileHover={{ y: -8, scale: 1.02 }}
-              className="bg-white p-10 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-[#d8e2f8]"
+              className={`p-10 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 ${
+                darkMode
+                  ? 'bg-gray-800 border border-gray-700'
+                  : 'bg-white border border-[#d8e2f8]'
+              }`}
             >
-              <h3 className="text-2xl md:text-3xl font-bold mb-4 text-[#306CEC]">Equal Access for All</h3>
-              <p className="text-gray-700 leading-relaxed text-lg">
+              <h3 className={`text-2xl md:text-3xl font-bold mb-4 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}>Equal Access for All</h3>
+              <p className={`leading-relaxed text-lg ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 Every founder, regardless of location, should have access to the tools, mentorship, and community needed to grow.
               </p>
             </motion.div>
@@ -431,10 +444,14 @@ export default function AboutPage() {
               variants={fadeRise}
               transition={{ duration: 0.8, delay: 0.2 }}
               whileHover={{ y: -8, scale: 1.02 }}
-              className="bg-white p-10 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-[#d8e2f8]"
+              className={`p-10 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 ${
+                darkMode
+                  ? 'bg-gray-800 border border-gray-700'
+                  : 'bg-white border border-[#d8e2f8]'
+              }`}
             >
-              <h3 className="text-2xl md:text-3xl font-bold mb-4 text-[#306CEC]">Decentralised Growth</h3>
-              <p className="text-gray-700 leading-relaxed text-lg">
+              <h3 className={`text-2xl md:text-3xl font-bold mb-4 ${darkMode ? 'text-blue-400' : 'text-[#306CEC]'}`}>Decentralised Growth</h3>
+              <p className={`leading-relaxed text-lg ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 Africa's next generation of businesses can emerge from anywhere. A decentralized model strengthens ecosystems continent-wide.
               </p>
             </motion.div>
@@ -446,7 +463,7 @@ export default function AboutPage() {
             viewport={{ once: false, amount: 0.2 }}
             variants={fadeRise}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="mt-12 text-xl md:text-2xl font-bold text-gray-700"
+            className={`mt-12 text-xl md:text-2xl font-bold ${darkMode ? 'text-gray-400' : 'text-gray-700'}`}
           >
             A decentralised model strengthens ecosystems and widens economic participation across the continent.
           </motion.p>

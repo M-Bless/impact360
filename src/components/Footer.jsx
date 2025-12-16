@@ -1,10 +1,26 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useDarkMode } from "../DarkModeContext";
 
 // Icons
-import { Mail, Phone, MapPin, Twitter, Linkedin, Instagram, Facebook } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Instagram, Youtube } from "lucide-react";
+
+// TikTok icon component (lucide-react doesn't have TikTok, so we create a custom one)
+const TikTokIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+  </svg>
+);
 
 export default function Footer() {
+  const { darkMode } = useDarkMode();
+
   const scrollToSection = (sectionId) => {
     const element = document
       .getElementById(sectionId.toLowerCase().replace(/\s+/g, "-"));
@@ -19,12 +35,16 @@ export default function Footer() {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: false, amount: 0.15 }}
-      className="relative bg-gradient-to-br from-[#306CEC] via-[#4a7eec] to-[#306CEC] text-[#FFFEF9] overflow-hidden"
+      className={`relative text-[#FFFEF9] overflow-hidden transition-colors duration-1000 ${
+        darkMode
+          ? 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800'
+          : 'bg-gradient-to-br from-[#306CEC] via-[#4a7eec] to-[#306CEC]'
+      }`}
     >
       {/* Background Decor */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div className="absolute top-10 right-10 w-40 h-40 md:w-64 md:h-64 bg-[#FFFEF9] rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 left-10 w-40 h-40 md:w-64 md:h-64 bg-[#FFFEF9] rounded-full blur-3xl"></div>
+        <div className={`absolute top-10 right-10 w-40 h-40 md:w-64 md:h-64 rounded-full blur-3xl ${darkMode ? 'bg-blue-400' : 'bg-[#FFFEF9]'}`}></div>
+        <div className={`absolute bottom-10 left-10 w-40 h-40 md:w-64 md:h-64 rounded-full blur-3xl ${darkMode ? 'bg-blue-400' : 'bg-[#FFFEF9]'}`}></div>
       </div>
 
       <section id="contact" className="relative z-10">
@@ -70,7 +90,11 @@ export default function Footer() {
                   <motion.a
                     key={i}
                     href={item.link}
-                    className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#FFFEF9] text-[#306CEC] flex items-center justify-center hover:bg-[#FFFEF9]/90 transition-all duration-300 shadow-lg"
+                    className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center hover:transition-all duration-300 shadow-lg ${
+                      darkMode
+                        ? 'bg-blue-400 text-gray-800 hover:bg-blue-300'
+                        : 'bg-[#FFFEF9] text-[#306CEC] hover:bg-[#FFFEF9]/90'
+                    }`}
                     whileHover={{ scale: 1.1, y: -3 }}
                   >
                     {item.icon}
@@ -108,14 +132,19 @@ export default function Footer() {
             >
               <h3 className="text-xl font-bold mb-4">Connect</h3>
               <ul className="space-y-3">
-                {[
-                  { name: "Twitter", icon: <Twitter /> },
-                  { name: "LinkedIn", icon: <Linkedin /> },
-                  { name: "Instagram", icon: <Instagram /> },
-                  { name: "Facebook", icon: <Facebook /> },
+                { [
+                  { name: "Instagram", icon: <Instagram />, link: "https://www.instagram.com/impac_t360/" },
+                  { name: "YouTube", icon: <Youtube />, link: "https://www.youtube.com/@Impact-360-Official" },
+                  { name: "LinkedIn", icon: <Linkedin />, link: "https://www.linkedin.com/company/impact360%E2%80%A2/" },
+                  { name: "TikTok", icon: <TikTokIcon />, link: "https://www.tiktok.com/@impact360_?_r=1&_t=ZM-92GxGgxmARM" },
                 ].map((item, i) => (
                   <motion.li key={i} whileHover={{ x: 5 }}>
-                    <a href="#" className="flex items-center gap-3 text-[#FFFEF9]/80 hover:text-[#FFFEF9]">
+                    <a 
+                      href={item.link} 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 text-[#FFFEF9]/80 hover:text-[#FFFEF9]"
+                    >
                       {item.icon} {item.name}
                     </a>
                   </motion.li>
@@ -127,7 +156,11 @@ export default function Footer() {
 
           {/* NEWSLETTER */}
           <motion.div
-            className="bg-[#FFFEF9]/10 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-[#FFFEF9]/20 mb-14"
+            className={`backdrop-blur-md rounded-3xl p-6 md:p-8 border mb-14 transition-colors duration-1000 ${
+              darkMode
+                ? 'bg-blue-600/10 border-blue-400/20'
+                : 'bg-[#FFFEF9]/10 border-[#FFFEF9]/20'
+            }`}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -144,10 +177,18 @@ export default function Footer() {
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  className="flex-1 px-6 py-4 rounded-full bg-[#FFFEF9] text-[#306CEC] placeholder-[#306CEC]/50 focus:ring-2 focus:ring-[#FFFEF9]/50"
+                  className={`flex-1 px-6 py-4 rounded-full placeholder-opacity-50 focus:ring-2 transition-colors duration-1000 ${
+                    darkMode
+                      ? 'bg-gray-700 text-white placeholder-gray-400 focus:ring-blue-400/50'
+                      : 'bg-[#FFFEF9] text-[#306CEC] placeholder-[#306CEC]/50 focus:ring-[#FFFEF9]/50'
+                  }`}
                 />
                 <motion.button
-                  className="px-8 py-4 bg-[#FFFEF9] text-[#306CEC] rounded-full font-bold shadow-lg hover:bg-[#FFFEF9]/90"
+                  className={`px-8 py-4 rounded-full font-bold shadow-lg transition-colors duration-1000 ${
+                    darkMode
+                      ? 'bg-blue-400 text-gray-800 hover:bg-blue-300'
+                      : 'bg-[#FFFEF9] text-[#306CEC] hover:bg-[#FFFEF9]/90'
+                  }`}
                   whileHover={{ scale: 1.05 }}
                 >
                   Subscribe
@@ -158,7 +199,9 @@ export default function Footer() {
 
           {/* FOOTER BOTTOM */}
           <motion.div
-            className="border-t border-[#FFFEF9]/20 pt-8"
+            className={`border-t pt-8 transition-colors duration-1000 ${
+              darkMode ? 'border-blue-400/20' : 'border-[#FFFEF9]/20'
+            }`}
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
