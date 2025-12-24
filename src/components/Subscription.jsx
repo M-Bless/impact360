@@ -22,7 +22,7 @@ export default function SubscriptionPlans() {
 
   const subscriptionPlans = {
     monthly: [
-      { name: "Student", price: "1", period: "mo", features: ["1 event access", "slides", "resource pack"] },
+      { name: "Student", price: "999", period: "mo", features: ["1 event access", "slides", "resource pack"] },
       { name: "Pro", price: "2,499", period: "mo", features: ["Access to event", "networking zone", "digital resources"], popular: true },
       { name: "Premium", price: "4,499", period: "mo", features: ["VIP seating", "spotlight networking", "partner invites"] }
     ],
