@@ -15,8 +15,15 @@ export default function SubscriptionPlans() {
   });
   const [planToSubscribe, setPlanToSubscribe] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [serverError, setServerError] = useState(null); // <-- added
-  const [manualPaymentMode, setManualPaymentMode] = useState(true); // true = show manual payment modal
+  const [serverError, setServerError] = useState(null);
+  const [manualPaymentMode, setManualPaymentMode] = useState(true);
+  const [showTicketForm, setShowTicketForm] = useState(false);
+  const [ticketFormData, setTicketFormData] = useState({
+    fullName: '',
+    position: '',
+    email: '',
+    paymentConfirmation: ''
+  });
 
   const { darkMode } = useDarkMode();
 
@@ -52,24 +59,57 @@ export default function SubscriptionPlans() {
 
   const handleSubscribeClick = (plan) => {
     setPlanToSubscribe(plan);
-    setServerError(null); // clear previous server errors when opening form
+    setServerError(null);
     setShowForm(true);
+    setShowTicketForm(false);
   };
 
   const handleFormChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
- const handleFormSubmit = async (e) => {
+  const handleTicketFormChange = (e) => {
+    setTicketFormData({ ...ticketFormData, [e.target.name]: e.target.value });
+  };
+
+  const handleGenerateTicket = () => {
+    setShowTicketForm(true);
+  };
+
+  const handleTicketFormSubmit = async (e) => {
     e.preventDefault();
-    setServerError(null); // reset
+    setIsProcessing(true);
+    
+    // Here you can add your API call to submit the ticket form data
+    console.log('Ticket form submitted:', {
+      plan: planToSubscribe,
+      period: selectedPlan,
+      ...ticketFormData
+    });
+    
+    // Simulate processing
+    setTimeout(() => {
+      setIsProcessing(false);
+      setShowForm(false);
+      setShowTicketForm(false);
+      setTicketFormData({
+        fullName: '',
+        position: '',
+        email: '',
+        paymentConfirmation: ''
+      });
+      alert('Ticket request submitted successfully! We will verify your payment and send your ticket via email.');
+    }, 2000);
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setServerError(null);
     setIsProcessing(true);
     
     try {
-      // Resolve API URL safely across environments (avoid import.meta.env undefined error)
       let apiUrl = 'http://localhost:3001';
       try {
-        // try common sources; any access error will be caught by outer try
         apiUrl = import.meta?.env?.FRONTEND_URL || process?.env?.REACT_APP_API_URL || window?.__API_URL__ || apiUrl;
       } catch (innerErr) {
         // ignore and keep default apiUrl
@@ -80,7 +120,7 @@ export default function SubscriptionPlans() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           plan: planToSubscribe.name,
-          amount: planToSubscribe.price.replace(/,/g, ''), // Remove all commas
+          amount: planToSubscribe.price.replace(/,/g, ''),
           period: selectedPlan,
           fullName: formData.fullName,
           phone: formData.phone,
@@ -93,7 +133,6 @@ export default function SubscriptionPlans() {
       
       if (response.ok && data.success) {
         setServerError(null);
-        // Store order tracking ID for later verification
         if (data.data.order_tracking_id) {
           localStorage.setItem('pendingOrderId', data.data.order_tracking_id);
           localStorage.setItem('pendingMerchantRef', data.data.merchant_reference);
@@ -104,7 +143,6 @@ export default function SubscriptionPlans() {
           }));
         }
         
-        // Redirect to PesaPal payment page
         if (data.data.redirect_url) {
           window.location.href = data.data.redirect_url;
         } else {
@@ -112,7 +150,6 @@ export default function SubscriptionPlans() {
           setIsProcessing(false);
         }
       } else {
-        // Surface backend error details for debugging (keeps UX friendly)
         const msg = data?.message || 'Payment failed';
         const detail = data?.error ? ` — ${data.error}` : '';
         setServerError(`${msg}${detail}`);
@@ -125,6 +162,7 @@ export default function SubscriptionPlans() {
       setIsProcessing(false);
     }
   };
+
   return (
     <div className={`transition-colors duration-1000 ${darkMode ? 'bg-black' : 'bg-[#FFFEF9]'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
       <Navbar />
@@ -268,76 +306,242 @@ export default function SubscriptionPlans() {
       <AnimatePresence>
         {showForm && planToSubscribe && (
           manualPaymentMode ? (
-            /* --- Manual Payment Instructions Modal --- */
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-              onClick={() => setShowForm(false)}
-            >
+            showTicketForm ? (
+              /* --- Ticket Generation Form --- */
               <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                transition={{ type: "spring", duration: 0.5 }}
-                onClick={(e) => e.stopPropagation()}
-                className={`relative w-full max-w-md rounded-3xl shadow-2xl p-8 ${
-                  darkMode ? 'bg-[#1a1f3a] border border-[#306CEC]/20' : 'bg-white'
-                }`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                onClick={() => !isProcessing && setShowTicketForm(false)}
               >
-                <button
-                  onClick={() => setShowForm(false)}
-                  className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${
-                    darkMode ? 'hover:bg-[#306CEC]/20 text-gray-400 hover:text-white' : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  transition={{ type: "spring", duration: 0.5 }}
+                  onClick={(e) => e.stopPropagation()}
+                  className={`relative w-full max-w-md rounded-3xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto ${
+                    darkMode ? 'bg-[#1a1f3a] border border-[#306CEC]/20' : 'bg-white'
                   }`}
                 >
-                  <X className="w-6 h-6" />
-                </button>
+                  <button
+                    onClick={() => !isProcessing && setShowTicketForm(false)}
+                    disabled={isProcessing}
+                    className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${
+                      darkMode ? 'hover:bg-[#306CEC]/20 text-gray-400 hover:text-white' : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
+                    } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
 
-                <div className="text-center mb-8">
-                  <h3 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
-                    {planToSubscribe?.name.toUpperCase()} PLAN
-                  </h3>
-                 
-                </div>
-
-                <div className="space-y-6">
-                  {/* Amount */}
-                  <div className={`p-6 rounded-2xl text-center ${darkMode ? 'bg-black border border-[#306CEC]/20' : 'bg-gray-50'}`}>
-                    <p className={`text-sm font-bold mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
-                      AMOUNT TO PAY
+                  <div className="text-center mb-8">
+                    <h3 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                      GENERATE TICKET
+                    </h3>
+                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      Complete the form below to receive your ticket
                     </p>
-                    <div className="flex items-baseline justify-center gap-2">
-                      <span className={`text-2xl ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>KES.</span>
-                      <span className={`text-5xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                        {planToSubscribe?.price}
-                      </span>
+                  </div>
+
+                  <form onSubmit={handleTicketFormSubmit} className="space-y-6">
+                    {/* Full Name */}
+                    <div>
+                      <label className={`block text-sm font-bold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                        FULL NAME *
+                      </label>
+                      <input
+                        type="text"
+                        name="fullName"
+                        value={ticketFormData.fullName}
+                        onChange={handleTicketFormChange}
+                        required
+                        disabled={isProcessing}
+                        className={`w-full px-4 py-3 rounded-xl border-2 transition-colors ${
+                          darkMode 
+                            ? 'bg-black border-[#306CEC]/20 text-white focus:border-[#306CEC] placeholder-gray-500' 
+                            : 'bg-white border-gray-200 text-gray-900 focus:border-[#306CEC] placeholder-gray-400'
+                        } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        placeholder="Enter your full name"
+                      />
                     </div>
-                  </div>
 
-                  {/* Paybill Number */}
-                  <div className={`p-6 rounded-2xl ${darkMode ? 'bg-black border border-[#306CEC]/20' : 'bg-gray-50'}`}>
-                    <p className={`text-sm font-bold mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
-                      PAYBILL NUMBER
-                    </p>
-                    <p className={`text-3xl font-bold ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
-                      400200
-                    </p>
-                  </div>
+                    {/* Position/Occupation */}
+                    <div>
+                      <label className={`block text-sm font-bold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                        POSITION/OCCUPATION *
+                      </label>
+                      <input
+                        type="text"
+                        name="position"
+                        value={ticketFormData.position}
+                        onChange={handleTicketFormChange}
+                        required
+                        disabled={isProcessing}
+                        className={`w-full px-4 py-3 rounded-xl border-2 transition-colors ${
+                          darkMode 
+                            ? 'bg-black border-[#306CEC]/20 text-white focus:border-[#306CEC] placeholder-gray-500' 
+                            : 'bg-white border-gray-200 text-gray-900 focus:border-[#306CEC] placeholder-gray-400'
+                        } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        placeholder="e.g., Student, Entrepreneur, CEO"
+                      />
+                    </div>
 
-                  {/* Account Number */}
-                  <div className={`p-6 rounded-2xl ${darkMode ? 'bg-black border border-[#306CEC]/20' : 'bg-gray-50'}`}>
-                    <p className={`text-sm font-bold mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
-                      ACCOUNT NUMBER
-                    </p>
-                    <p className={`text-3xl font-bold ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
-                      1118559
-                    </p>
-                  </div>
-                </div>
+                    {/* Email */}
+                    <div>
+                      <label className={`block text-sm font-bold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                        EMAIL *
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={ticketFormData.email}
+                        onChange={handleTicketFormChange}
+                        required
+                        disabled={isProcessing}
+                        className={`w-full px-4 py-3 rounded-xl border-2 transition-colors ${
+                          darkMode 
+                            ? 'bg-black border-[#306CEC]/20 text-white focus:border-[#306CEC] placeholder-gray-500' 
+                            : 'bg-white border-gray-200 text-gray-900 focus:border-[#306CEC] placeholder-gray-400'
+                        } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        placeholder="your.email@example.com"
+                      />
+                    </div>
+
+                    {/* Payment Confirmation */}
+                    <div>
+                      <label className={`block text-sm font-bold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                        PAYMENT CONFIRMATION *
+                      </label>
+                      <textarea
+                        name="paymentConfirmation"
+                        value={ticketFormData.paymentConfirmation}
+                        onChange={handleTicketFormChange}
+                        required
+                        disabled={isProcessing}
+                        rows={4}
+                        className={`w-full px-4 py-3 rounded-xl border-2 transition-colors resize-none ${
+                          darkMode 
+                            ? 'bg-black border-[#306CEC]/20 text-white focus:border-[#306CEC] placeholder-gray-500' 
+                            : 'bg-white border-gray-200 text-gray-900 focus:border-[#306CEC] placeholder-gray-400'
+                        } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        placeholder="Paste your M-Pesa or bank confirmation message here..."
+                      />
+                      <p className={`text-xs mt-2 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                        Include the transaction code, amount, and date
+                      </p>
+                    </div>
+
+                    {/* Submit Button */}
+                    <motion.button
+                      type="submit"
+                      disabled={isProcessing}
+                      whileHover={!isProcessing ? { scale: 1.02 } : {}}
+                      whileTap={!isProcessing ? { scale: 0.98 } : {}}
+                      className={`w-full py-4 rounded-full font-bold text-lg transition-all duration-300 shadow-lg ${
+                        darkMode ? 'bg-[#306CEC] text-white hover:bg-[#1a4d9e]' : 'bg-[#306CEC] text-white hover:bg-[#1a4d9e]'
+                      } ${isProcessing ? 'opacity-70 cursor-not-allowed' : 'hover:shadow-xl'}`}
+                      style={{ fontFamily: 'League Spartan, sans-serif' }}
+                    >
+                      {isProcessing ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          PROCESSING...
+                        </span>
+                      ) : (
+                        'SUBMIT & GET TICKET'
+                      )}
+                    </motion.button>
+                  </form>
+                </motion.div>
               </motion.div>
-            </motion.div>
+            ) : (
+              /* --- Manual Payment Instructions Modal --- */
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                onClick={() => setShowForm(false)}
+              >
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  transition={{ type: "spring", duration: 0.5 }}
+                  onClick={(e) => e.stopPropagation()}
+                  className={`relative w-full max-w-md rounded-3xl shadow-2xl p-8 ${
+                    darkMode ? 'bg-[#1a1f3a] border border-[#306CEC]/20' : 'bg-white'
+                  }`}
+                >
+                  <button
+                    onClick={() => setShowForm(false)}
+                    className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${
+                      darkMode ? 'hover:bg-[#306CEC]/20 text-gray-400 hover:text-white' : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+
+                  <div className="text-center mb-8">
+                    <h3 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                      {planToSubscribe?.name.toUpperCase()} PLAN
+                    </h3>
+                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      Complete payment to activate your subscription
+                    </p>
+                  </div>
+
+                  <div className="space-y-6">
+                    {/* Amount */}
+                    <div className={`p-6 rounded-2xl text-center ${darkMode ? 'bg-black border border-[#306CEC]/20' : 'bg-gray-50'}`}>
+                      <p className={`text-sm font-bold mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                        AMOUNT TO PAY
+                      </p>
+                      <div className="flex items-baseline justify-center gap-2">
+                        <span className={`text-2xl ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>KES.</span>
+                        <span className={`text-5xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                          {planToSubscribe?.price}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Paybill Number */}
+                    <div className={`p-6 rounded-2xl ${darkMode ? 'bg-black border border-[#306CEC]/20' : 'bg-gray-50'}`}>
+                      <p className={`text-sm font-bold mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                        PAYBILL NUMBER
+                      </p>
+                      <p className={`text-3xl font-bold ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                        400200
+                      </p>
+                    </div>
+
+                    {/* Account Number */}
+                    <div className={`p-6 rounded-2xl ${darkMode ? 'bg-black border border-[#306CEC]/20' : 'bg-gray-50'}`}>
+                      <p className={`text-sm font-bold mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                        ACCOUNT NUMBER
+                      </p>
+                      <p className={`text-3xl font-bold ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                        1118559
+                      </p>
+                    </div>
+
+                    {/* Generate Ticket Button */}
+                    <motion.button
+                      onClick={handleGenerateTicket}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`w-full py-4 rounded-full font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl ${
+                        darkMode ? 'bg-[#306CEC] text-white hover:bg-[#1a4d9e]' : 'bg-[#306CEC] text-white hover:bg-[#1a4d9e]'
+                      }`}
+                      style={{ fontFamily: 'League Spartan, sans-serif' }}
+                    >
+                      GENERATE TICKET
+                    </motion.button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )
           ) : (
             /* --- Original Pesapal Payment Form --- */
             <motion.div
@@ -357,7 +561,7 @@ export default function SubscriptionPlans() {
                   darkMode ? 'bg-[#1a1f3a] border border-[#306CEC]/20' : 'bg-white'
                 }`}
               >
-                {/* Keep your existing Pesapal <form> here */}
+                {/* Keep your existing Pesapal form here */}
               </motion.div>
             </motion.div>
           )

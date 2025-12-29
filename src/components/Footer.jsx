@@ -38,13 +38,17 @@ export default function Footer() {
       className={`relative overflow-hidden transition-colors duration-1000 ${
         darkMode
           ? 'bg-[#1a1f3a] text-white'
-          : 'bg-[#FFFEF9] text-[#000000]'
+          : 'bg-gradient-to-br from-[#306CEC] via-[#4a7eec] to-[#306CEC] text-[#FFFEF9]'
       }`}
     >
       {/* Background Decor */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div className={`absolute top-10 right-10 w-40 h-40 md:w-64 md:h-64 rounded-full blur-3xl ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></div>
-        <div className={`absolute bottom-10 left-10 w-40 h-40 md:w-64 md:h-64 rounded-full blur-3xl ${darkMode ? 'bg-blue-400' : 'bg-[#306CEC]'}`}></div>
+        <div className={`absolute top-10 right-10 w-40 h-40 md:w-64 md:h-64 rounded-full blur-3xl ${
+          darkMode ? 'bg-blue-400' : 'bg-[#FFFEF9]'
+        }`}></div>
+        <div className={`absolute bottom-10 left-10 w-40 h-40 md:w-64 md:h-64 rounded-full blur-3xl ${
+          darkMode ? 'bg-blue-400' : 'bg-[#FFFEF9]'
+        }`}></div>
       </div>
 
       <section id="contact" className="relative z-10">
@@ -75,7 +79,9 @@ export default function Footer() {
                 <span className="text-2xl md:text-3xl font-bold">Impact360</span>
               </div>
 
-              <p className={`text-base md:text-lg leading-relaxed mb-6 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              <p className={`text-base md:text-lg leading-relaxed mb-6 ${
+                darkMode ? 'text-gray-300' : 'text-[#FFFEF9]/90'
+              }`}>
                 Empowering Africa's next generation of innovators through programs,
                 community, and real-world impact.
               </p>
@@ -93,7 +99,7 @@ export default function Footer() {
                     className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center hover:transition-all duration-300 shadow-lg ${
                       darkMode
                         ? 'bg-[#306CEC] text-white hover:bg-[#4A80FF]'
-                        : 'bg-[#306CEC] text-white hover:bg-[#1a4d9e]'
+                        : 'bg-[#FFFEF9] text-[#306CEC] hover:bg-[#FFFEF9]/90'
                     }`}
                     whileHover={{ scale: 1.1, y: -3 }}
                   >
@@ -115,7 +121,11 @@ export default function Footer() {
                   <motion.li key={i} whileHover={{ x: 5 }}>
                     <button
                       onClick={() => scrollToSection(item)}
-                      className={`${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-700 hover:text-[#000000]'} transition-colors`}
+                      className={`${
+                        darkMode 
+                          ? 'text-gray-300 hover:text-white' 
+                          : 'text-[#FFFEF9]/80 hover:text-[#FFFEF9]'
+                      } transition-colors`}
                     >
                       {item}
                     </button>
@@ -143,7 +153,11 @@ export default function Footer() {
                       href={item.link} 
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`flex items-center gap-3 ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-700 hover:text-[#000000]'}`}
+                      className={`flex items-center gap-3 ${
+                        darkMode 
+                          ? 'text-gray-300 hover:text-white' 
+                          : 'text-[#FFFEF9]/80 hover:text-[#FFFEF9]'
+                      }`}
                     >
                       {item.icon} {item.name}
                     </a>
@@ -159,7 +173,7 @@ export default function Footer() {
             className={`backdrop-blur-md rounded-3xl p-6 md:p-8 border mb-14 transition-colors duration-1000 ${
               darkMode
                 ? 'bg-[#306CEC]/10 border-[#306CEC]/20'
-                : 'bg-[#306CEC]/10 border-[#306CEC]/20'
+                : 'bg-[#FFFEF9]/10 border-[#FFFEF9]/20'
             }`}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -168,7 +182,7 @@ export default function Footer() {
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
                 <h3 className="text-2xl font-bold mb-3">Stay Updated</h3>
-                <p className={darkMode ? 'text-gray-300' : 'text-gray-700'}>
+                <p className={darkMode ? 'text-gray-300' : 'text-[#FFFEF9]/80'}>
                   Join our community for updates on programs & events.
                 </p>
               </div>
@@ -180,14 +194,14 @@ export default function Footer() {
                   className={`flex-1 px-6 py-4 rounded-full placeholder-opacity-50 focus:ring-2 transition-colors duration-1000 ${
                     darkMode
                       ? 'bg-white/10 text-white placeholder-gray-400 focus:ring-[#306CEC]/50'
-                      : 'bg-white text-[#306CEC] placeholder-[#306CEC]/50 focus:ring-[#306CEC]/50'
+                      : 'bg-[#FFFEF9] text-[#306CEC] placeholder-[#306CEC]/50 focus:ring-[#FFFEF9]/50'
                   }`}
                 />
                 <motion.button
                   className={`px-8 py-4 rounded-full font-bold shadow-lg transition-colors duration-1000 ${
                     darkMode
                       ? 'bg-[#306CEC] text-white hover:bg-[#4A80FF]'
-                      : 'bg-[#306CEC] text-white hover:bg-[#1a4d9e]'
+                      : 'bg-[#FFFEF9] text-[#306CEC] hover:bg-[#FFFEF9]/90'
                   }`}
                   whileHover={{ scale: 1.05 }}
                 >
@@ -200,7 +214,7 @@ export default function Footer() {
           {/* FOOTER BOTTOM */}
           <motion.div
             className={`border-t pt-8 transition-colors duration-1000 ${
-              darkMode ? 'border-gray-700' : 'border-gray-300'
+              darkMode ? 'border-gray-700' : 'border-[#FFFEF9]/20'
             }`}
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -208,10 +222,14 @@ export default function Footer() {
           >
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="text-center md:text-left">
-                <p className={`font-semibold text-lg mb-1 ${darkMode ? 'text-white' : 'text-[#000000]'}`}>
+                <p className={`font-semibold text-lg mb-1 ${
+                  darkMode ? 'text-white' : 'text-[#FFFEF9]'
+                }`}>
                   © 2025 Impact360. All Rights Reserved.
                 </p>
-                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                <p className={`text-sm ${
+                  darkMode ? 'text-gray-400' : 'text-[#FFFEF9]/70'
+                }`}>
                   Building Africa's Entrepreneurial Future
                 </p>
               </div>
@@ -221,7 +239,11 @@ export default function Footer() {
                   <motion.a
                     key={i}
                     href="#"
-                    className={`${darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-[#000000]'}`}
+                    className={`${
+                      darkMode 
+                        ? 'text-gray-400 hover:text-white' 
+                        : 'text-[#FFFEF9]/70 hover:text-[#FFFEF9]'
+                    }`}
                     whileHover={{ y: -2 }}
                   >
                     {item}
@@ -231,7 +253,9 @@ export default function Footer() {
             </div>
 
             <motion.div
-              className={`text-center mt-6 text-sm ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}
+              className={`text-center mt-6 text-sm ${
+                darkMode ? 'text-gray-500' : 'text-[#FFFEF9]/60'
+              }`}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
             >
