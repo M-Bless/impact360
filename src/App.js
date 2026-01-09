@@ -12,6 +12,7 @@ import Campaign from "./components/Campaign.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 import AdminDashboard from "./components/admin.jsx";
 
+
 export default function App() {
   return (
     <DarkModeProvider>
