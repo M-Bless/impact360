@@ -16,6 +16,15 @@ import {
   onAuthStateChanged 
 } from 'firebase/auth';
 import { db, auth } from '../firebase/firebase';
+import QRCode from 'qrcode';
+import emailjs from '@emailjs/browser';
+
+// ========================================
+// EMAILJS CONFIGURATION - UPDATE THESE!
+// ========================================
+const EMAILJS_SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+const EMAILJS_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+const TEMPLATE_USER = process.env.REACT_APP_EMAILJS_TEMPLATE_USER;
 
 const AdminDashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -35,6 +44,11 @@ const AdminDashboard = () => {
   const [editData, setEditData] = useState({});
   const [notification, setNotification] = useState(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  // Initialize EmailJS
+  useEffect(() => {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -129,14 +143,237 @@ const AdminDashboard = () => {
     setTimeout(() => setNotification(null), 5000);
   };
 
+  // ========================================
+  // GENERATE QR CODE WITH USER DATA
+  // ========================================
+  const generateQRCodeWithUserData = async (submission, ticketId) => {
+    try {
+      const qrData = JSON.stringify({
+        ticketId: ticketId,
+        event: 'Impact360',
+        fullName: submission.fullName,
+        email: submission.email,
+        phone: submission.phone,
+        planName: submission.planName,
+        planPeriod: submission.planPeriod,
+        amount: submission.amount,
+        verified: true,
+        approvedBy: currentUser.email,
+        approvedAt: new Date().toISOString()
+      });
+
+      const qrCodeImage = await QRCode.toDataURL(qrData, {
+        width: 400,
+        margin: 2,
+        errorCorrectionLevel: 'H',
+        color: {
+          dark: '#306CEC',
+          light: '#FFFFFF'
+        }
+      });
+
+      return qrCodeImage;
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+      return null;
+    }
+  };
+
+  // ========================================
+  // SEND APPROVAL EMAIL WITH QR TICKET
+  // ========================================
+  const sendApprovalEmailWithTicket = async (submission, ticketId) => {
+    try {
+      console.log('🎫 Generating QR code ticket for:', submission.fullName);
+      
+      const qrCodeImage = await generateQRCodeWithUserData(submission, ticketId);
+
+      if (!qrCodeImage) {
+        throw new Error('Failed to generate QR code');
+      }
+
+      console.log('✅ QR code generated successfully');
+
+      const templateParams = {
+        to_email: submission.email,
+        email_subject: ' Subscription Approved - Your Event Ticket! ',
+        email_icon: '',
+        greeting: 'Congratulations!',
+        status_message: 'Your subscription has been approved',
+        user_name: submission.fullName,
+        main_message: `Great news! Your ${submission.planName} Plan subscription has been verified and approved. You're all set for our upcoming Impact360 event!`,
+        plan_name: submission.planName,
+        plan_period: submission.planPeriod,
+        amount: submission.amount,
+        mpesa_code: submission.mpesaCode,
+        id_label: 'Ticket ID',
+        reference_id: ticketId,
+        event_date: new Date().toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }),
+        header_color: 'background-color: #D4EDDA',
+        notice_color: 'background-color: #FFF3CD',
+        notice_border: '#FFD700',
+        notice_title: '📱 Important Instructions',
+        notice_message: 'Save this QR code ticket. You will need to present it at event registration. Arrive 15 minutes early for check-in.',
+        additional_info: `
+          <div style="text-align: center; padding: 30px; background-color: #F0F9FF; border-radius: 10px; margin: 20px 0; border: 2px solid #306CEC;">
+            <h2 style="color: #306CEC; margin: 0 0 10px 0; font-size: 24px;"> YOUR EVENT TICKET</h2>
+            <p style="color: #666; margin: 0 0 20px 0; font-size: 14px;">Present this QR code at event entrance</p>
+            
+            <div style="background-color: white; padding: 30px; border-radius: 15px; display: inline-block; box-shadow: 0 8px 16px rgba(0,0,0,0.1); max-width: 400px;">
+              
+              <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #306CEC;">
+                <p style="margin: 0; color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Attendee</p>
+                <h3 style="margin: 5px 0 0 0; color: #306CEC; font-size: 22px; font-weight: bold;">${submission.fullName.toUpperCase()}</h3>
+              </div>
+              
+              <div style="margin: 20px 0;">
+                <img src="${qrCodeImage}" alt="Event Ticket QR Code" style="display: block; max-width: 300px; width: 100%; height: auto; margin: 0 auto; border: 4px solid #306CEC; border-radius: 10px;" />
+              </div>
+              
+              <div style="margin-top: 20px; padding-top: 15px; border-top: 2px dashed #DDD;">
+                <table style="width: 100%; text-align: left; font-size: 13px;">
+                  <tr>
+                    <td style="padding: 5px 0; color: #888; font-weight: bold;">Ticket ID:</td>
+                    <td style="padding: 5px 0; color: #306CEC; font-weight: bold; font-family: monospace;">${ticketId}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 5px 0; color: #888; font-weight: bold;">Plan:</td>
+                    <td style="padding: 5px 0; color: #333;">${submission.planName} (${submission.planPeriod})</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 5px 0; color: #888; font-weight: bold;">Email:</td>
+                    <td style="padding: 5px 0; color: #333; word-break: break-word;">${submission.email}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 5px 0; color: #888; font-weight: bold;">Phone:</td>
+                    <td style="padding: 5px 0; color: #333;">${submission.phone}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            
+            <div style="background-color: #FFF3CD; padding: 20px; border-radius: 10px; margin-top: 25px; text-align: left; border-left: 4px solid #FFD700;">
+              <p style="margin: 0 0 12px 0; font-weight: bold; color: #856404; font-size: 15px;">📋 How to Use Your Ticket:</p>
+              <ol style="margin: 0; padding-left: 20px; color: #856404; line-height: 1.8;">
+                <li><strong>Save this email</strong> or screenshot the QR code</li>
+                <li><strong>Arrive 15 minutes early</strong> to the event venue</li>
+                <li><strong>Show your QR code</strong> at the registration desk</li>
+                <li><strong>Bring a valid ID</strong> for verification</li>
+                <li><strong>Keep this ticket safe</strong> - it's your entry pass!</li>
+              </ol>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background-color: #D4EDDA; border-radius: 8px; border-left: 4px solid #28a745;">
+              <p style="margin: 0; color: #155724; font-size: 14px;">
+                <strong>📅 Event Details:</strong><br>
+                Date & time will be communicated separately<br>
+                Check your email regularly for updates
+              </p>
+            </div>
+          </div>
+          
+          <div style="text-align: center; padding: 25px; background-color: #E7F3FF; border-radius: 10px; margin-top: 20px;">
+            <h3 style="color: #306CEC; margin: 0 0 10px 0; font-size: 20px;">🎯 See You at the Event!</h3>
+            <p style="margin: 0; color: #306CEC; font-size: 15px;">We're excited to have you join us at Impact360.</p>
+          </div>
+        `,
+        closing_message: 'If you have any questions or need assistance, feel free to reach out to our support team. Keep this email safe - it contains your official event ticket!'
+      };
+
+      console.log('📧 Sending approval email to:', submission.email);
+      
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        TEMPLATE_USER,
+        templateParams
+      );
+
+      console.log('✅ Approval email with QR ticket sent successfully!');
+      return true;
+
+    } catch (error) {
+      console.error('❌ Failed to send approval email:', error);
+      return false;
+    }
+  };
+
+  // ========================================
+  // SEND REJECTION EMAIL
+  // ========================================
+  const sendRejectionEmail = async (submission, reason) => {
+    try {
+      const templateParams = {
+        to_email: submission.email,
+        email_subject: '⚠️ Subscription Status Update - Action Required',
+        email_icon: '⚠️',
+        greeting: 'Status Update',
+        status_message: 'Your subscription requires attention',
+        user_name: submission.fullName,
+        main_message: `We've reviewed your ${submission.planName} Plan subscription request. Unfortunately, we were unable to approve it at this time.`,
+        plan_name: submission.planName,
+        plan_period: submission.planPeriod,
+        amount: submission.amount,
+        mpesa_code: submission.mpesaCode,
+        id_label: 'Reference ID',
+        reference_id: submission.id,
+        event_date: new Date().toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }),
+        header_color: 'background-color: #F8D7DA',
+        notice_color: 'background-color: #FEE',
+        notice_border: '#F44',
+        notice_title: '❌ Reason for Rejection',
+        notice_message: reason,
+        additional_info: `
+          <h4 style="margin-bottom: 10px;">What You Can Do:</h4>
+          <ol style="margin-top: 0;">
+            <li>Verify your M-Pesa transaction details are correct</li>
+            <li>Contact our support team for clarification</li>
+            <li>Submit a new request with corrected information</li>
+          </ol>
+          <p style="margin-top: 15px;">
+            <strong>Need help?</strong> Email us at support@impact360.com
+          </p>
+        `,
+        closing_message: 'We appreciate your understanding and look forward to welcoming you to Impact360.'
+      };
+
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        TEMPLATE_USER,
+        templateParams
+      );
+
+      console.log('✅ Rejection email sent');
+      return true;
+    } catch (error) {
+      console.error('❌ Failed to send rejection email:', error);
+      return false;
+    }
+  };
+
+  // ========================================
+  // HANDLE APPROVE
+  // ========================================
   const handleApprove = async (submission) => {
-    if (!window.confirm(`Approve submission for ${submission.fullName}?`)) {
+    if (!window.confirm(`Approve subscription for ${submission.fullName}?`)) {
       return;
     }
     
     setLoading(true);
+    
     try {
+      console.log('🔄 Starting approval process for:', submission.fullName);
+      
       const ticketId = `TKT-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+      console.log('🎫 Generated Ticket ID:', ticketId);
       
       await updateDoc(doc(db, 'subscriptions', submission.id), {
         status: 'approved',
@@ -146,16 +383,43 @@ const AdminDashboard = () => {
         updatedAt: new Date().toISOString()
       });
       
-      showNotification(`Submission approved for ${submission.fullName}`, 'success');
+      console.log('✅ Firestore updated - Status: Approved');
+      
+      const emailSent = await sendApprovalEmailWithTicket(submission, ticketId);
+      
+      if (emailSent) {
+        showNotification(
+          ` Success! Ticket sent to ${submission.fullName} at ${submission.email}`, 
+          'success'
+        );
+        
+        alert(`Approval Complete!
+
+User: ${submission.fullName}
+Email: ${submission.email}
+Ticket ID: ${ticketId}
+
+QR code ticket has been sent to the user's email.`);
+      } else {
+        showNotification(
+          `⚠️ Approved but email failed. Ticket ID: ${ticketId}`, 
+          'error'
+        );
+      }
+      
       setSelectedSubmission(null);
+      
     } catch (error) {
-      console.error('Error approving submission:', error);
+      console.error('❌ Error during approval:', error);
       showNotification('Error approving submission: ' + error.message, 'error');
     } finally {
       setLoading(false);
     }
   };
 
+  // ========================================
+  // HANDLE REJECT
+  // ========================================
   const handleReject = async () => {
     if (!rejectionReason.trim()) {
       showNotification('Please provide a rejection reason', 'error');
@@ -172,7 +436,14 @@ const AdminDashboard = () => {
         updatedAt: new Date().toISOString()
       });
       
-      showNotification('Submission rejected', 'success');
+      const emailSent = await sendRejectionEmail(selectedSubmission, rejectionReason);
+      
+      if (emailSent) {
+        showNotification(' Rejected & email sent', 'success');
+      } else {
+        showNotification(' Rejected but email failed', 'error');
+      }
+      
       setShowRejectModal(false);
       setRejectionReason('');
       setSelectedSubmission(null);
@@ -253,6 +524,7 @@ const AdminDashboard = () => {
     rejected: submissions.filter(s => s.status === 'rejected').length,
     total: submissions.length
   };
+
 
   if (!isAuthenticated) {
     return (

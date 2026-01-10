@@ -1,12 +1,22 @@
 // Subscription.jsx - Updated with Two-Step Process: Payment Info → Ticket Form
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Ticket, BookOpen, Users, Gift, Check, X, Loader2, Copy, CheckCircle, CreditCard, ArrowRight } from "lucide-react";
 import { useDarkMode } from "../DarkModeContext";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db, auth } from '../firebase/firebase'; 
+import { db } from '../firebase/firebase';
+import emailjs from '@emailjs/browser';
+
+// ========================================
+// EMAILJS CONFIGURATION - UPDATE THESE!
+// ========================================
+const EMAILJS_SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+const EMAILJS_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+const TEMPLATE_USER = process.env.REACT_APP_EMAILJS_TEMPLATE_USER;
+const TEMPLATE_ADMIN = process.env.REACT_APP_EMAILJS_TEMPLATE_ADMIN;
+const ADMIN_EMAIL = 'wangoiblessing@gmail.com'; // Or add to .env too        // Your admin email address
 
 export default function Subscription() {
   const [selectedPlan, setSelectedPlan] = useState('monthly');
@@ -21,10 +31,14 @@ export default function Subscription() {
     phone: '',
     mpesaMessage: ''
   });
-
   const { darkMode } = useDarkMode();
 
-  // M-Pesa Payment Details - UPDATE THESE WITH YOUR ACTUAL DETAILS
+  // Initialize EmailJS
+  useEffect(() => {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }, []);
+
+  // M-Pesa Payment Details
   const MPESA_PAYBILL = "400200";
   const MPESA_ACCOUNT = "1118559";
 
@@ -58,19 +72,102 @@ export default function Subscription() {
     { Icon: Gift, title: "Perks", description: "Enjoy discounts, merch, certificates, and special recognition opportunities" }
   ];
 
-  // Helper function to extract M-Pesa code from message
-  const extractMpesaCode = (message) => {
+   const extractMpesaCode = (message) => {
     const codeMatch = message.match(/\b[A-Z]{2}\d{8}\b|\b[A-Z0-9]{10}\b/);
     return codeMatch ? codeMatch[0] : 'UNKNOWN';
   };
 
-  // Helper function to extract amount from message
   const extractAmount = (message) => {
     const amountMatch = message.match(/(?:Ksh\.?|KES\.?|)\s*([\d,]+\.?\d*)/i);
     if (amountMatch) {
       return amountMatch[1].replace(/,/g, '');
     }
     return planToSubscribe?.price.replace(/,/g, '') || '0';
+  };
+
+  // ========================================
+  // SEND USER CONFIRMATION EMAIL
+  // ========================================
+  const sendUserConfirmationEmail = async (formData, submissionId) => {
+    try {
+      const templateParams = {
+        to_email: formData.email,
+        email_subject: ' Subscription Received - Pending Verification',
+        email_icon: '📩',
+        greeting: 'Submission Received',
+        status_message: 'Your subscription is pending verification',
+        user_name: formData.fullName,
+        main_message: `Thank you for subscribing to Impact360! We've received your ${planToSubscribe?.name} Plan subscription and are currently verifying your payment.`,
+        plan_name: planToSubscribe?.name || 'General',
+        plan_period: selectedPlan,
+        amount: extractAmount(formData.mpesaMessage),
+        mpesa_code: extractMpesaCode(formData.mpesaMessage),
+        id_label: 'Submission ID',
+        reference_id: submissionId,
+        event_date: new Date().toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }),
+        header_color: 'background-color: #E7F3FF',
+        notice_color: 'background-color: #FFF3CD',
+        notice_border: '#FFD700',
+        notice_title: '⏰ What Happens Next?',
+        notice_message: 'Our team will verify your M-Pesa payment within 24-48 hours. Once approved, you\'ll receive your event ticket with a QR code via email.',
+        additional_info: `
+          <h4 style="margin-bottom: 10px;">Important Reminders:</h4>
+          <ul style="margin-top: 0;">
+            <li>Check your email regularly (including spam/junk folder)</li>
+            <li>Keep your M-Pesa confirmation message safe</li>
+            <li>Contact support if you have any questions</li>
+          </ul>
+        `,
+        closing_message: 'We appreciate your patience and look forward to welcoming you to our event!'
+      };
+
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        TEMPLATE_USER,
+        templateParams
+      );
+
+      console.log(' User confirmation email sent');
+      return true;
+    } catch (error) {
+      console.error(' Failed to send user confirmation:', error);
+      return false;
+    }
+  };
+
+  // ========================================
+  // SEND ADMIN NOTIFICATION EMAIL
+  // ========================================
+  const sendAdminNotificationEmail = async (formData, submissionId) => {
+    try {
+      const templateParams = {
+        user_name: formData.fullName,
+        user_email: formData.email,
+        user_phone: formData.phone,
+        plan_name: planToSubscribe?.name || 'General',
+        plan_period: selectedPlan,
+        amount: extractAmount(formData.mpesaMessage),
+        mpesa_code: extractMpesaCode(formData.mpesaMessage),
+        submission_id: submissionId,
+        submission_date: new Date().toLocaleString()
+      };
+
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        TEMPLATE_ADMIN,
+        templateParams
+      );
+
+      console.log(' Admin notification sent');
+      return true;
+    } catch (error) {
+      console.error(' Failed to send admin notification:', error);
+      return false;
+    }
   };
 
   const handleSubscribeClick = (plan) => {
@@ -97,6 +194,9 @@ export default function Subscription() {
     setTicketFormData({ ...ticketFormData, [e.target.name]: e.target.value });
   };
 
+  // ========================================
+  // HANDLE TICKET FORM SUBMIT
+  // ========================================
   const handleTicketFormSubmit = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
@@ -118,22 +218,36 @@ export default function Subscription() {
         createdAt: serverTimestamp()
       };
 
+      // Save to Firestore
       const docRef = await addDoc(collection(db, 'subscriptions'), submissionData);
+      console.log(' Saved to Firestore:', docRef.id);
+      
+      // Send emails in parallel
+      const [userEmailSent, adminEmailSent] = await Promise.all([
+        sendUserConfirmationEmail(ticketFormData, docRef.id),
+        sendAdminNotificationEmail(ticketFormData, docRef.id)
+      ]);
 
-      alert(`✅ Submission Successful!
+      // Show success message
+      let message = ` Submission Successful!\n\n`;
+      message += `Your subscription request has been received.\n\n`;
+      message += `Submission ID: ${docRef.id}\n\n`;
+      
+      if (userEmailSent) {
+        message += `📧 Confirmation email sent to ${ticketFormData.email}\n\n`;
+      } else {
+        message += `⚠️ Note: Confirmation email failed, but your submission was recorded.\n\n`;
+      }
 
-Your subscription request has been received and is pending verification.
+      if (adminEmailSent) {
+        message += ` Admin has been notified\n\n`;
+      }
 
-Submission ID: ${docRef.id}
+      message += `Our team will verify your payment within 24-48 hours.\n`;
+      message += `Check your email regularly for updates.\n\n`;
+      message += `Thank you for subscribing to Impact360! 🎉`;
 
-What happens next:
-1. Our team will verify your M-Pesa payment within 24-48 hours
-2. Once approved, you'll receive your ticket with QR code via email
-3. Please check your email (${ticketFormData.email}) regularly for updates
-
-Important: Check your spam/junk folder if you don't see our email in your inbox.
-
-Thank you for subscribing to Impact360! 🎉`);
+      alert(message);
 
       // Reset form
       setTicketFormData({
@@ -144,13 +258,10 @@ Thank you for subscribing to Impact360! 🎉`);
       });
       setShowTicketForm(false);
       setPlanToSubscribe(null);
+
     } catch (error) {
-      console.error('❌ Submission error:', error);
-      alert(`❌ Error submitting your request.
-
-${error.message}
-
-Please try again or contact our support team if the problem persists.`);
+      console.error(' Submission error:', error);
+      alert(` Error submitting your request.\n\n${error.message}\n\nPlease try again or contact support.`);
     } finally {
       setIsProcessing(false);
     }
