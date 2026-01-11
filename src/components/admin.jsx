@@ -174,9 +174,9 @@ const AdminDashboard = () => {
   // ========================================
   // SEND APPROVAL EMAIL WITH QR TICKET
   // ========================================
- const sendApprovalEmailWithTicket = async (submission, ticketId) => {
+const sendApprovalEmailWithTicket = async (submission, ticketId) => {
   try {
-    console.log(' Generating QR code ticket for:', submission.fullName);
+    console.log('🎫 Generating QR code ticket for:', submission.fullName);
     
     const qrCodeImage = await generateQRCodeWithUserData(submission, ticketId);
 
@@ -184,103 +184,16 @@ const AdminDashboard = () => {
       throw new Error('Failed to generate QR code');
     }
 
-    console.log(' QR code generated successfully');
+    console.log('✅ QR code generated successfully');
 
     const templateParams = {
       to_email: submission.email,
-      email_subject: '[Impact360] Subscription Approved - Your Event Ticket!',
-      email_icon: '✓',
-      greeting: 'Congratulations!',
-      status_message: 'Your subscription has been approved',
-      user_name: submission.fullName,
-      main_message: `Great news! Your ${submission.planName} Plan subscription has been verified and approved. You're all set for our upcoming Impact360 event!`,
-      plan_name: submission.planName,
-      plan_period: submission.planPeriod,
-      amount: submission.amount,
-      mpesa_code: submission.mpesaCode,
-      id_label: 'Ticket ID',
-      reference_id: ticketId,
-      event_date: new Date().toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      }),
-      header_color: 'background-color: #D4EDDA',
-      notice_color: 'background-color: #FFF3CD',
-      notice_border: '#FFD700',
-      notice_title: 'Important Instructions',
-      notice_message: 'Save this QR code ticket. You will need to present it at event registration. Arrive 15 minutes early for check-in.',
+      email_subject: '[Impact360] Your Event Ticket',
       
-      
-      additional_info: `
-        <div style="text-align: center; padding: 30px; background-color: #F0F9FF; border-radius: 10px; margin: 20px 0; border: 2px solid #306CEC;">
-          <h2 style="color: #306CEC; margin: 0 0 10px 0; font-size: 24px;">YOUR EVENT TICKET</h2>
-          <p style="color: #666; margin: 0 0 20px 0; font-size: 14px;">Present this QR code at event entrance</p>
-          
-          <div style="background-color: white; padding: 30px; border-radius: 15px; display: inline-block; box-shadow: 0 8px 16px rgba(0,0,0,0.1); max-width: 400px;">
-            
-            <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #306CEC;">
-              <p style="margin: 0; color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Attendee</p>
-              <h3 style="margin: 5px 0 0 0; color: #306CEC; font-size: 22px; font-weight: bold;">${submission.fullName.toUpperCase()}</h3>
-            </div>
-            
-            <div style="margin: 20px 0;">
-              <img src="${qrCodeImage}" alt="Event Ticket QR Code" style="display: block; max-width: 300px; width: 100%; height: auto; margin: 0 auto; border: 4px solid #306CEC; border-radius: 10px;" />
-            </div>
-            
-            <div style="margin-top: 20px; padding-top: 15px; border-top: 2px dashed #DDD;">
-              <table style="width: 100%; text-align: left; font-size: 13px;">
-                <tr>
-                  <td style="padding: 5px 0; color: #888; font-weight: bold;">Ticket ID:</td>
-                  <td style="padding: 5px 0; color: #306CEC; font-weight: bold; font-family: monospace;">${ticketId}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 5px 0; color: #888; font-weight: bold;">Plan:</td>
-                  <td style="padding: 5px 0; color: #333;">${submission.planName} (${submission.planPeriod})</td>
-                </tr>
-                <tr>
-                  <td style="padding: 5px 0; color: #888; font-weight: bold;">Email:</td>
-                  <td style="padding: 5px 0; color: #333; word-break: break-word;">${submission.email}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 5px 0; color: #888; font-weight: bold;">Phone:</td>
-                  <td style="padding: 5px 0; color: #333;">${submission.phone}</td>
-                </tr>
-              </table>
-            </div>
-          </div>
-          
-          <div style="background-color: #FFF3CD; padding: 20px; border-radius: 10px; margin-top: 25px; text-align: left; border-left: 4px solid #FFD700;">
-            <p style="margin: 0 0 12px 0; font-weight: bold; color: #856404; font-size: 15px;">How to Use Your Ticket:</p>
-            <ol style="margin: 0; padding-left: 20px; color: #856404; line-height: 1.8;">
-              <li><strong>Save this email</strong> or screenshot the QR code</li>
-              <li><strong>Arrive 15 minutes early</strong> to the event venue</li>
-              <li><strong>Show your QR code</strong> at the registration desk</li>
-              <li><strong>Bring a valid ID</strong> for verification</li>
-              <li><strong>Keep this ticket safe</strong> - it's your entry pass!</li>
-            </ol>
-          </div>
-          
-          <div style="margin-top: 20px; padding: 15px; background-color: #D4EDDA; border-radius: 8px; border-left: 4px solid #28a745;">
-            <p style="margin: 0; color: #155724; font-size: 14px;">
-              <strong>Event Details:</strong><br>
-              Date & time will be communicated separately<br>
-              Check your email regularly for updates
-            </p>
-          </div>
-        </div>
-        
-        <div style="text-align: center; padding: 25px; background-color: #E7F3FF; border-radius: 10px; margin-top: 20px;">
-          <h3 style="color: #306CEC; margin: 0 0 10px 0; font-size: 20px;">See You at the Event!</h3>
-          <p style="margin: 0; color: #306CEC; font-size: 15px;">We're excited to have you join us at Impact360.</p>
-        </div>
-      `,
-      
-      // NEW WELCOME MESSAGE - This is what you wanted to add
+      // WELCOME MESSAGE
       welcome_message: `
-        <div style="background-color: #F8F9FA; padding: 30px; border-radius: 15px; margin: 30px 0; border-left: 5px solid #306CEC;">
-          <h3 style="color: #306CEC; margin: 0 0 20px 0; font-size: 22px; font-weight: bold;">Welcome,</h3>
+        <div style="background-color: #F8F9FA; padding: 30px; border-radius: 15px; margin: 0 0 30px 0; border-left: 5px solid #306CEC;">
+          <h2 style="color: #306CEC; margin: 0 0 20px 0; font-size: 24px; font-weight: bold;">Welcome, ${submission.fullName}</h2>
           
           <p style="color: #333; font-size: 16px; line-height: 1.8; margin: 0 0 15px 0;">
             We're glad to have you join this experience. Your participation means you are stepping into a space built for <strong>bold conversations</strong>, <strong>practical insights</strong>, and <strong>meaningful connections</strong> that go beyond surface-level thinking.
@@ -300,7 +213,71 @@ const AdminDashboard = () => {
         </div>
       `,
       
-      closing_message: 'If you have any questions or need assistance, feel free to reach out to our support team. Keep this email safe - it contains your official event ticket!'
+      // TICKET WITH QR CODE
+      additional_info: `
+        <div style="text-align: center; padding: 40px; background-color: #F0F9FF; border-radius: 15px; border: 2px solid #306CEC;">
+          
+          <h2 style="color: #306CEC; margin: 0 0 30px 0; font-size: 26px;">YOUR EVENT TICKET</h2>
+          
+          <!-- Ticket Card -->
+          <div style="background-color: white; padding: 30px; border-radius: 15px; display: inline-block; box-shadow: 0 8px 16px rgba(0,0,0,0.1); max-width: 400px;">
+            
+            <!-- Attendee Name -->
+            <div style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px solid #306CEC;">
+              <p style="margin: 0; color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Attendee</p>
+              <h3 style="margin: 5px 0 0 0; color: #306CEC; font-size: 24px; font-weight: bold;">${submission.fullName.toUpperCase()}</h3>
+            </div>
+            
+            <!-- QR Code -->
+            <div style="margin: 25px 0;">
+              <img src="${qrCodeImage}" alt="Event Ticket QR Code" style="display: block; max-width: 300px; width: 100%; height: auto; margin: 0 auto; border: 4px solid #306CEC; border-radius: 10px;" />
+            </div>
+            
+            <!-- Ticket Details -->
+            <div style="margin-top: 25px; padding-top: 20px; border-top: 2px dashed #DDD; text-align: left;">
+              <table style="width: 100%; font-size: 14px;">
+                <tr>
+                  <td style="padding: 8px 0; color: #888; font-weight: bold;">Ticket ID:</td>
+                  <td style="padding: 8px 0; color: #306CEC; font-weight: bold; font-family: monospace;">${ticketId}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #888; font-weight: bold;">Plan:</td>
+                  <td style="padding: 8px 0; color: #333; font-weight: 600;">${submission.planName} (${submission.planPeriod})</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #888; font-weight: bold;">Email:</td>
+                  <td style="padding: 8px 0; color: #333; word-break: break-word;">${submission.email}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #888; font-weight: bold;">Phone:</td>
+                  <td style="padding: 8px 0; color: #333;">${submission.phone}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          
+          <!-- Instructions -->
+          <div style="background-color: #FFF3CD; padding: 25px; border-radius: 12px; margin-top: 30px; text-align: left; border-left: 4px solid #FFD700;">
+            <p style="margin: 0 0 15px 0; font-weight: bold; color: #856404; font-size: 16px;">📋 Event Entry Instructions</p>
+            <ol style="margin: 0; padding-left: 20px; color: #856404; line-height: 2; font-size: 15px;">
+              <li><strong>Save this email</strong> or screenshot the QR code</li>
+              <li><strong>Arrive 15 minutes early</strong> to the venue</li>
+              <li><strong>Show your QR code</strong> at registration</li>
+              <li><strong>Bring a valid ID</strong> for verification</li>
+            </ol>
+          </div>
+          
+          <!-- Event Info -->
+          <div style="margin-top: 25px; padding: 20px; background-color: #D4EDDA; border-radius: 10px; border-left: 4px solid #28a745;">
+            <p style="margin: 0; color: #155724; font-size: 14px; text-align: left;">
+              <strong>📅 Event Details:</strong><br>
+              Date and time will be communicated separately.<br>
+              Check your email regularly for updates.
+            </p>
+          </div>
+          
+        </div>
+      `
     };
 
     console.log('📧 Sending approval email to:', submission.email);
@@ -311,7 +288,7 @@ const AdminDashboard = () => {
       templateParams
     );
 
-    console.log('Approval email with QR ticket sent successfully!');
+    console.log('✅ Approval email with QR ticket sent successfully!');
     return true;
 
   } catch (error) {
