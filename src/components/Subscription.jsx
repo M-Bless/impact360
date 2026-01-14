@@ -18,6 +18,43 @@ const TEMPLATE_USER = process.env.REACT_APP_EMAILJS_TEMPLATE_USER;
 const TEMPLATE_ADMIN = process.env.REACT_APP_EMAILJS_TEMPLATE_ADMIN;
 const ADMIN_EMAIL = 'Impact360.i3@gmail.com';
 
+const membershipBenefits = {
+  Student: [
+    "Access to Impact360 community (students & early builders)",
+    "Free or discounted entry to Impact360 events, roadshows & webinars",
+    "Foundational workshops on:\n- Entrepreneurship basics\n- Tech & digital skills awareness\n- Productivity & execution fundamentals",
+    "Access to startup resources & learning materials",
+    "Exposure to local startup stories & role models",
+    "Certificate of participation for programs attended",
+    "Priority access to internships, volunteering & community projects",
+    "*Outcome:* Clarity, exposure, skills awareness, and a strong foundation early."
+  ],
+  Pro: [
+    "Everything in Student Membership, plus:",
+    "Access to founder-only & professional community",
+    "Curated masterclasses (business, tech, AI, finance, growth)",
+    "Business tools & templates:\n- Business models\n- Pitch decks\n- Go-to-market frameworks",
+    "Monthly expert sessions (legal, tech, finance, marketing)",
+    "Pitch opportunities at Impact360 demo days & partner events",
+    "Visibility within the Impact360 ecosystem (startups, partners, talent)",
+    "Discounts on consulting, programs & ecosystem services",
+    "Priority consideration for:\n- Grants & funding opportunities\n- Startup programs & accelerators",
+    "*Outcome:* Execution, traction, credibility, and ecosystem access."
+  ],
+  Premium: [
+    "Everything in Pro Membership, plus:",
+    "Direct mentorship & advisory access (1:1 or small groups)",
+    "Personalized business & growth support:\n- Strategy\n- Tech integration\n- Scaling & operations",
+    "Investor & partner warm introductions (where applicable)",
+    "Access to closed-door roundtables with founders, investors & policymakers",
+    "Priority access to Impact360 consulting services",
+    "Brand & startup visibility:\n- Showcasing across Impact360 platforms\n- Speaking & thought leadership opportunities",
+    "Early access to new programs, pilots & ecosystem initiatives",
+    "Dedicated support for:\n- Fundraising readiness\n- Market expansion\n- Institutional & corporate partnerships",
+    "*Outcome:* Scale, capital readiness, influence, and long-term growth."
+  ]
+};
+
 export default function Subscription() {
   const [selectedPlan, setSelectedPlan] = useState('monthly');
   const [showPaymentInfo, setShowPaymentInfo] = useState(false);
@@ -31,6 +68,9 @@ export default function Subscription() {
     phone: '',
     mpesaMessage: ''
   });
+  const [subscriptionType, setSubscriptionType] = useState('Events'); // NEW: 'Events' or 'Membership'
+  const [showTypeSelector, setShowTypeSelector] = useState(false); // NEW
+  const [pendingPlan, setPendingPlan] = useState(null); // NEW
   const { darkMode } = useDarkMode();
 
   // Initialize EmailJS
@@ -120,6 +160,8 @@ export default function Subscription() {
         mpesa_code: extractMpesaCode(formData.mpesaMessage),
         id_label: 'Submission ID',
         reference_id: submissionId,
+        // NEW: Add subscriptionType to email params
+        subscription_type: subscriptionType,
         event_date: new Date().toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
@@ -169,7 +211,9 @@ export default function Subscription() {
         amount: extractAmount(formData.mpesaMessage),
         mpesa_code: extractMpesaCode(formData.mpesaMessage),
         submission_id: submissionId,
-        submission_date: new Date().toLocaleString()
+        submission_date: new Date().toLocaleString(),
+        // NEW: Add subscriptionType to admin email
+        subscription_type: subscriptionType,
       };
 
       await emailjs.send(
@@ -185,9 +229,21 @@ export default function Subscription() {
     }
   };
 
+  // Show type selector modal when subscribe is clicked
   const handleSubscribeClick = (plan) => {
-    setPlanToSubscribe(plan);
-    setShowPaymentInfo(true);
+    setPendingPlan(plan);
+    setShowTypeSelector(true);
+  };
+
+  // When user picks Event or Membership in modal
+  const handleTypeSelect = (type) => {
+    setSubscriptionType(type);
+    setPlanToSubscribe(pendingPlan);
+    setShowTypeSelector(false);
+    if (type === 'Events') {
+      setShowPaymentInfo(true);
+    }
+    // For Membership, just show the benefits modal (handled below)
   };
 
   const handleCopy = async (text, type) => {
@@ -230,7 +286,9 @@ export default function Subscription() {
         planName: planToSubscribe?.name || 'General',
         planPeriod: selectedPlan,
         status: 'pending',
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
+        subscriptionType: subscriptionType,
+        type: subscriptionType && subscriptionType.toLowerCase() === 'events' ? 'event' : 'membership',
       };
 
       // Save to Firestore
@@ -295,10 +353,124 @@ export default function Subscription() {
     }
   };
 
+  // Membership Benefits Modal
+  const MembershipBenefitsModal = ({ plan, onClose, onContinue }) => {
+    const benefits = membershipBenefits[plan.name] || [];
+    // Brand colors for light and dark mode
+    const planColors = {
+      Student: 'bg-white text-[#306CEC] border-[#306CEC]/20 dark:bg-[#181c2a] dark:text-[#306CEC]',
+      Pro: 'bg-white text-[#306CEC] border-[#306CEC]/20 dark:bg-[#181c2a] dark:text-[#306CEC]',
+      Premium: 'bg-white text-[#306CEC] border-[#306CEC]/20 dark:bg-[#181c2a] dark:text-[#306CEC]'
+    };
+    const planIcons = {
+      Student: <Users className="w-8 h-8 text-[#306CEC]" />,
+      Pro: <Users className="w-8 h-8 text-[#306CEC]" />,
+      Premium: <Users className="w-8 h-8 text-yellow-500" />
+    };
+    const planTitles = {
+      Student: " Student Membership",
+      Pro: " Pro Membership",
+      Premium: " Premium Membership"
+    };
+    const planSubtitles = {
+      Student: "For students & early-stage learners.",
+      Pro: "For founders, freelancers, and startups.",
+      Premium: "For scale-ups, corporates, and leaders."
+    };
+    const price = plan.price;
+    const period = plan.period;
+
+    const [showAll, setShowAll] = React.useState(false);
+    const visibleBenefits = showAll ? benefits : benefits.filter(b => !b.startsWith("*Outcome:*")).slice(0, 4);
+    const hasMore = benefits.filter(b => !b.startsWith("*Outcome:*")).length > 4;
+
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ scale: 0.97, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.97, opacity: 0 }}
+          transition={{ type: "spring", duration: 0.3 }}
+          onClick={e => e.stopPropagation()}
+          className="relative w-full max-w-md rounded-2xl shadow-2xl bg-white dark:bg-[#181c2a] border border-[#306CEC]/20 p-0"
+        >
+          {/* Header */}
+          <div className={`rounded-t-2xl px-6 py-5 flex flex-col items-center ${planColors[plan.name]} border-b`}>
+            <div>{planIcons[plan.name]}</div>
+            <h3 className="text-xl font-bold mt-2 mb-1 text-[#306CEC] dark:text-[#306CEC]">{planTitles[plan.name]}</h3>
+            <div className="text-xs text-center mb-1 text-gray-500 dark:text-gray-400">{planSubtitles[plan.name]}</div>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-base font-bold text-[#306CEC] dark:text-[#306CEC]">KES {price}</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400 font-semibold">/ {period}</span>
+            </div>
+          </div>
+          {/* Benefits */}
+          <div className="px-6 py-5">
+            <div className="mb-2 font-bold text-[#306CEC] dark:text-[#306CEC] text-sm">Key Benefits</div>
+            <ul className="space-y-2">
+              {visibleBenefits.map((b, i) =>
+                <li key={i} className="flex items-start gap-2">
+                  <Check className={`w-4 h-4 flex-shrink-0 mt-1 ${plan.name === "Premium" ? "text-yellow-500" : "text-[#306CEC]"}`} />
+                  <span className="text-gray-700 dark:text-gray-200 text-sm whitespace-pre-line">{b.replace(/\n/g, ' ')}</span>
+                </li>
+              )}
+            </ul>
+            {hasMore && !showAll && (
+              <button
+                className="text-xs text-[#306CEC] dark:text-[#306CEC] mt-2 underline"
+                onClick={() => setShowAll(true)}
+              >Show all benefits</button>
+            )}
+            {showAll && (
+              <button
+                className="text-xs text-gray-400 dark:text-gray-500 mt-2 underline"
+                onClick={() => setShowAll(false)}
+              >Show less</button>
+            )}
+            {/* Outcome */}
+            {benefits.find(b => b.startsWith("*Outcome:*")) && (
+              <div className="mt-4 rounded bg-[#306CEC]/10 dark:bg-[#306CEC]/20 px-3 py-2 text-[#306CEC] dark:text-[#306CEC] font-semibold text-xs">
+                {benefits.find(b => b.startsWith("*Outcome:*")).replace("*Outcome:*", "Outcome:")}
+              </div>
+            )}
+          </div>
+          {/* Actions */}
+          <div className="flex gap-2 px-6 pb-5">
+            <button
+              onClick={onContinue}
+              className="flex-1 px-4 py-2 rounded-full bg-[#306CEC] text-white font-bold hover:bg-[#1a4d9e] transition text-sm"
+            >
+              Continue to Payment
+            </button>
+            <button
+              onClick={onClose}
+              className="flex-1 px-4 py-2 rounded-full bg-gray-100 dark:bg-[#232a3d] text-gray-700 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-[#23325a] transition text-sm"
+            >
+              Cancel
+            </button>
+          </div>
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-[#306CEC]/20 text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </motion.div>
+      </motion.div>
+    );
+  };
+
   return (
     <div className={`transition-colors duration-1000 ${darkMode ? 'bg-black' : 'bg-[#FFFEF9]'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
       <Navbar />
-      
+     
+
       {/* Header Section - Responsive */}
       <section className={`relative pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-14 md:pb-16 px-4 sm:px-6 overflow-hidden transition-colors duration-1000 ${darkMode ? 'bg-black' : 'bg-gradient-to-br from-[#306CEC] to-[#1a4d9e]'}`}>
         <motion.div 
@@ -312,7 +484,7 @@ export default function Subscription() {
           transition={{ duration: 10, repeat: Infinity }}
         />
         
-        <div className="max-w-7xl mx-auto relative z-10 text-center">
+         <div className="max-w-7xl mx-auto relative z-10 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 ${darkMode ? 'text-[#306CEC]' : 'text-white'} px-4`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
               SUBSCRIPTION PLANS
@@ -335,6 +507,7 @@ export default function Subscription() {
             className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 mb-12 sm:mb-14 md:mb-16"
           >
             {[
+
               { key: 'monthly', label: 'Monthly' },
               { key: 'quarterly', label: 'Quarterly' },
               { key: 'biannual', label: 'Bi-Annual' },
@@ -359,6 +532,7 @@ export default function Subscription() {
                 {plan.label.toUpperCase()}
               </motion.button>
             ))}
+
           </motion.div>
 
           {/* Pricing Cards - Responsive Grid */}
@@ -425,7 +599,7 @@ export default function Subscription() {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleSubscribeClick(plan)}
                   className={`w-full py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl ${
-                    darkMode ? 'bg-[#306CEC] text-white hover:bg-[#1a4d9e]' : plan.popular ? 'bg-white text-[#306CEC] hover:bg-gray-100' : 'bg-[#306CEC] text-white hover:bg-[#1a4d9e]'
+                    darkMode ? 'bg-[#306CEC] text-white hover:bg-[#1a9bd1]' : plan.popular ? 'bg-white text-[#306CEC] hover:bg-gray-100' : 'bg-[#306CEC] text-white hover:bg-[#1a9bd1]'
                   }`}
                   style={{ fontFamily: 'League Spartan, sans-serif' }}
                 >
@@ -433,9 +607,77 @@ export default function Subscription() {
                 </motion.button>
               </motion.div>
             ))}
+
           </div>
         </div>
       </section>
+
+      {/* Type Selector Modal */}
+      <AnimatePresence>
+        {showTypeSelector && pendingPlan && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowTypeSelector(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              onClick={e => e.stopPropagation()}
+              className="relative w-full max-w-md rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto bg-white dark:bg-[#1a1f3a] border border-[#306CEC]/20"
+            >
+              <button
+                onClick={() => setShowTypeSelector(false)}
+                className="absolute top-1 right-3 sm:top-2 sm:right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-[#306CEC]/20 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              >
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+              <div className="text-center mb-6 sm:mb-8">
+                <h3 className="text-2xl sm:text-3xl font-bold mb-2 text-[#306CEC]" style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                  Choose Subscription Type
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                  Select how you want to subscribe for the <span className="font-bold">{pendingPlan.name}</span> plan.
+                </p>
+              </div>
+              <div className="flex flex-col gap-4">
+                <button
+                  onClick={() => handleTypeSelect('Events')}
+                  className="w-full py-3 rounded-full bg-[#306CEC] text-white font-bold text-lg hover:bg-[#1a4d9e] transition"
+                >
+                  Event Ticket
+                </button>
+                <button
+                  onClick={() => handleTypeSelect('Membership')}
+                  className="w-full py-3 rounded-full bg-blue-600 text-white font-bold text-lg hover:bg-blue-700 transition"
+                >
+                  Membership
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Membership Benefits Modal */}
+      <AnimatePresence>
+        {subscriptionType === 'Membership' && planToSubscribe && !showPaymentInfo && (
+          <MembershipBenefitsModal
+            plan={planToSubscribe}
+            onClose={() => {
+              setPlanToSubscribe(null);
+              setSubscriptionType('Events');
+            }}
+            onContinue={() => {
+              setShowPaymentInfo(true);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Payment Information Modal - Responsive */}
       <AnimatePresence>
@@ -465,7 +707,6 @@ export default function Subscription() {
               >
                 <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
-
               <div className="text-center mb-6 sm:mb-8">
                 <CreditCard className={`w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} />
                 <h3 className={`text-2xl sm:text-3xl font-bold mb-2 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
@@ -548,22 +789,24 @@ export default function Subscription() {
                 whileTap={{ scale: 0.98 }}
                 onClick={handleProceedToTicketForm}
                 className={`w-full py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 ${
-                  darkMode ? 'bg-[#306CEC] text-white hover:bg-[#1a4d9e]' : 'bg-[#306CEC] text-white hover:bg-[#1a4d9e]'
+                  darkMode ? 'bg-[#306CEC] text-white hover:bg-[#1a9bd1]' : 'bg-[#306CEC] text-white hover:bg-[#1a9bd1]'
                 }`}
                 style={{ fontFamily: 'League Spartan, sans-serif' }}
               >
-                <span>GENERATE TICKET</span>
+                <span>
+                  {subscriptionType === 'Membership' ? 'PROCEED' : 'GENERATE TICKET'}
+                </span>
                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </motion.button>
-
               <p className={`text-xs text-center mt-3 sm:mt-4 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
-                Click the button above after completing your M-Pesa payment to proceed with ticket generation
+                {subscriptionType === 'Membership'
+                  ? 'Click the button above after completing your M-Pesa payment to proceed with your membership application'
+                  : 'Click the button above after completing your M-Pesa payment to proceed with ticket generation'}
               </p>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
       {/* Ticket Form Modal - Responsive */}
       <AnimatePresence>
         {showTicketForm && planToSubscribe && (
@@ -595,11 +838,15 @@ export default function Subscription() {
               </button>
 
               <div className="text-center mb-6 sm:mb-8">
-                <Ticket className={`w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} />
+                {subscriptionType === 'Membership' ? (
+                  <Users className={`w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} />
+                ) : (
+                  <Ticket className={`w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} />
+                )}
                 <h3 className={`text-2xl sm:text-3xl font-bold mb-2 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
-                  GENERATE YOUR TICKET
+                  {subscriptionType === 'Membership' ? 'MEMBERSHIP APPLICATION' : 'GENERATE YOUR TICKET'}
                 </h3>
-                <p className={`text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                <p className={`text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-[#306CEC]'}`}>
                   {planToSubscribe.name} Plan - KES {planToSubscribe.price}/{planToSubscribe.period}
                 </p>
               </div>
@@ -688,10 +935,10 @@ export default function Subscription() {
                         ? 'bg-black border-[#306CEC]/20 text-white focus:border-[#306CEC] placeholder-gray-500' 
                         : 'bg-white border-gray-200 text-gray-900 focus:border-[#306CEC] placeholder-gray-400'
                     } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    placeholder="Paste your complete M-Pesa SMS here
+                    placeholder="Paste your complete cooperative bank SMS here
 
 Example:
-SH12345678 Confirmed. Ksh2,099.00 sent to IMPACT360 for account 522533 on 9/1/26 at 2:30 PM. New M-Pesa balance is Ksh5,000.00..."
+Dear John Doe, you have sent Ksh. 999.0 to THE O'GAD IMPACT GROUP LTD for 1118559 on 01/10/2026 at 14:31:45. MPESA Ref. UAAAH3CTZR."
                   />
                   <p className={`text-xs mt-2 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
                     📱 Copy and paste the <strong>complete M-Pesa confirmation SMS</strong> you received after payment
@@ -718,7 +965,7 @@ SH12345678 Confirmed. Ksh2,099.00 sent to IMPACT360 for account 522533 on 9/1/26
                   whileHover={!isProcessing ? { scale: 1.02 } : {}}
                   whileTap={!isProcessing ? { scale: 0.98 } : {}}
                   className={`w-full py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg transition-all duration-300 shadow-lg ${
-                    darkMode ? 'bg-[#306CEC] text-white hover:bg-[#1a4d9e]' : 'bg-[#306CEC] text-white hover:bg-[#1a4d9e]'
+                    darkMode ? 'bg-[#306CEC] text-white hover:bg-[#1a9bd1]' : 'bg-[#306CEC] text-white hover:bg-[#1a9bd1]'
                   } ${isProcessing ? 'opacity-70 cursor-not-allowed' : 'hover:shadow-xl'}`}
                   style={{ fontFamily: 'League Spartan, sans-serif' }}
                 >
@@ -728,7 +975,9 @@ SH12345678 Confirmed. Ksh2,099.00 sent to IMPACT360 for account 522533 on 9/1/26
                       PROCESSING...
                     </span>
                   ) : (
-                    'SUBMIT & GENERATE TICKET'
+                    subscriptionType === 'Membership'
+                    ? 'SUBMIT MEMBERSHIP APPLICATION'
+                    : 'SUBMIT & GENERATE TICKET'
                   )}
                 </motion.button>
 
@@ -745,9 +994,9 @@ SH12345678 Confirmed. Ksh2,099.00 sent to IMPACT360 for account 522533 on 9/1/26
       <section className={`py-12 sm:py-14 md:py-16 px-4 sm:px-6 transition-colors duration-1000 ${darkMode ? 'bg-black' : 'bg-[#FFFEF9]'}`}>
         <div className="max-w-6xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
             viewport={{ once: true }}
             className={`relative rounded-2xl sm:rounded-3xl p-8 sm:p-12 md:p-16 shadow-2xl overflow-hidden transition-colors duration-1000 ${
               darkMode ? 'bg-[#1a1f3a] border border-[#306CEC]/20' : 'bg-gradient-to-br from-[#306CEC] to-[#1a4d9e]'
@@ -804,7 +1053,6 @@ SH12345678 Confirmed. Ksh2,099.00 sent to IMPACT360 for account 522533 on 9/1/26
           </motion.div>
         </div>
       </section>
-
       {/* Benefits Section - Responsive */}
       <section className={`py-16 sm:py-20 md:py-24 px-4 sm:px-6 transition-colors duration-1000 ${darkMode ? 'bg-black' : 'bg-[#F5F5F0]'}`}>
         <div className="max-w-7xl mx-auto">
@@ -867,6 +1115,7 @@ SH12345678 Confirmed. Ksh2,099.00 sent to IMPACT360 for account 522533 on 9/1/26
 
           <div className="space-y-4 sm:space-y-5 md:space-y-6">
             {[
+
               {
                 question: "Can I upgrade my plan later?",
                 answer: "Yes! You can upgrade your subscription at any time and we'll prorate the difference."

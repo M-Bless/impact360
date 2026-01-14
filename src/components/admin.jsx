@@ -19,12 +19,69 @@ import { db, auth } from '../firebase/firebase';
 import QRCode from 'qrcode';
 import emailjs from '@emailjs/browser';
 
-// ========================================
-// EMAILJS CONFIGURATION - UPDATE THESE!
-// ========================================
 const EMAILJS_SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
 const EMAILJS_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 const TEMPLATE_USER = process.env.REACT_APP_EMAILJS_TEMPLATE_USER;
+// ========================================
+// SEND MEMBERSHIP ACTIVATION EMAIL
+// ========================================
+
+
+// ========================================
+// SEND MEMBERSHIP ACTIVATION EMAIL
+// ========================================
+const sendMembershipActivationEmail = async (submission, expiryDate) => {
+  try {
+    const templateParams = {
+      to_email: submission.email,
+      email_subject: 'Your Impact360 Membership is Active',
+      welcome_message: `
+        <div style="padding: 40px 30px; background-color: #F8F9FA; border-radius: 15px; margin-bottom: 30px; border-left: 5px solid #306CEC;">
+          <h2 style="color: #306CEC; margin: 0 0 25px 0; font-size: 26px; font-weight: bold;">Welcome, ${submission.fullName}</h2>
+          <p style="color: #333; font-size: 16px; line-height: 1.8; margin: 0 0 18px 0;">
+            Your Impact360 membership is now <strong>active</strong>! You now have access to exclusive member benefits, events, and resources.
+          </p>
+          <p style="color: #333; font-size: 16px; line-height: 1.8; margin: 0 0 25px 0;">
+            <strong>Membership Expiry Date:</strong> <span style="color: #306CEC;">${expiryDate}</span>
+          </p>
+          <p style="color: #306CEC; font-size: 17px; font-weight: bold; margin: 0;">
+            — Impact360 Team
+          </p>
+        </div>
+      `,
+      additional_info: `
+        <div style="background-color: #E3FCEC; padding: 30px; border-radius: 12px; border-left: 5px solid #28a745;">
+          <h3 style="color: #28a745; margin: 0 0 18px 0; font-size: 22px; font-weight: bold;">Membership Details</h3>
+          <ul style="color: #155724; font-size: 16px; line-height: 2;">
+            <li><strong>Name:</strong> ${submission.fullName}</li>
+            <li><strong>Email:</strong> ${submission.email}</li>
+            <li><strong>Plan:</strong> ${submission.planName} (${submission.planPeriod})</li>
+            <li><strong>Amount:</strong> KES ${submission.amount}</li>
+            <li><strong>Expiry Date:</strong> ${expiryDate}</li>
+          </ul>
+        </div>
+      `
+    };
+    await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      TEMPLATE_USER,
+      templateParams
+    );
+    console.log('✅ Membership activation email sent');
+    return true;
+  } catch (error) {
+    console.error('❌ Failed to send membership activation email:', error);
+    return false;
+  }
+};
+
+// All imports moved to the top to satisfy ESLint import/first rule
+
+
+// ========================================
+// EMAILJS CONFIGURATION - UPDATE THESE!
+// ========================================
+
 
 const AdminDashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -73,10 +130,26 @@ const AdminDashboard = () => {
     );
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const submissionsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      const submissionsData = snapshot.docs.map(doc => {
+        const data = doc.data();
+        let type = data.type;
+        // Infer type if missing or invalid
+        if (!type || (type !== 'event' && type !== 'membership')) {
+          if (
+            (typeof data.subscriptionType === 'string' && data.subscriptionType.toLowerCase().includes('event')) ||
+            (typeof data.ticketId === 'string' && data.ticketId.trim() !== '')
+          ) {
+            type = 'event';
+          } else {
+            type = 'membership';
+          }
+        }
+        return {
+          id: doc.id,
+          ...data,
+          type
+        };
+      });
       setSubmissions(submissionsData);
     }, (error) => {
       console.error('Error listening to submissions:', error);
@@ -356,49 +429,60 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
     if (!window.confirm(`Approve subscription for ${submission.fullName}?`)) {
       return;
     }
-    
     setLoading(true);
-    
     try {
       console.log('🔄 Starting approval process for:', submission.fullName);
-      
-      const ticketId = `TKT-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-      console.log('🎫 Generated Ticket ID:', ticketId);
-      
-      await updateDoc(doc(db, 'subscriptions', submission.id), {
-        status: 'approved',
-        approvedAt: new Date().toISOString(),
-        approvedBy: currentUser.email,
-        ticketId: ticketId,
-        updatedAt: new Date().toISOString()
-      });
-      
-      console.log('✅ Firestore updated - Status: Approved');
-      
-      const emailSent = await sendApprovalEmailWithTicket(submission, ticketId);
-      
-      if (emailSent) {
-        showNotification(
-          ` Success! Ticket sent to ${submission.fullName} at ${submission.email}`, 
-          'success'
-        );
-        
-        alert(`Approval Complete!
-
-User: ${submission.fullName}
-Email: ${submission.email}
-Ticket ID: ${ticketId}
-
-QR code ticket has been sent to the user's email.`);
+      let emailSent = false;
+      if (submission.type === 'membership') {
+        // Calculate expiry date (e.g., 1 year from now, or based on planPeriod)
+        let expiryDate;
+        if (submission.planPeriod && submission.planPeriod.toLowerCase().includes('year')) {
+          const now = new Date();
+          now.setFullYear(now.getFullYear() + 1);
+          expiryDate = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        } else if (submission.planPeriod && submission.planPeriod.toLowerCase().includes('month')) {
+          const now = new Date();
+          now.setMonth(now.getMonth() + 1);
+          expiryDate = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        } else {
+          // Default to 1 year if not specified
+          const now = new Date();
+          now.setFullYear(now.getFullYear() + 1);
+          expiryDate = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        await updateDoc(doc(db, 'subscriptions', submission.id), {
+          status: 'approved',
+          approvedAt: new Date().toISOString(),
+          approvedBy: currentUser.email,
+          expiryDate: expiryDate,
+          updatedAt: new Date().toISOString()
+        });
+        emailSent = await sendMembershipActivationEmail(submission, expiryDate);
+        if (emailSent) {
+          showNotification(`Membership activated for ${submission.fullName} (${submission.email})`, 'success');
+          alert(`Membership Approval Complete!\n\nUser: ${submission.fullName}\nEmail: ${submission.email}\nExpiry Date: ${expiryDate}\n\nMembership activation email has been sent.`);
+        } else {
+          showNotification('Membership approved but email failed', 'error');
+        }
       } else {
-        showNotification(
-          `⚠️ Approved but email failed. Ticket ID: ${ticketId}`, 
-          'error'
-        );
+        // Event type (default)
+        const ticketId = `TKT-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+        await updateDoc(doc(db, 'subscriptions', submission.id), {
+          status: 'approved',
+          approvedAt: new Date().toISOString(),
+          approvedBy: currentUser.email,
+          ticketId: ticketId,
+          updatedAt: new Date().toISOString()
+        });
+        emailSent = await sendApprovalEmailWithTicket(submission, ticketId);
+        if (emailSent) {
+          showNotification(` Success! Ticket sent to ${submission.fullName} at ${submission.email}`, 'success');
+          alert(`Approval Complete!\n\nUser: ${submission.fullName}\nEmail: ${submission.email}\nTicket ID: ${ticketId}\n\nQR code ticket has been sent to the user's email.`);
+        } else {
+          showNotification(`⚠️ Approved but email failed. Ticket ID: ${ticketId}`, 'error');
+        }
       }
-      
       setSelectedSubmission(null);
-      
     } catch (error) {
       console.error('❌ Error during approval:', error);
       showNotification('Error approving submission: ' + error.message, 'error');
@@ -501,7 +585,11 @@ QR code ticket has been sent to the user's email.`);
   };
 
   const filteredSubmissions = submissions
-    .filter(s => filter === 'all' || s.status === filter)
+    .filter(s => {
+      if (filter === 'all') return true;
+      if (filter === 'event' || filter === 'membership') return s.type === filter;
+      return s.status === filter;
+    })
     .filter(s =>
       s.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       s.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -702,7 +790,28 @@ QR code ticket has been sent to the user's email.`);
                 className="w-full pl-9 sm:pl-10 pr-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
               />
             </div>
-            
+
+            {/* Event/Membership filter buttons */}
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mb-2">
+              <button
+                onClick={() => setFilter('event')}
+                className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
+                  filter === 'event' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Event
+              </button>
+              <button
+                onClick={() => setFilter('membership')}
+                className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
+                  filter === 'membership' ? 'bg-pink-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Membership
+              </button>
+            </div>
+
+            {/* Status filter buttons */}
             <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
               <button
                 onClick={() => setFilter('pending')}
@@ -832,6 +941,7 @@ QR code ticket has been sent to the user's email.`);
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Plan</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">M-Pesa Code</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Submitted</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
@@ -849,6 +959,7 @@ QR code ticket has been sent to the user's email.`);
                     </td>
                     <td className="px-6 py-4 text-sm font-mono text-gray-900">{submission.mpesaCode}</td>
                     <td className="px-6 py-4 text-sm text-gray-900">KES {submission.amount}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900 capitalize">{submission.type || '-'}</td>
                     <td className="px-6 py-4">
                       <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                         submission.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
