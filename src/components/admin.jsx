@@ -1095,167 +1095,177 @@ QR code ticket has been sent to the user's email.`);
       )}
 
       {selectedSubmission && !showRejectModal && !showEditModal && !showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-          <div className="bg-white rounded-lg max-w-2xl w-full p-4 sm:p-6 my-8 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-start mb-4 sm:mb-6">
-              <h3 className="text-xl sm:text-2xl font-bold">Submission Details</h3>
-              <button
-                onClick={() => setSelectedSubmission(null)}
-                className="text-gray-400 hover:text-gray-600 p-1"
-              >
-                <X className="w-5 h-5 sm:w-6 sm:h-6" />
-              </button>
-            </div>
-            
-            <div className="space-y-4 text-sm sm:text-base">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs sm:text-sm font-medium text-gray-500">Full Name</label>
-                  <p className="text-base sm:text-lg">{selectedSubmission.fullName}</p>
-                </div>
-                <div>
-                  <label className="text-xs sm:text-sm font-medium text-gray-500">Position</label>
-                  <p className="text-base sm:text-lg">{selectedSubmission.position || 'N/A'}</p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs sm:text-sm font-medium text-gray-500">Email</label>
-                  <p className="text-base sm:text-lg break-all">{selectedSubmission.email}</p>
-                </div>
-                <div>
-                  <label className="text-xs sm:text-sm font-medium text-gray-500">Phone</label>
-                  <p className="text-base sm:text-lg">{selectedSubmission.phone}</p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs sm:text-sm font-medium text-gray-500">Plan</label>
-                  <p className="text-base sm:text-lg">{selectedSubmission.planName}</p>
-                </div>
-                <div>
-                  <label className="text-xs sm:text-sm font-medium text-gray-500">Period</label>
-                  <p className="text-base sm:text-lg">{selectedSubmission.planPeriod}</p>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-xs sm:text-sm font-medium text-gray-500">M-Pesa Transaction Code</label>
-                <p className="text-base sm:text-lg font-mono bg-gray-100 p-3 rounded break-all">{selectedSubmission.mpesaCode}</p>
-              </div>
-              
-              <div>
-                <label className="text-xs sm:text-sm font-medium text-gray-500">Amount Paid</label>
-                <p className="text-base sm:text-lg font-semibold">KES {selectedSubmission.amount}</p>
-              </div>
-              
-              <div>
-                <label className="text-xs sm:text-sm font-medium text-gray-500">M-Pesa Message</label>
-                <p className="text-xs sm:text-sm bg-gray-100 p-3 rounded whitespace-pre-wrap break-words">{selectedSubmission.mpesaMessage}</p>
-              </div>
-              
-              <div>
-                <label className="text-xs sm:text-sm font-medium text-gray-500">Status</label>
-                <p>
-                  <span className={`px-3 py-1 text-sm font-semibold rounded-full ${
-                    selectedSubmission.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                    selectedSubmission.status === 'approved' ? 'bg-green-100 text-green-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
-                    {selectedSubmission.status?.toUpperCase()}
-                  </span>
-                </p>
-              </div>
-              
-              {selectedSubmission.status === 'approved' && selectedSubmission.ticketId && (
-                <div>
-                  <label className="text-xs sm:text-sm font-medium text-gray-500">Ticket ID</label>
-                  <p className="text-base sm:text-lg font-mono bg-green-50 p-3 rounded break-all">{selectedSubmission.ticketId}</p>
-                </div>
-              )}
-              
-              {selectedSubmission.status === 'rejected' && selectedSubmission.rejectionReason && (
-                <div>
-                  <label className="text-xs sm:text-sm font-medium text-gray-500">Rejection Reason</label>
-                  <p className="text-xs sm:text-sm bg-red-50 p-3 rounded">{selectedSubmission.rejectionReason}</p>
-                </div>
-              )}
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs sm:text-sm font-medium text-gray-500">Submitted At</label>
-                  <p className="text-xs sm:text-sm">
-                    {selectedSubmission.createdAt?.toDate
-                      ? selectedSubmission.createdAt.toDate().toLocaleString()
-                      : 'N/A'}
-                  </p>
-                </div>
-                {selectedSubmission.updatedAt && (
-                  <div>
-                    <label className="text-xs sm:text-sm font-medium text-gray-500">Last Updated</label>
-                    <p className="text-xs sm:text-sm">
-                      {selectedSubmission.updatedAt?.toDate
-                        ? selectedSubmission.updatedAt.toDate().toLocaleString()
-                        : new Date(selectedSubmission.updatedAt).toLocaleString()}
-                    </p>
-                  </div>
-                )}
-              </div>
-              
-              {selectedSubmission.approvedAt && (
-                <div>
-                  <label className="text-xs sm:text-sm font-medium text-gray-500">Approved At</label>
-                  <p className="text-xs sm:text-sm text-green-600">
-                    {selectedSubmission.approvedAt?.toDate
-                      ? selectedSubmission.approvedAt.toDate().toLocaleString()
-                      : new Date(selectedSubmission.approvedAt).toLocaleString()}
-                  </p>
-                </div>
-              )}
-            </div>
-            
-            <div className="mt-6 flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={() => setSelectedSubmission(null)}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm sm:text-base"
-              >
-                Close
-              </button>
-              {selectedSubmission.status === 'pending' && (
-                <>
-                  <button
-                    onClick={() => handleApprove(selectedSubmission)}
-                    disabled={loading}
-                    className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors text-sm sm:text-base"
-                  >
-                    <Check className="w-4 h-4 inline mr-2" />
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => setShowRejectModal(true)}
-                    disabled={loading}
-                    className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors text-sm sm:text-base"
-                  >
-                    <X className="w-4 h-4 inline mr-2" />
-                    Reject
-                  </button>
-                </>
-              )}
-              {selectedSubmission.status === 'rejected' && (
-                <button
-                  onClick={() => openEditModal(selectedSubmission)}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
-                >
-                  <Edit className="w-4 h-4 inline mr-2" />
-                  Edit & Resubmit
-                </button>
-              )}
-            </div>
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div className="bg-white rounded-lg max-w-2xl w-full p-4 sm:p-6 my-8 max-h-[90vh] overflow-y-auto">
+      <div className="flex justify-between items-start mb-4 sm:mb-6">
+        <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Submission Details</h3>
+        <button
+          onClick={() => setSelectedSubmission(null)}
+          className="text-gray-400 hover:text-gray-600 p-1"
+        >
+          <X className="w-5 h-5 sm:w-6 sm:h-6" />
+        </button>
+      </div>
+      
+      <div className="space-y-4 text-sm sm:text-base">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-xs sm:text-sm font-medium text-gray-500">Full Name</label>
+            <p className="text-base sm:text-lg text-gray-900">{selectedSubmission.fullName}</p>
+          </div>
+          <div>
+            <label className="text-xs sm:text-sm font-medium text-gray-500">Position</label>
+            <p className="text-base sm:text-lg text-gray-900">{selectedSubmission.position || 'N/A'}</p>
           </div>
         </div>
-      )}
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-xs sm:text-sm font-medium text-gray-500">Email</label>
+            <p className="text-base sm:text-lg break-all text-gray-900">{selectedSubmission.email}</p>
+          </div>
+          <div>
+            <label className="text-xs sm:text-sm font-medium text-gray-500">Phone</label>
+            <p className="text-base sm:text-lg text-gray-900">{selectedSubmission.phone}</p>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-xs sm:text-sm font-medium text-gray-500">Plan</label>
+            <p className="text-base sm:text-lg text-gray-900">{selectedSubmission.planName}</p>
+          </div>
+          <div>
+            <label className="text-xs sm:text-sm font-medium text-gray-500">Period</label>
+            <p className="text-base sm:text-lg text-gray-900">{selectedSubmission.planPeriod}</p>
+          </div>
+        </div>
+        
+        <div>
+          <label className="text-xs sm:text-sm font-medium text-gray-500">M-Pesa Transaction Code</label>
+          <p className="text-base sm:text-lg font-mono bg-gray-100 p-3 rounded break-all text-gray-900">
+            {selectedSubmission.mpesaCode}
+          </p>
+        </div>
+        
+        <div>
+          <label className="text-xs sm:text-sm font-medium text-gray-500">Amount Paid</label>
+          <p className="text-base sm:text-lg font-semibold text-gray-900">
+            KES {selectedSubmission.amount}
+          </p>
+        </div>
+        
+        <div>
+          <label className="text-xs sm:text-sm font-medium text-gray-500">M-Pesa Message</label>
+          <p className="text-xs sm:text-sm bg-gray-100 p-3 rounded whitespace-pre-wrap break-words text-gray-900">
+            {selectedSubmission.mpesaMessage}
+          </p>
+        </div>
+        
+        <div>
+          <label className="text-xs sm:text-sm font-medium text-gray-500">Status</label>
+          <p>
+            <span className={`px-3 py-1 text-sm font-semibold rounded-full ${
+              selectedSubmission.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+              selectedSubmission.status === 'approved' ? 'bg-green-100 text-green-800' :
+              'bg-red-100 text-red-800'
+            }`}>
+              {selectedSubmission.status?.toUpperCase()}
+            </span>
+          </p>
+        </div>
+        
+        {selectedSubmission.status === 'approved' && selectedSubmission.ticketId && (
+          <div>
+            <label className="text-xs sm:text-sm font-medium text-gray-500">Ticket ID</label>
+            <p className="text-base sm:text-lg font-mono bg-green-50 p-3 rounded break-all text-green-700">
+              {selectedSubmission.ticketId}
+            </p>
+          </div>
+        )}
+        
+        {selectedSubmission.status === 'rejected' && selectedSubmission.rejectionReason && (
+          <div>
+            <label className="text-xs sm:text-sm font-medium text-gray-500">Rejection Reason</label>
+            <p className="text-xs sm:text-sm bg-red-50 p-3 rounded text-red-700">
+              {selectedSubmission.rejectionReason}
+            </p>
+          </div>
+        )}
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-xs sm:text-sm font-medium text-gray-500">Submitted At</label>
+            <p className="text-xs sm:text-sm text-gray-900">
+              {selectedSubmission.createdAt?.toDate
+                ? selectedSubmission.createdAt.toDate().toLocaleString()
+                : 'N/A'}
+            </p>
+          </div>
+          {selectedSubmission.updatedAt && (
+            <div>
+              <label className="text-xs sm:text-sm font-medium text-gray-500">Last Updated</label>
+              <p className="text-xs sm:text-sm text-gray-900">
+                {selectedSubmission.updatedAt?.toDate
+                  ? selectedSubmission.updatedAt.toDate().toLocaleString()
+                  : new Date(selectedSubmission.updatedAt).toLocaleString()}
+              </p>
+            </div>
+          )}
+        </div>
+        
+        {selectedSubmission.approvedAt && (
+          <div>
+            <label className="text-xs sm:text-sm font-medium text-gray-500">Approved At</label>
+            <p className="text-xs sm:text-sm text-green-600">
+              {selectedSubmission.approvedAt?.toDate
+                ? selectedSubmission.approvedAt.toDate().toLocaleString()
+                : new Date(selectedSubmission.approvedAt).toLocaleString()}
+            </p>
+          </div>
+        )}
+      </div>
+      
+      <div className="mt-6 flex flex-col sm:flex-row gap-3">
+        <button
+          onClick={() => setSelectedSubmission(null)}
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm sm:text-base text-gray-700"
+        >
+          Close
+        </button>
+        {selectedSubmission.status === 'pending' && (
+          <>
+            <button
+              onClick={() => handleApprove(selectedSubmission)}
+              disabled={loading}
+              className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors text-sm sm:text-base"
+            >
+              <Check className="w-4 h-4 inline mr-2" />
+              Approve
+            </button>
+            <button
+              onClick={() => setShowRejectModal(true)}
+              disabled={loading}
+              className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors text-sm sm:text-base"
+            >
+              <X className="w-4 h-4 inline mr-2" />
+              Reject
+            </button>
+          </>
+        )}
+        {selectedSubmission.status === 'rejected' && (
+          <button
+            onClick={() => openEditModal(selectedSubmission)}
+            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
+          >
+            <Edit className="w-4 h-4 inline mr-2" />
+            Edit & Resubmit
+          </button>
+        )}
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };
