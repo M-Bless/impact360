@@ -110,7 +110,7 @@ export default function EventsPage() {
             </ul>
           </motion.div>
           <motion.div variants={{ hidden: { opacity: 0, scale: 0.95 }, visible: { opacity: 1, scale: 1 } }} className="flex justify-center">
-            <img src="https://res-console.cloudinary.com/drhvsxlkx/thumbnails/v1/image/upload/v1768651931/TWFwX3c5aTMydQ==/preview" alt="Roadshow Map" className="rounded-2xl shadow-xl w-full max-w-md" />
+            <img src="/events/map.jpg" alt="Roadshow Map" className="rounded-2xl shadow-xl w-full max-w-md" />
           </motion.div>
         </div>
       </motion.section>
