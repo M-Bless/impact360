@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Calendar, Sparkles, MapPin, Users, Lightbulb, Network, MessageCircle, ArrowDown } from "lucide-react";
+import { MapPin, Users, Lightbulb, Network, MessageCircle, ArrowDown } from "lucide-react";
 import { useDarkMode } from "../DarkModeContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
