@@ -182,12 +182,7 @@ export default function EventsPage() {
       </motion.section>
 
       {/* TOWNS SECTION */}
-      <motion.section
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="py-20 px-4 md:px-0 transition-colors"
-      >
+      <section className="py-20 px-4 md:px-0 transition-colors">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-4xl font-bold mb-8 text-center text-[#306CEC]"
             style={{
@@ -245,9 +240,8 @@ export default function EventsPage() {
                 desc: "Uganda's capital, a vibrant city with a growing tech ecosystem."
               }
             ].map((town, idx) => (
-              <motion.div
+              <div
                 key={town.name}
-                whileHover={{ scale: 1.04, boxShadow: "0 8px 32px #306CEC33" }}
                 className="relative rounded-2xl shadow-lg overflow-hidden group transition-all cursor-pointer"
                 style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}
               >
@@ -268,14 +262,14 @@ export default function EventsPage() {
                   </div>
                   <div className="text-gray-700 dark:text-gray-300 text-base">{town.desc}</div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
           <p className="text-center text-base mt-8 text-gray-600 dark:text-gray-400" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
             Additional towns may be added as partnerships and logistics are confirmed.
           </p>
         </div>
-      </motion.section>
+      </section>
 
       {/* WHO IT'S FOR SECTION */}
       <motion.section
