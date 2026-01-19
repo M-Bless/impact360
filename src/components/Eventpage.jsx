@@ -233,6 +233,16 @@ export default function EventsPage() {
                 name: "Kigali",
                 img: "/events/Kigali.jpg",
                 desc: "Rwanda's capital, a model for smart city growth."
+              },
+              {
+                name: "Addis Ababa",
+                img: "/events/Addis ababa.jpg",
+                desc: "Ethiopia's capital, a center for continental diplomacy and startups."
+              },
+              {
+                name: "Kampala",
+                img: "/events/Kampala.jpg",
+                desc: "Uganda's capital, a vibrant city with a growing tech ecosystem."
               }
             ].map((town, idx) => (
               <motion.div
