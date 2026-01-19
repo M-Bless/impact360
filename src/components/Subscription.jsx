@@ -1,6 +1,7 @@
 // Subscription.jsx - Fully Responsive Version
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+// eslint-disable-next-line no-unused-vars
 import { Ticket, BookOpen, Users, Gift, Check, X, Loader2, Copy, CheckCircle, CreditCard, ArrowRight } from "lucide-react";
 import { useDarkMode } from "../DarkModeContext";
 import Footer from "../components/Footer";
@@ -16,7 +17,7 @@ const EMAILJS_SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
 const EMAILJS_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 const TEMPLATE_USER = process.env.REACT_APP_EMAILJS_TEMPLATE_USER;
 const TEMPLATE_ADMIN = process.env.REACT_APP_EMAILJS_TEMPLATE_ADMIN;
-const ADMIN_EMAIL = 'Impact360.i3@gmail.com';
+//const ADMIN_EMAIL = 'Impact360.i3@gmail.com';
 
 const membershipBenefits = {
   Student: [
@@ -173,7 +174,7 @@ export default function Subscription() {
         notice_title: '⏰ What Happens Next?',
         notice_message: 'Our team will verify your M-Pesa payment within 24-48 hours. Once approved, you\'ll receive your event ticket with a QR code via email.',
         additional_info: `
-          <h3 style="margin-bottom: 10px;">Thank you . Our team will verify your M-Pesa payment within 24-48 hours. Once approved, you\'ll receive your event ticket with a QR code via email.</h3>
+          <h3 style="margin-bottom: 10px;">Thank you . Our team will verify your M-Pesa payment within 24-48 hours. Once approved, you'll receive your event ticket with a QR code via email.</h3>
           <h4 style="margin-bottom: 10px;">Important Reminders:</h4>
           <ul style="margin-top: 0;">
             <li>Check your email regularly (including spam/junk folder)</li>
@@ -723,12 +724,12 @@ export default function Subscription() {
                   <label className={`block text-xs sm:text-sm font-bold mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                     BUSINESS NUMBER (PAYBILL)
                   </label>
-                  <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="relative flex items-center">
                     <input
                       type="text"
                       value={MPESA_PAYBILL}
                       readOnly
-                      className={`flex-1 px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-bold text-xl sm:text-2xl text-center ${
+                      className={`w-full pr-12 px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-bold text-xl sm:text-2xl text-center ${
                         darkMode ? 'bg-[#1a1f3a] text-[#306CEC] border border-[#306CEC]/20' : 'bg-white text-[#306CEC] border border-gray-300'
                       }`}
                     />
@@ -736,9 +737,10 @@ export default function Subscription() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleCopy(MPESA_PAYBILL, 'paybill')}
-                      className={`p-2 sm:p-3 rounded-lg sm:rounded-xl transition-colors ${
+                      className={`absolute right-2 top-1/2 -translate-y-1/2 p-2 sm:p-3 rounded-lg sm:rounded-xl transition-colors ${
                         darkMode ? 'bg-[#306CEC] hover:bg-[#1a4d9e] text-white' : 'bg-[#306CEC] hover:bg-[#1a4d9e] text-white'
                       }`}
+                      style={{ lineHeight: 0 }}
                     >
                       {copied.paybill ? <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" /> : <Copy className="w-5 h-5 sm:w-6 sm:h-6" />}
                     </motion.button>
@@ -750,12 +752,12 @@ export default function Subscription() {
                   <label className={`block text-xs sm:text-sm font-bold mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                     ACCOUNT NUMBER
                   </label>
-                  <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="relative flex items-center">
                     <input
                       type="text"
                       value={MPESA_ACCOUNT}
                       readOnly
-                      className={`flex-1 px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-bold text-xl sm:text-2xl text-center ${
+                      className={`w-full pr-12 px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-bold text-xl sm:text-2xl text-center ${
                         darkMode ? 'bg-[#1a1f3a] text-[#306CEC] border border-[#306CEC]/20' : 'bg-white text-[#306CEC] border border-gray-300'
                       }`}
                     />
@@ -763,9 +765,10 @@ export default function Subscription() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleCopy(MPESA_ACCOUNT, 'account')}
-                      className={`p-2 sm:p-3 rounded-lg sm:rounded-xl transition-colors ${
+                      className={`absolute right-2 top-1/2 -translate-y-1/2 p-2 sm:p-3 rounded-lg sm:rounded-xl transition-colors ${
                         darkMode ? 'bg-[#306CEC] hover:bg-[#1a4d9e] text-white' : 'bg-[#306CEC] hover:bg-[#1a4d9e] text-white'
                       }`}
+                      style={{ lineHeight: 0 }}
                     >
                       {copied.account ? <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" /> : <Copy className="w-5 h-5 sm:w-6 sm:h-6" />}
                     </motion.button>

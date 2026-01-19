@@ -1,18 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import { Rocket, Calendar, Wrench, BookOpen, Briefcase, Globe, Zap, Building2, Users, Sparkles } from "lucide-react";
 import { useDarkMode } from "../DarkModeContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 export default function AboutPage() {
-  const navigate = useNavigate();
   const { darkMode } = useDarkMode();
-
-  const handleLearnMore = () => {
-    navigate('/programs');
-  };
 
   const perks = [
     {
