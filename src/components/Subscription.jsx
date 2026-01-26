@@ -883,37 +883,44 @@ export default function Subscription() {
                       <label className={`block text-xs sm:text-sm font-bold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
                         CITY *
                       </label>
-                      <select
-                        name="city"
-                        value={ticketFormData.city}
-                        onChange={handleTicketFormChange}
-                        required
-                        disabled={isProcessing}
-                        className={`w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border-2 transition-colors text-sm sm:text-base appearance-none pr-10 focus:outline-none focus:border-[#306CEC] ${
-                          darkMode 
-                            ? 'bg-black border-[#306CEC]/20 text-white placeholder-gray-500' 
-                            : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400'
-                        } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      >
-                        <option value="" disabled>Select your city</option>
-                        <option value="Nairobi">Nairobi</option>
-                        <option value="Mombasa">Mombasa</option>
-                        <option value="Kisumu">Kisumu</option>
-                        <option value="Eldoret">Eldoret</option>
-                        <option value="Nakuru">Nakuru</option>
-                        <option value="Thika">Thika</option>
-                        <option value="Machakos">Machakos</option>
-                        <option value="Other">Other</option>
-                      </select>
-                      <span className="pointer-events-none absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center">
-                        <span className="pointer-events-none absolute right-4 top-[60%] transform -translate-y-1/2 flex items-center">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#306CEC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 8l-7 8-7-8"/></svg>
+                      <div className="relative">
+                        <select
+                          name="city"
+                          value={ticketFormData.city}
+                          onChange={handleTicketFormChange}
+                          required
+                          disabled={isProcessing}
+                          className={`w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border-2 transition-colors text-sm sm:text-base appearance-none pr-12 focus:outline-none ${
+                            darkMode 
+                              ? 'bg-black border-[#306CEC]/20 text-white focus:border-[#306CEC] placeholder-gray-500' 
+                              : 'bg-white border-gray-200 text-gray-900 focus:border-[#306CEC] placeholder-gray-400'
+                          } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                          <option value="" disabled className="text-gray-500">Select the paid city event</option>
+                          <option value="Nakuru">Nakuru</option>
+                          <option value="Eldoret">Eldoret</option>
+                          <option value="Kisumu">Kisumu</option>
+                          <option value="Mombasa">Mombasa</option>
+                          <option value="Arusha">Arusha</option>
+                          <option value="Nairobi">Nairobi</option>
+                          <option value="Kigali">Kigali</option>
+                          <option value="Addis ababa">Addis ababa</option>
+                        </select>
+                        <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke={darkMode ? 'white' : 'black'}
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M19 8l-7 8-7-8" />
+                          </svg>
                         </span>
-                      </span>
-                      <span className="pointer-events-none absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center">
-                        <span className="pointer-events-none absolute right-4 top-1/2 transform -translate-y-[55%] flex items-center">
-                        </span>
-                      </span>
+                      </div>
                     </div>
                   )}
                 {/* Email */}
