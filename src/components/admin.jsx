@@ -84,45 +84,6 @@ const sendMembershipActivationEmail = async (submission, expiryDate) => {
 // EMAILJS CONFIGURATION - UPDATE THESE!
 // ========================================
 
-// ========================================
-// SUBSCRIBE TO NEWSLETTER FUNCTION
-// ========================================
-
-
-const subscribeToNewsletter = async (email) => {
-  if (!email) {
-    alert("Please enter an email");
-    return;
-  }
-
-  try {
-    // prevent duplicates
-    const q = query(
-      collection(db, "newsletterSubscribers"),
-      where("email", "==", email.toLowerCase())
-    );
-
-    const snapshot = await getDocs(q);
-    if (!snapshot.empty) {
-      alert("You're already subscribed 🙂");
-      return;
-    }
-
-    await addDoc(collection(db, "newsletterSubscribers"), {
-      email: email.toLowerCase(),
-      subscribedAt: new Date(),
-      status: "active",
-      source: "website-footer"
-    });
-
-    alert("Thanks for subscribing!");
-  } catch (error) {
-    console.error("Newsletter subscribe error:", error);
-    alert("Something went wrong. Try again.");
-  }
-};
-
-
 const AdminDashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loginEmail, setLoginEmail] = useState('');
@@ -595,10 +556,15 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
     
     setLoading(true);
     try {
+      // Filter out undefined values
+      const updateData = Object.fromEntries(
+        Object.entries(editData).filter(([_, value]) => value !== undefined && value !== '')
+      );
+      
       await updateDoc(doc(db, 'subscriptions', selectedSubmission.id), {
-        ...editData,
+        ...updateData,
         updatedAt: new Date().toISOString(),
-        updatedBy: currentUser.email
+        updatedBy: currentUser?.email || 'admin'
       });
       
       showNotification('Submission updated successfully', 'success');
@@ -635,6 +601,7 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
       position: submission.position,
       email: submission.email,
       phone: submission.phone,
+      city: submission.city,
       mpesaCode: submission.mpesaCode,
       mpesaMessage: submission.mpesaMessage,
       amount: submission.amount

@@ -88,18 +88,18 @@ export default function Subscription() {
   const subscriptionPlans = {
     spotlight: [
       { name: "Student", price: "999", period: "mo", features: ["1 event access"] },
-      { name: "Pro", price: "2,099", period: "mo", features: ["Access to event", "networking zone", "digital resources"], popular: true },
-      { name: "Premium", price: "4,099", period: "mo", features: ["VIP seating", "spotlight networking", "partner invites"] }
+      { name: "Pro", price: "2,099", period: "mo", features: ["1 event access", "networking zone", "digital resources"], popular: true },
+      { name: "Premium", price: "4,099", period: "mo", features: ["1 event access", "VIP seating", "spotlight networking", "partner invites"] }
     ],
     momentum: [
       { name: "Student", price: "2,847", period: "3mo", features: ["3 sessions", "1 free guest pass per quarter"], save: "150" },
       { name: "Pro", price: "5,982", period: "3mo", features: ["3 sessions", "1 VIP mixer invite"], save: "315", popular: true },
-      { name: "Premium", price: "11,682", period: "3mo", features: ["Exclusive roundtable access"], save: "615" }
+      { name: "Premium", price: "11,682", period: "3mo", features: ["3 sessions", "Exclusive roundtable access"], save: "615" }
     ],
     mastery: [
       { name: "Student", price: "5,395", period: "6mo", features: ["6 sessions", "growth toolkit"], save: "599" },
       { name: "Pro", price: "11,335", period: "6mo", features: ["6 sessions", "community membership"], save: "1,259", popular: true },
-      { name: "Premium", price: "22,135", period: "6mo", features: ["Mastermind dinner"], save: "2,459" }
+      { name: "Premium", price: "22,135", period: "6mo", features: ["6 sessions", "Mastermind dinner"], save: "2,459" }
     ],
     membership: [
       { name: "Student", price: "10,189", period: "yr", features: [
@@ -327,6 +327,7 @@ export default function Subscription() {
         fullName: ticketFormData.fullName,
         email: ticketFormData.email,
         phone: ticketFormData.phone,
+        city: ticketFormData.city,
         mpesaMessage: ticketFormData.mpesaMessage,
         mpesaCode: mpesaCode,
         amount: amount,
@@ -374,6 +375,7 @@ export default function Subscription() {
         fullName: '',
         email: '',
         phone: '',
+        city: '',
         mpesaMessage: ''
       });
       setShowTicketForm(false);
