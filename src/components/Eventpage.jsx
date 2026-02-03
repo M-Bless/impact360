@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { MapPin, Users, Lightbulb, Network, MessageCircle, ArrowDown } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useDarkMode } from "../DarkModeContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -195,72 +196,98 @@ export default function EventsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             { [
               {
-                name: "Nairobi",
-                img: "/events/Nairobi.jpg",
-                desc: "Kenya's capital, a vibrant tech and innovation hub."
-              },
-              {
                 name: "Nakuru",
                 img: "/events/Nakuru.jpg",
-                desc: "A fast-growing city with a dynamic youth ecosystem."
+                desc: "A fast-growing city with a dynamic youth ecosystem.",
+                date: "Feb 7, 2026"
               },
               {
                 name: "Eldoret",
                 img: "/events/Eldoret.jpg",
-                desc: "Known for its enterprising spirit and startups."
+                desc: "Known for its enterprising spirit and startups.",
+                date: "April 11, 2026"
               },
               {
                 name: "Kisumu",
                 img: "/events/Kisumu.jpg",
-                desc: "A lakeside city with a rising innovation scene."
+                desc: "A lakeside city with a rising innovation scene.",
+                date: "June 6, 2026"
+              },
+              {
+                name: "Nairobi",
+                img: "/events/Nairobi.jpg",
+                desc: "Kenya's capital, a vibrant tech and innovation hub.",
+                date: "Coming Soon"
               },
               {
                 name: "Mombasa",
                 img: "/events/Mombasa.jpg",
-                desc: "Coastal city blending trade, tourism, and tech."
+                desc: "Coastal city blending trade, tourism, and tech.",
+                date: "Coming Soon"
               },
               {
                 name: "Arusha",
                 img: "/events/Arusha.jpg",
-                desc: "Tanzania's gateway to East African entrepreneurship."
+                desc: "Tanzania's gateway to East African entrepreneurship.",
+                date: "Coming Soon"
               },
               {
                 name: "Kigali",
                 img: "/events/Kigali.jpg",
-                desc: "Rwanda's capital, a model for smart city growth."
+                desc: "Rwanda's capital, a model for smart city growth.",
+                date: "Coming Soon"
               },
               {
                 name: "Addis Ababa",
                 img: "/events/Addis ababa.jpg",
-                desc: "Ethiopia's capital, a center for continental diplomacy and startups."
+                desc: "Ethiopia's capital, a center for continental diplomacy and startups.",
+                date: "Coming Soon"
               },
               {
                 name: "Kampala",
                 img: "/events/Kampala.jpg",
-                desc: "Uganda's capital, a vibrant city with a growing tech ecosystem."
+                desc: "Uganda's capital, a vibrant city with a growing tech ecosystem.",
+                date: "Comming Soon"
               }
             ].map((town, idx) => (
               <div
                 key={town.name}
-                className="relative rounded-2xl shadow-lg overflow-hidden group transition-all cursor-pointer"
+                className="relative rounded-2xl shadow-lg group transition-all cursor-pointer"
                 style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}
               >
-                <div className="h-40 w-full overflow-hidden">
+                <div className="relative h-40 w-full overflow-hidden rounded-t-2xl">
                   <img
                     src={town.img}
                     alt={town.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <div
+                      className="text-center flex flex-col items-center"
+                    >
+                      <div className="text-white font-bold text-lg mb-2" style={{ fontFamily: "'League Spartan', Arial, sans-serif", textTransform: "uppercase", letterSpacing: "0.1em", textShadow: "0 2px 8px rgba(0, 0, 0, 0.8)" }}>
+                        Event Date
+                      </div>
+                      <div className="text-[#4A80FF] font-extrabold text-2xl mb-4" style={{ fontFamily: "'League Spartan', Arial, sans-serif", textShadow: "0 2px 8px rgba(0, 0, 0, 0.8)" }}>
+                        {town.date}
+                      </div>
+                      <Link to="/subscription" className="px-6 py-2 bg-[#306CEC] text-white rounded-lg font-semibold hover:bg-[#4A80FF] transition-colors duration-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
+                        Get Ticket
+                      </Link>
+                    </div>
+                  </div>
                 </div>
                 <div className="absolute top-4 left-4 bg-[#306CEC] text-white rounded-full p-2 shadow-lg">
                   <MapPin className="w-6 h-6" />
                 </div>
-                <div className="p-6 pt-4 flex flex-col items-start">
-                  <div className="font-bold text-xl mb-2 text-[#306CEC] group-hover:text-[#4A80FF] transition-colors" style={{ fontFamily: "'League Spartan', Arial, sans-serif", textTransform: "uppercase" }}>
-                    {town.name}
+                <div className="p-6 pt-4 flex flex-col items-start justify-between min-h-32">
+                  <div>
+                    <div className="font-bold text-xl mb-2 text-[#306CEC] group-hover:text-[#4A80FF] transition-colors" style={{ fontFamily: "'League Spartan', Arial, sans-serif", textTransform: "uppercase" }}>
+                      {town.name}
+                    </div>
+                    <div className="text-gray-700 dark:text-gray-300 text-base">{town.desc}</div>
                   </div>
-                  <div className="text-gray-700 dark:text-gray-300 text-base">{town.desc}</div>
                 </div>
               </div>
             ))}
@@ -297,6 +324,7 @@ export default function EventsPage() {
               { label: "Students & young innovators", icon: Lightbulb },
               { label: "SME builders", icon: Network },
               { label: "Ecosystem enablers, hubs, leaders", icon: MessageCircle },
+              { label: "Policy Makers & Think Tanks", icon: Users },
               { label: "Partners for decentralization impact", icon: MapPin }
             ].map(({ label, icon: Icon }, i) => (
               <motion.div
@@ -331,7 +359,7 @@ export default function EventsPage() {
             Get Involved
           </h2>
           <p className="text-lg md:text-xl mb-8 text-gray-700 dark:text-gray-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-            Want to help shape the future of entrepreneurship across Africa? There are many ways to get involved with the Impact360 Roadshow.
+            Decentralized innovation thrives when opportunities reach every corner. Help us bring entrepreneurship and technology solutions to underserved communities. There are many ways to champion decentralized growth with the Impact360 Roadshow.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             <motion.div
@@ -359,7 +387,7 @@ export default function EventsPage() {
               className="rounded-2xl p-6 flex flex-col items-center gap-3 border border-[#306CEC]/10"
             >
               <Users className="w-8 h-8 text-[#306CEC]" />
-              <div className="font-bold text-lg text-[#306CEC]">Volunteer & Support</div>
+              <div className="font-bold text-lg text-[#306CEC]">Fellowship program</div>
               <div className="text-gray-700 dark:text-gray-300 text-base text-center">
                 Help with logistics, outreach, or content. Be part of the team making decentralization real.
               </div>
