@@ -262,7 +262,7 @@ export default function Footer() {
                 <p className={`font-semibold text-lg mb-1 ${
                   darkMode ? 'text-white' : 'text-[#FFFEF9]'
                 }`}>
-                  © 2025 Impact360. All Rights Reserved.
+                  © 2026 Impact360. All Rights Reserved.
                 </p>
                 <p className={`text-sm ${
                   darkMode ? 'text-gray-400' : 'text-[#FFFEF9]/70'
