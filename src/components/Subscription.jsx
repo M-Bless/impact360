@@ -88,18 +88,18 @@ export default function Subscription() {
   const subscriptionPlans = {
     spotlight: [
       { name: "Student", price: "999", period: "mo", features: ["1 event access"] },
-      { name: "Pro", price: "2,099", period: "mo", features: ["1 event access", "networking zone", "digital resources"], popular: true },
-      { name: "Premium", price: "4,099", period: "mo", features: ["1 event access", "VIP seating", "spotlight networking", "partner invites"] }
+      { name: "Pro", price: "2,099", period: "mo", features: ["1 event access"], popular: true },
+      { name: "Premium", price: "4,099", period: "mo", features: ["1 event access"] }
     ],
     momentum: [
-      { name: "Student", price: "2,847", period: "3mo", features: ["3 sessions", "1 free guest pass per quarter"], save: "150" },
-      { name: "Pro", price: "5,982", period: "3mo", features: ["3 sessions", "1 VIP mixer invite"], save: "315", popular: true },
-      { name: "Premium", price: "11,682", period: "3mo", features: ["3 sessions", "Exclusive roundtable access"], save: "615" }
+      { name: "Student", price: "2,847", period: "3mo", features: ["3 sessions"], save: "150" },
+      { name: "Pro", price: "5,982", period: "3mo", features: ["3 sessions"], save: "315", popular: true },
+      { name: "Premium", price: "11,682", period: "3mo", features: ["3 sessions"], save: "615" }
     ],
     mastery: [
-      { name: "Student", price: "5,395", period: "6mo", features: ["6 sessions", "growth toolkit"], save: "599" },
-      { name: "Pro", price: "11,335", period: "6mo", features: ["6 sessions", "community membership"], save: "1,259", popular: true },
-      { name: "Premium", price: "22,135", period: "6mo", features: ["6 sessions", "Mastermind dinner"], save: "2,459" }
+      { name: "Student", price: "5,395", period: "6mo", features: ["6 sessions"], save: "599" },
+      { name: "Pro", price: "11,335", period: "6mo", features: ["6 sessions"], save: "1,259", popular: true },
+      { name: "Premium", price: "22,135", period: "6mo", features: ["6 sessions"], save: "2,459" }
     ],
     membership: [
       { name: "Student", price: "10,189", period: "yr", features: [
@@ -268,6 +268,7 @@ export default function Subscription() {
       setShowPaymentInfo(true);
     } else {
       // For Spotlight, Momentum, Mastery - go directly to payment
+      setPendingPlan(plan);
       setSubscriptionType('Events');
       setPlanToSubscribe(plan);
       setShowPaymentInfo(true);
@@ -602,7 +603,7 @@ export default function Subscription() {
                 transition={{ delay: index * 0.1, duration: 0.6 }} 
                 viewport={{ once: true }}
                 whileHover={{ y: -10, scale: plan.popular ? 1.02 : 1.05 }}
-                className={`relative rounded-2xl sm:rounded-3xl p-6 sm:p-7 md:p-8 shadow-2xl flex flex-col transition-colors duration-1000 ${
+                className={`relative rounded-2xl sm:rounded-3xl p-8 sm:p-10 md:p-12 shadow-2xl flex flex-col transition-colors duration-1000 ${
                   plan.popular
                     ? darkMode
                       ? 'bg-black border-2 border-[#306CEC] text-white'
@@ -612,7 +613,7 @@ export default function Subscription() {
                     : 'bg-white text-gray-900'
                 }`}
               >
-                <div className="text-center mb-6 sm:mb-8">
+                <div className="text-center mb-8 sm:mb-10">
                   <h3 className={`text-2xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4 ${plan.popular ? darkMode ? 'text-[#306CEC]' : 'text-white' : darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
                     {plan.name.toUpperCase()}
                   </h3>
@@ -628,14 +629,13 @@ export default function Subscription() {
                   <div className="flex items-baseline justify-center gap-1 sm:gap-2">
                     <span className="text-base sm:text-lg">KES.</span>
                     <span className="text-3xl sm:text-4xl md:text-5xl font-bold">{plan.price}</span>
-                    <span className="text-base sm:text-lg">/{plan.period}</span>
                   </div>
                   <div className={`text-xs sm:text-sm mt-2 sm:mt-3 ${plan.popular ? darkMode ? 'text-gray-400' : 'text-white/80' : darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                     Subscription
                   </div>
                 </div>
 
-                <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8 flex-grow">
+                <div className="space-y-4 sm:space-y-5 mb-8 sm:mb-10 flex-grow">
                   <AnimatePresence mode="wait">
                     {visibleFeatures.map((feature, i) => (
                       <motion.div 
