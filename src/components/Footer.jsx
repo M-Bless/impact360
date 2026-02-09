@@ -25,14 +25,6 @@ export default function Footer() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const scrollToSection = (sectionId) => {
-    const element = document
-      .getElementById(sectionId.toLowerCase().replace(/\s+/g, "-"));
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <motion.footer
       initial={{ opacity: 0, y: 40 }}
