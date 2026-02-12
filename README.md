@@ -40,5 +40,5 @@ It serves as a central hub for participants, partners, sponsors, and ecosystem p
 
 ---
 
-##To view the website go to
+## To view the website go to
 https://www.impact360.africa/
