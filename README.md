@@ -1,5 +1,3 @@
-
-
 # Impact360 Website
 
 ## 🌍 About the Project
