@@ -150,9 +150,14 @@ export default function Campaign() {
                   </p>
 
                   {hoveredCard === track.id && (
-                    <div className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-blue-600">
+                    <a
+                      href="https://impact360-os.vercel.app/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors"
+                    >
                       <Play className="w-4 h-4" fill="currentColor" /> Explore track
-                    </div>
+                    </a>
                   )}
                 </motion.div>
               );
