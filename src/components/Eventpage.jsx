@@ -682,14 +682,14 @@ const videos = [
 ];
 
 function VideoCard({ video, cardIndex, cardRef, darkMode }) {
-  const [playing, setPlaying] = React.useState(false);
+  const isMobile = window.innerWidth < 768;
 
   return (
     <div
       ref={cardRef}
       style={{
         position: "absolute",
-        width: "min(200px, 22vw)",
+        width: isMobile ? "min(150px, 80vw)" : "min(200px, 22vw)",
         borderRadius: "20px",
         overflow: "hidden",
         willChange: "transform, opacity, filter",
@@ -707,73 +707,61 @@ function VideoCard({ video, cardIndex, cardRef, darkMode }) {
     >
       {/* Portrait 9:16 ratio for Shorts */}
       <div style={{ position: "relative", aspectRatio: "9/16", overflow: "hidden", background: "#000" }}>
-        {playing ? (
-          <iframe
-            src={`https://www.youtube.com/embed/${video.youtubeId}?autoplay=1&loop=1&playlist=${video.youtubeId}&rel=0`}
-            title={video.title}
-            allow="autoplay; encrypted-media; fullscreen"
-            allowFullScreen
-            style={{ width: "100%", height: "100%", border: "none", display: "block" }}
-          />
-        ) : (
-          <>
-            <img
-              src={video.thumb}
-              alt={video.title}
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
-              onError={e => { e.target.src = `https://placehold.co/400x711/306CEC/ffffff?text=${encodeURIComponent(video.location)}`; }}
-            />
-            {/* Gradient */}
-            <div style={{
-              position: "absolute", inset: 0,
-              background: "linear-gradient(to top, rgba(48,108,236,0.92) 0%, rgba(48,108,236,0.25) 45%, transparent 70%)",
-            }} />
-            {/* Play button — opacity driven by RAF */}
-            <div className="play-btn" style={{
-              position: "absolute", top: "50%", left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "52px", height: "52px", borderRadius: "50%",
-              background: "rgba(255,255,255,0.95)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              boxShadow: "0 4px 24px rgba(48,108,236,0.5)",
-              opacity: 0, pointerEvents: "none",
-            }}>
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                <path d="M5 3.5l12 6.5-12 6.5V3.5z" fill="#306CEC" />
-              </svg>
-            </div>
-            {/* Tag */}
-            <div style={{
-              position: "absolute", top: "12px", left: "12px",
-              background: "#306CEC", color: "#fff", borderRadius: "6px",
-              padding: "4px 10px", fontSize: "8px", fontWeight: 800,
-              letterSpacing: "0.12em", fontFamily: "'League Spartan', sans-serif",
-            }}>
-              {video.tag}
-            </div>
-            {/* Shorts badge */}
-            <div style={{
-              position: "absolute", top: "12px", right: "12px",
-              background: "rgba(0,0,0,0.5)", backdropFilter: "blur(6px)",
-              borderRadius: "6px", padding: "3px 7px",
-              display: "flex", alignItems: "center", gap: "3px",
-            }}>
-              <svg width="10" height="12" viewBox="0 0 24 24" fill="#fff">
-                <path d="M13.5 2.14L11 6.27l-1.55-.9A5 5 0 004 10a5 5 0 005 5h1v2H9a7 7 0 110-14 7 7 0 011.5.16L13.5 2.14zM15 5a7 7 0 11-1.5 13.84l-2.5-4.13L12.55 13A5 5 0 0020 10a5 5 0 00-5-5z"/>
-              </svg>
-              <span style={{ color: "#fff", fontSize: "8px", fontWeight: 800, fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.06em" }}>SHORTS</span>
-            </div>
-            {/* Bottom title overlay */}
-            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px 14px 14px" }}>
-              <p style={{ color: "rgba(255,255,255,0.65)", fontSize: "8px", fontWeight: 700, letterSpacing: "0.1em", margin: "0 0 4px", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>
-                {video.location}
-              </p>
-              <p style={{ color: "#fff", fontSize: "12px", fontWeight: 800, lineHeight: 1.25, margin: 0, textTransform: "uppercase", letterSpacing: "0.01em", fontFamily: "'League Spartan', sans-serif" }}>
-                {video.title}
-              </p>
-            </div>
-          </>
-        )}
+        <img
+          src={video.thumb}
+          alt={video.title}
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
+          onError={e => { e.target.src = `https://placehold.co/400x711/306CEC/ffffff?text=${encodeURIComponent(video.location)}`; }}
+        />
+        {/* Gradient */}
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(to top, rgba(48,108,236,0.92) 0%, rgba(48,108,236,0.25) 45%, transparent 70%)",
+        }} />
+        {/* Play button — opacity driven by RAF */}
+        <div className="play-btn" style={{
+          position: "absolute", top: "50%", left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "52px", height: "52px", borderRadius: "50%",
+          background: "rgba(255,255,255,0.95)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: "0 4px 24px rgba(48,108,236,0.5)",
+          opacity: 0, pointerEvents: "none",
+        }}>
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+            <path d="M5 3.5l12 6.5-12 6.5V3.5z" fill="#306CEC" />
+          </svg>
+        </div>
+        {/* Tag */}
+        <div style={{
+          position: "absolute", top: "12px", left: "12px",
+          background: "#306CEC", color: "#fff", borderRadius: "6px",
+          padding: "4px 10px", fontSize: "8px", fontWeight: 800,
+          letterSpacing: "0.12em", fontFamily: "'League Spartan', sans-serif",
+        }}>
+          {video.tag}
+        </div>
+        {/* Shorts badge */}
+        <div style={{
+          position: "absolute", top: "12px", right: "12px",
+          background: "rgba(0,0,0,0.5)", backdropFilter: "blur(6px)",
+          borderRadius: "6px", padding: "3px 7px",
+          display: "flex", alignItems: "center", gap: "3px",
+        }}>
+          <svg width="10" height="12" viewBox="0 0 24 24" fill="#fff">
+            <path d="M13.5 2.14L11 6.27l-1.55-.9A5 5 0 004 10a5 5 0 005 5h1v2H9a7 7 0 110-14 7 7 0 011.5.16L13.5 2.14zM15 5a7 7 0 11-1.5 13.84l-2.5-4.13L12.55 13A5 5 0 0020 10a5 5 0 00-5-5z"/>
+          </svg>
+          <span style={{ color: "#fff", fontSize: "8px", fontWeight: 800, fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.06em" }}>SHORTS</span>
+        </div>
+        {/* Bottom title overlay */}
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px 14px 14px" }}>
+          <p style={{ color: "rgba(255,255,255,0.65)", fontSize: "8px", fontWeight: 700, letterSpacing: "0.1em", margin: "0 0 4px", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>
+            {video.location}
+          </p>
+          <p style={{ color: "#fff", fontSize: "12px", fontWeight: 800, lineHeight: 1.25, margin: 0, textTransform: "uppercase", letterSpacing: "0.01em", fontFamily: "'League Spartan', sans-serif" }}>
+            {video.title}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -873,62 +861,85 @@ function VideoHighlights({ darkMode }) {
 
   const first = videos[0];
 
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
+
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <div ref={containerRef} style={{ position: "relative", height: `${100 + videos.length * 90}vh` }}>
+    <div ref={containerRef} style={{ position: "relative", height: isMobile ? `${150 + videos.length * 120}vh` : `${100 + videos.length * 90}vh` }}>
       <div style={{
         position: "sticky", top: 0, height: "100vh", overflow: "hidden",
         background: darkMode
           ? "radial-gradient(ellipse at 65% 50%, rgba(48,108,236,0.15) 0%, #000 60%)"
           : "radial-gradient(ellipse at 65% 50%, rgba(48,108,236,0.08) 0%, #FFFEF9 60%)",
         display: "flex",
+        flexDirection: isMobile ? "column" : "row",
       }}>
 
         {/* LEFT PANEL */}
         <div style={{
-          width: "40%", minWidth: "260px",
-          display: "flex", flexDirection: "column", justifyContent: "space-between",
-          padding: "80px 48px 52px",
-          borderRight: `1px solid ${darkMode ? "rgba(48,108,236,0.12)" : "rgba(48,108,236,0.08)"}`,
+          width: isMobile ? "100%" : "40%",
+          display: "flex", flexDirection: "column", justifyContent: isMobile ? "flex-start" : "space-between",
+          padding: isMobile ? "40px 20px 30px" : "80px 48px 52px",
+          borderRight: isMobile ? "none" : `1px solid ${darkMode ? "rgba(48,108,236,0.12)" : "rgba(48,108,236,0.08)"}`,
+          borderBottom: isMobile ? `1px solid ${darkMode ? "rgba(48,108,236,0.12)" : "rgba(48,108,236,0.08)"}` : "none",
+          minHeight: isMobile ? "auto" : "100vh",
         }}>
           <div>
-            <p style={{ fontSize: "10px", fontWeight: 800, letterSpacing: "0.18em", color: "#306CEC", margin: "0 0 12px", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>
+            <p style={{ fontSize: isMobile ? "9px" : "10px", fontWeight: 800, letterSpacing: "0.18em", color: "#306CEC", margin: "0 0 12px", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>
               IMPACT360 ROADSHOW
             </p>
-            <h2 style={{ fontSize: "clamp(40px, 5.5vw, 72px)", fontWeight: 900, lineHeight: 0.9, letterSpacing: "-0.04em", margin: "0 0 20px", fontFamily: "'League Spartan', sans-serif", textTransform: "uppercase", color: darkMode ? "#fff" : "#111" }}>
+            <h2 style={{ fontSize: isMobile ? "clamp(28px, 6vw, 48px)" : "clamp(40px, 5.5vw, 72px)", fontWeight: 900, lineHeight: 0.9, letterSpacing: "-0.04em", margin: "0 0 16px", fontFamily: "'League Spartan', sans-serif", textTransform: "uppercase", color: darkMode ? "#fff" : "#111" }}>
               EVENT<br /><span style={{ color: "#306CEC" }}>HIGHLIGHTS</span>
             </h2>
-            <p style={{ fontSize: "14px", lineHeight: 1.6, color: darkMode ? "#888" : "#666", fontFamily: "'DM Sans', sans-serif", maxWidth: "280px" }}>
+            <p style={{ fontSize: isMobile ? "13px" : "14px", lineHeight: 1.6, color: darkMode ? "#888" : "#666", fontFamily: "'DM Sans', sans-serif", maxWidth: "280px" }}>
               Watch moments from across Africa — pitches, panels, and connections that are reshaping innovation.
             </p>
           </div>
-          <div>
-            <div style={{ borderTop: `1px solid ${darkMode ? "rgba(48,108,236,0.18)" : "rgba(48,108,236,0.12)"}`, paddingTop: "22px", marginBottom: "22px" }}>
-              <span ref={tagRef} style={{ display: "inline-block", background: "#306CEC", color: "#fff", borderRadius: "6px", padding: "3px 10px", fontSize: "9px", fontWeight: 800, letterSpacing: "0.12em", marginBottom: "10px", fontFamily: "'League Spartan', sans-serif" }}>
-                {first.tag}
-              </span>
-              <p ref={titleRef} style={{ fontSize: "16px", fontWeight: 700, lineHeight: 1.25, color: darkMode ? "#fff" : "#111", fontFamily: "'League Spartan', sans-serif", textTransform: "uppercase", margin: "0 0 6px" }}>
-                {first.title}
-              </p>
-              <p ref={locationRef} style={{ fontSize: "11px", fontWeight: 600, color: "#306CEC", fontFamily: "'DM Sans', sans-serif", margin: 0, letterSpacing: "0.04em" }}>
-                {first.location} · {first.date}
-              </p>
+          {!isMobile && (
+            <div>
+              <div style={{ borderTop: `1px solid ${darkMode ? "rgba(48,108,236,0.18)" : "rgba(48,108,236,0.12)"}`, paddingTop: "22px", marginBottom: "22px" }}>
+                <span ref={tagRef} style={{ display: "inline-block", background: "#306CEC", color: "#fff", borderRadius: "6px", padding: "3px 10px", fontSize: "9px", fontWeight: 800, letterSpacing: "0.12em", marginBottom: "10px", fontFamily: "'League Spartan', sans-serif" }}>
+                  {first.tag}
+                </span>
+                <p ref={titleRef} style={{ fontSize: "16px", fontWeight: 700, lineHeight: 1.25, color: darkMode ? "#fff" : "#111", fontFamily: "'League Spartan', sans-serif", textTransform: "uppercase", margin: "0 0 6px" }}>
+                  {first.title}
+                </p>
+                <p ref={locationRef} style={{ fontSize: "11px", fontWeight: 600, color: "#306CEC", fontFamily: "'DM Sans', sans-serif", margin: 0, letterSpacing: "0.04em" }}>
+                  {first.location} · {first.date}
+                </p>
+              </div>
+              <div style={{ display: "flex", gap: "7px" }}>
+                {videos.map((_, i) => (
+                  <div key={i} ref={pipRefs.current[i]} style={{
+                    height: "3px", borderRadius: "2px",
+                    width: i === 0 ? "28px" : "10px",
+                    background: i === 0 ? "#306CEC" : (darkMode ? "rgba(255,255,255,0.12)" : "#ddd"),
+                    transition: "width 0.35s ease, background 0.35s ease",
+                  }} />
+                ))}
+              </div>
             </div>
-            <div style={{ display: "flex", gap: "7px" }}>
-              {videos.map((_, i) => (
-                <div key={i} ref={pipRefs.current[i]} style={{
-                  height: "3px", borderRadius: "2px",
-                  width: i === 0 ? "28px" : "10px",
-                  background: i === 0 ? "#306CEC" : (darkMode ? "rgba(255,255,255,0.12)" : "#ddd"),
-                  transition: "width 0.35s ease, background 0.35s ease",
-                }} />
-              ))}
-            </div>
-          </div>
+          )}
         </div>
 
         {/* RIGHT PANEL */}
-        <div style={{ flex: 1, position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ position: "absolute", width: "380px", height: "380px", borderRadius: "50%", background: "radial-gradient(circle, rgba(48,108,236,0.18) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{
+          flex: isMobile ? "none" : 1,
+          width: isMobile ? "100%" : "auto",
+          position: "relative",
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: isMobile ? "60vh" : "100vh",
+          padding: isMobile ? "20px" : "0"
+        }}>
+          <div style={{ position: "absolute", width: isMobile ? "200px" : "380px", height: isMobile ? "200px" : "380px", borderRadius: "50%", background: "radial-gradient(circle, rgba(48,108,236,0.18) 0%, transparent 70%)", pointerEvents: "none" }} />
 
           {videos.map((video, i) => (
             <VideoCard
@@ -940,12 +951,12 @@ function VideoHighlights({ darkMode }) {
             />
           ))}
 
-          <div ref={hintRef} style={{ position: "absolute", bottom: "44px", right: "40px", display: "flex", alignItems: "center", gap: "10px", opacity: 1, pointerEvents: "none" }}>
+          <div ref={hintRef} style={{ position: "absolute", bottom: isMobile ? "20px" : "44px", right: isMobile ? "20px" : "40px", display: "flex", alignItems: "center", gap: "10px", opacity: 1, pointerEvents: "none" }}>
             <div style={{ width: "40px", height: "2px", borderRadius: "1px", background: "linear-gradient(to right, transparent, #306CEC)" }} />
             <p style={{ color: "#306CEC", fontSize: "9px", fontWeight: 800, letterSpacing: "0.16em", margin: 0, textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>SCROLL</p>
           </div>
 
-          <div ref={counterRef} style={{ position: "absolute", top: "44px", right: "40px", color: darkMode ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.25)", fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em", fontFamily: "'DM Sans', sans-serif" }}>
+          <div ref={counterRef} style={{ position: "absolute", top: isMobile ? "20px" : "44px", right: isMobile ? "20px" : "40px", color: darkMode ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.25)", fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em", fontFamily: "'DM Sans', sans-serif" }}>
             01 / {String(videos.length).padStart(2, "0")}
           </div>
         </div>
