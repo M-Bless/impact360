@@ -23,7 +23,6 @@ const Navbar = () => {
     "/about",
     "/programs",
     "/subscription",
-    "/campaign",
   ];
 
   // Navbar Background logic
@@ -147,7 +146,6 @@ const Navbar = () => {
               { name: "Programs", path: "/programs" },
               { name: "Events", path: "/events" },
               { name: "Subscription", path: "/subscription" },
-              { name: "Campaign", path: "/campaign" },
             ].map((item) => (
               <li key={item.name} className="relative group cursor-pointer">
                 <Link to={item.path}>
@@ -222,7 +220,6 @@ const Navbar = () => {
               <Link to="/programs" onClick={() => setMenuOpen(false)}>Programs</Link>
               <Link to="/events" onClick={() => setMenuOpen(false)}>Events</Link>
               <Link to="/subscription" onClick={() => setMenuOpen(false)}>Subscription</Link>
-              <Link to="/campaign" onClick={() => setMenuOpen(false)}>Campaign</Link>
 
               <p
                 onClick={() => scrollToSection("Join Community")}

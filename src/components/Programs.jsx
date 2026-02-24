@@ -407,6 +407,161 @@ export default function ProgramsPage() {
         </div>
       </section>
 
+      {/* IMPACT360 OS SECTION */}
+      <section className={`py-24 px-6 transition-colors duration-1000 ${
+        darkMode
+          ? 'bg-[#000000]'
+          : 'bg-gradient-to-b from-[#F5F5F0] to-[#FFFEF9]'
+      }`}>
+        <motion.div
+          className="absolute top-0 left-0 w-full h-full opacity-5"
+          style={{
+            backgroundImage: 'radial-gradient(circle, #306CEC 1px, transparent 1px)',
+            backgroundSize: '50px 50px'
+          }}
+        />
+        
+        <div className="max-w-7xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <motion.div
+              initial={{ scale: 0,}}
+              whileInView={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 0.5, }}
+              className="inline-block mb-6"
+            >
+              <div className={`px-6 py-3 rounded-full font-bold text-sm uppercase tracking-wider shadow-2xl ${
+                darkMode
+                  ? 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF] text-white'
+                  : 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF] text-white'
+              }`}>
+                 Our Infrastructure
+              </div>
+            </motion.div>
+            
+            <h2 className={`text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent ${
+              darkMode
+                ? 'bg-gradient-to-r from-[#306CEC] via-[#4A80FF] to-[#306CEC]'
+                : 'bg-gradient-to-r from-[#306CEC] via-[#4A80FF] to-[#306CEC]'
+            }`}>
+              Impact360 OS
+            </h2>
+            
+            <p className={`text-2xl font-semibold mb-4 ${darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'}`}>
+              The Operating System For African Builders
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* CONTENT */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <p className={`text-xl leading-relaxed mb-8 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                A comprehensive ecosystem designed to <span className={`font-bold ${darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'}`}>empower African entrepreneurs</span> with <span className={`font-bold ${darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'}`}>tools, networks</span>, and <span className={`font-bold ${darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'}`}>resources</span> to build world-class solutions.
+              </p>
+
+              <div className={`space-y-6 mb-10 p-8 rounded-2xl border transition-colors duration-1000 ${
+                darkMode
+                  ? 'bg-[#1a1f3a] border-[#306CEC]/30'
+                  : 'bg-white border-[#306CEC]/10 shadow-lg'
+              }`}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="flex items-start gap-4 group"
+                >
+                  <Laptop className={`w-6 h-6 flex-shrink-0 mt-1 group-hover:scale-125 transition-transform ${
+                    darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'
+                  }`} strokeWidth={2} />
+                  <div>
+                    <h4 className={`text-lg font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Complete Tech Stack</h4>
+                    <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Access to cutting-edge tools and technologies</p>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="flex items-start gap-4 group"
+                >
+                  <Users className={`w-6 h-6 flex-shrink-0 mt-1 group-hover:scale-125 transition-transform ${
+                    darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'
+                  }`} strokeWidth={2} />
+                  <div>
+                    <h4 className={`text-lg font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Global Network</h4>
+                    <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Connect with builders and investors across Africa</p>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="flex items-start gap-4 group"
+                >
+                  <Globe className={`w-6 h-6 flex-shrink-0 mt-1 group-hover:scale-125 transition-transform ${
+                    darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'
+                  }`} strokeWidth={2} />
+                  <div>
+                    <h4 className={`text-lg font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Scale Globally</h4>
+                    <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Build in Africa, scale to the world</p>
+                  </div>
+                </motion.div>
+              </div>
+
+              <motion.a
+                href="https://impact360-os.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5 }}
+                whileHover={{ scale: 1.05 }}
+                className={`inline-block p-6 rounded-2xl text-center font-bold text-lg shadow-2xl cursor-pointer transition-all ${
+                  darkMode
+                    ? 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF] text-white hover:shadow-3xl'
+                    : 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF] text-white hover:shadow-3xl'
+                }`}
+              >
+                Join the operating system built for African innovation.
+              </motion.a>
+            </motion.div>
+
+            {/* IMAGE */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.03 }}
+              className="relative rounded-3xl overflow-hidden shadow-2xl group"
+            >
+              <img
+                src="https://i.pinimg.com/736x/f5/e8/72/f5e87230f73c9811d9f9a69feb392b5a.jpg"
+                alt="Impact360 OS"
+                className="w-full h-[500px] object-cover group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className={`absolute inset-0 ${
+                darkMode
+                  ? 'bg-gradient-to-t from-[#306CEC]/80 via-[#306CEC]/20 to-transparent'
+                  : 'bg-gradient-to-t from-[#306CEC]/70 via-[#306CEC]/20 to-transparent'
+              }`}></div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* Events Overview Section */}
       <section className={`py-24 px-6 transition-colors duration-1000 ${
         darkMode

@@ -8,7 +8,6 @@ import Eventpage from "./components/Eventpage.jsx";
 import Subscription from "./components/Subscription.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
-import Campaign from "./components/Campaign.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 import AdminDashboard from "./components/admin.jsx";
 import TicketVerification from "./components/TicketVerification.jsx";
@@ -29,7 +28,6 @@ export default function App() {
             <Route path="*" element={<HomePage />} />
             <Route path="/navbar" element={<Navbar />} />
             <Route path="/footer" element={<Footer />} />
-            <Route path="/campaign" element={<Campaign />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/verify" element={<TicketVerification />} />
           </Routes>
