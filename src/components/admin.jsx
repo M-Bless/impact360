@@ -93,6 +93,8 @@ const AdminDashboard = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [submissions, setSubmissions] = useState([]);
   const [filter, setFilter] = useState('pending');
+  const [planFilter, setPlanFilter] = useState('all');
+  const [tierFilter, setTierFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [rejectionReason, setRejectionReason] = useState('');
@@ -615,6 +617,14 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
       if (filter === 'event' || filter === 'membership') return s.type === filter;
       return s.status === filter;
     })
+    .filter(s => {
+      if (planFilter === 'all') return true;
+      return s.planPeriod === planFilter;
+    })
+    .filter(s => {
+      if (tierFilter === 'all') return true;
+      return s.planName === tierFilter;
+    })
     .filter(s =>
       s.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       s.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -625,7 +635,23 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
     pending: submissions.filter(s => s.status === 'pending').length,
     approved: submissions.filter(s => s.status === 'approved').length,
     rejected: submissions.filter(s => s.status === 'rejected').length,
-    total: submissions.length
+    total: submissions.length,
+    spotlight: submissions.filter(s => s.planPeriod === 'spotlight').length,
+    momentum: submissions.filter(s => s.planPeriod === 'momentum').length,
+    mastery: submissions.filter(s => s.planPeriod === 'mastery').length,
+    approvedSpotlight: submissions.filter(s => s.status === 'approved' && s.planPeriod === 'spotlight').length,
+    approvedMomentum: submissions.filter(s => s.status === 'approved' && s.planPeriod === 'momentum').length,
+    approvedMastery: submissions.filter(s => s.status === 'approved' && s.planPeriod === 'mastery').length,
+    // Tier counts for each plan
+    spotlightStudent: submissions.filter(s => s.planPeriod === 'spotlight' && s.planName === 'Student' && s.status === 'approved').length,
+    spotlightPro: submissions.filter(s => s.planPeriod === 'spotlight' && s.planName === 'Pro' && s.status === 'approved').length,
+    spotlightPremium: submissions.filter(s => s.planPeriod === 'spotlight' && s.planName === 'Premium' && s.status === 'approved').length,
+    momentumStudent: submissions.filter(s => s.planPeriod === 'momentum' && s.planName === 'Student' && s.status === 'approved').length,
+    momentumPro: submissions.filter(s => s.planPeriod === 'momentum' && s.planName === 'Pro' && s.status === 'approved').length,
+    momentumPremium: submissions.filter(s => s.planPeriod === 'momentum' && s.planName === 'Premium' && s.status === 'approved').length,
+    masteryStudent: submissions.filter(s => s.planPeriod === 'mastery' && s.planName === 'Student' && s.status === 'approved').length,
+    masteryPro: submissions.filter(s => s.planPeriod === 'mastery' && s.planName === 'Pro' && s.status === 'approved').length,
+    masteryPremium: submissions.filter(s => s.planPeriod === 'mastery' && s.planName === 'Premium' && s.status === 'approved').length
   };
 
 
@@ -843,9 +869,9 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
             </div>
 
             {/* Status filter buttons */}
-            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mb-3">
               <button
-                onClick={() => setFilter('pending')}
+                onClick={() => { setFilter('pending'); setPlanFilter('all'); setTierFilter('all'); }}
                 className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
                   filter === 'pending' ? 'bg-yellow-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
@@ -853,7 +879,7 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                 Pending ({stats.pending})
               </button>
               <button
-                onClick={() => setFilter('approved')}
+                onClick={() => { setFilter('approved'); setPlanFilter('all'); setTierFilter('all'); }}
                 className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
                   filter === 'approved' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
@@ -861,7 +887,7 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                 Approved ({stats.approved})
               </button>
               <button
-                onClick={() => setFilter('rejected')}
+                onClick={() => { setFilter('rejected'); setPlanFilter('all'); setTierFilter('all'); }}
                 className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
                   filter === 'rejected' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
@@ -869,7 +895,7 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                 Rejected ({stats.rejected})
               </button>
               <button
-                onClick={() => setFilter('all')}
+                onClick={() => { setFilter('all'); setPlanFilter('all'); setTierFilter('all'); }}
                 className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
                   filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
@@ -877,6 +903,84 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                 All ({stats.total})
               </button>
             </div>
+
+            {/* Plan filter buttons - Only show when viewing approved submissions */}
+            {filter === 'approved' && (
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 border-t pt-3 mb-3">
+                <span className="text-xs sm:text-sm font-semibold text-gray-700 w-full mb-2">Filter by Plan:</span>
+                <button
+                  onClick={() => { setPlanFilter('all'); setTierFilter('all'); }}
+                  className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
+                    planFilter === 'all' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  All Plans
+                </button>
+                <button
+                  onClick={() => { setPlanFilter('spotlight'); setTierFilter('all'); }}
+                  className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
+                    planFilter === 'spotlight' ? 'bg-yellow-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  🎯 Spotlight ({stats.approvedSpotlight})
+                </button>
+                <button
+                  onClick={() => { setPlanFilter('momentum'); setTierFilter('all'); }}
+                  className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
+                    planFilter === 'momentum' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  ⚡ Momentum ({stats.approvedMomentum})
+                </button>
+                <button
+                  onClick={() => { setPlanFilter('mastery'); setTierFilter('all'); }}
+                  className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
+                    planFilter === 'mastery' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  👑 Mastery ({stats.approvedMastery})
+                </button>
+              </div>
+            )}
+
+            {/* Tier filter buttons - Show when a specific plan is selected */}
+            {filter === 'approved' && planFilter !== 'all' && (
+              <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                <span className="text-xs sm:text-sm font-semibold text-gray-700 w-full mb-2">Filter by Tier:</span>
+                <button
+                  onClick={() => setTierFilter('all')}
+                  className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
+                    tierFilter === 'all' ? 'bg-gray-600 text-white' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100'
+                  }`}
+                >
+                  All Tiers
+                </button>
+                <button
+                  onClick={() => setTierFilter('Student')}
+                  className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
+                    tierFilter === 'Student' ? 'bg-green-500 text-white' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100'
+                  }`}
+                >
+                  👨‍🎓 Student ({planFilter === 'spotlight' ? stats.spotlightStudent : planFilter === 'momentum' ? stats.momentumStudent : stats.masteryStudent})
+                </button>
+                <button
+                  onClick={() => setTierFilter('Pro')}
+                  className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
+                    tierFilter === 'Pro' ? 'bg-orange-500 text-white' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100'
+                  }`}
+                >
+                  💼 Pro ({planFilter === 'spotlight' ? stats.spotlightPro : planFilter === 'momentum' ? stats.momentumPro : stats.masteryPro})
+                </button>
+                <button
+                  onClick={() => setTierFilter('Premium')}
+                  className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
+                    tierFilter === 'Premium' ? 'bg-red-500 text-white' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100'
+                  }`}
+                >
+                  💎 Premium ({planFilter === 'spotlight' ? stats.spotlightPremium : planFilter === 'momentum' ? stats.momentumPremium : stats.masteryPremium})
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
