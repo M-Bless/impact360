@@ -10,6 +10,7 @@ import Footer from "../components/Footer";
 
 export default function EventsPage() {
   const { darkMode } = useDarkMode();
+  const [showQR, setShowQR] = React.useState(false);
 
   // --- Speakers Section State ---
   const speakerImages = [
@@ -32,6 +33,51 @@ export default function EventsPage() {
       style={darkMode ? { backgroundColor: '#000000' } : {}}
     >
       <Navbar />
+
+      {/* WhatsApp QR Code Modal */}
+      {showQR && (
+        <motion.div
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onClick={() => setShowQR(false)}
+        >
+          <motion.div
+            className={`rounded-3xl p-8 max-w-md w-full relative shadow-2xl ${darkMode ? 'bg-[#1a1f3a]' : 'bg-white'}`}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowQR(false)}
+              className={`absolute top-4 right-4 text-2xl font-bold ${darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              ×
+            </button>
+            <div className="text-center space-y-6">
+              <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Join Our Community</h2>
+              <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Scan the QR code to join our WhatsApp community</p>
+              <div className={`p-8 rounded-2xl flex items-center justify-center ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                <img 
+                  src="/frame.png" 
+                  alt="WhatsApp QR Code"
+                  className="w-64 h-64 object-contain"
+                />
+              </div>
+              <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>Or click below to join directly</p>
+              <a
+                href="https://chat.whatsapp.com/I0g8kpCNvSn84yWQxybzHa"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-green-500 text-white px-8 py-3 rounded-full font-bold hover:bg-green-600 transition-all duration-300"
+              >
+                Open WhatsApp
+              </a>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
 
       {/* HERO SECTION */}
       <section
@@ -205,7 +251,7 @@ export default function EventsPage() {
                 name: "Eldoret",
                 img: "/events/Eldoret.jpg",
                 desc: "Known for its enterprising spirit and startups.",
-                date: "April 18, 2026"
+                date: "April 25, 2026"
               },
               {
                 name: "Kisumu",
@@ -340,6 +386,121 @@ export default function EventsPage() {
           </div>
         </div>
       </motion.section>
+
+      {/* MONTHLY LOCAL EVENT SECTION */}
+      <section className={`relative overflow-hidden ${darkMode ? "bg-black" : "bg-white"}`}>
+        {/* Scrolling ticker */}
+        <div className={`overflow-hidden border-y py-3 ${darkMode ? "border-white/10" : "border-black/10"}`}>
+          <motion.div
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="flex whitespace-nowrap gap-12"
+          >
+            {[...Array(10)].map((_, i) => (
+              <span key={i} className={`text-sm font-bold tracking-[0.3em] uppercase ${darkMode ? "text-white/20" : "text-black/15"}`} style={{ fontFamily: "'League Spartan', sans-serif" }}>
+                Monthly Meetup &nbsp;✦&nbsp; Nakuru &nbsp;✦&nbsp; Real Founders &nbsp;✦&nbsp; No Fluff &nbsp;✦&nbsp;
+              </span>
+            ))}
+          </motion.div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 py-24 md:py-32">
+          {/* Top: Big headline with outlined text */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-16"
+          >
+            <p className="text-[#306CEC] text-sm font-bold tracking-[0.25em] uppercase mb-4" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+              Between the Roadshows
+            </p>
+            <h2
+              className={`text-4xl md:text-7xl font-black leading-[0.95] mb-6 ${darkMode ? "text-white" : "text-black"}`}
+              style={{ fontFamily: "'League Spartan', sans-serif", textTransform: "uppercase" }}
+            >
+              We meet.<br />
+              <span style={{ WebkitTextStroke: "2px #306CEC", color: "transparent" }}>Every month.</span>
+            </h2>
+            <p className={`text-lg md:text-xl max-w-2xl ${darkMode ? "text-white/60" : "text-black/60"}`} style={{ fontFamily: "'DM Sans', sans-serif" }}>
+              Nakuru. A room full of builders. Founders sharing real stories, 
+              not pitch decks. Pull up, connect, and leave with something useful.
+            </p>
+          </motion.div>
+
+          {/* Numbered items — offset grid */}
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8 mb-20">
+            {[
+              { num: "01", title: "Founder Stories", desc: "A local founder gets on stage. No scripts. Real talk about what worked, what didn't, and what they wish they knew." },
+              { num: "02", title: "Hands-On Sessions", desc: "Pitching, fundraising, product thinking — we pick a topic and go deep. You leave with something you can actually use." },
+              { num: "03", title: "Open Floor", desc: "The best part. Meet the person building something crazy next to you. Co-founders, mentors, investors — they're all here." },
+            ].map((item, i) => (
+              <motion.div
+                key={item.num}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15 }}
+                className={`relative group ${i === 1 ? "md:mt-12" : ""}`}
+              >
+                <div className={`border rounded-2xl p-8 hover:border-[#306CEC]/50 transition-all duration-500 h-full backdrop-blur-sm ${darkMode ? "border-white/10 bg-white/[0.02] hover:bg-white/[0.05]" : "border-black/10 bg-black/[0.02] hover:bg-black/[0.05]"}`}>
+                  <span
+                    className="text-6xl md:text-7xl font-black text-[#306CEC] group-hover:text-[#4A80FF] transition-colors duration-500 block mb-4"
+                    style={{ fontFamily: "'League Spartan', sans-serif" }}
+                  >
+                    {item.num}
+                  </span>
+                  <h3 className={`text-xl font-bold mb-3 ${darkMode ? "text-white" : "text-black"}`} style={{ fontFamily: "'League Spartan', sans-serif", textTransform: "uppercase" }}>
+                    {item.title}
+                  </h3>
+                  <p className={`text-base leading-relaxed ${darkMode ? "text-white/50" : "text-black/50"}`} style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                    {item.desc}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Bottom CTA band */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className={`flex flex-col md:flex-row items-center justify-between gap-8 border rounded-2xl px-8 md:px-12 py-8 bg-gradient-to-r from-[#306CEC]/10 to-transparent ${darkMode ? "border-white/10" : "border-black/10"}`}
+          >
+            <div>
+              <p className={`text-2xl md:text-3xl font-bold ${darkMode ? "text-white" : "text-black"}`} style={{ fontFamily: "'League Spartan', sans-serif" }}>
+                Next meetup dropping soon.
+              </p>
+              <p className={`text-base mt-1 ${darkMode ? "text-white/50" : "text-black/50"}`} style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                Join the community so you don't miss it.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowQR(true)}
+              className="shrink-0 bg-[#306CEC] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#4A80FF] transition-all duration-300 hover:scale-105"
+              style={{ fontFamily: "'DM Sans', sans-serif" }}
+            >
+              I'm in →
+            </button>
+          </motion.div>
+        </div>
+
+        {/* Scrolling ticker bottom */}
+        <div className={`overflow-hidden border-y py-3 ${darkMode ? "border-white/10" : "border-black/10"}`}>
+          <motion.div
+            animate={{ x: ["-50%", "0%"] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="flex whitespace-nowrap gap-12"
+          >
+            {[...Array(10)].map((_, i) => (
+              <span key={i} className={`text-sm font-bold tracking-[0.3em] uppercase ${darkMode ? "text-white/20" : "text-black/15"}`} style={{ fontFamily: "'League Spartan', sans-serif" }}>
+                Monthly Meetup &nbsp;✦&nbsp; Nakuru &nbsp;✦&nbsp; Real Founders &nbsp;✦&nbsp; No Fluff &nbsp;✦&nbsp;
+              </span>
+            ))}
+          </motion.div>
+        </div>
+      </section>
 
       {/* GET INVOLVED SECTION */}
       <motion.section
