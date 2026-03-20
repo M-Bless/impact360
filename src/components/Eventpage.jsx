@@ -23,9 +23,13 @@ export default function EventsPage() {
   React.useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSpeaker(prev => (prev + 1) % speakerImages.length);
-    }, 10000); // Slowed down to 10 seconds
+    }, 10000);
     return () => clearInterval(interval);
   }, [speakerImages.length]);
+
+  // --- Eldoret Section State ---
+  const eldoretImages = ["/events/Eldoret_roadshow.jpeg"];
+  // No auto-rotation needed for single image
 
   return (
     <div
@@ -228,6 +232,49 @@ export default function EventsPage() {
         </div>
       </motion.section>
 
+      {/* ROADSHOW HIGHLIGHTS SECTION */}
+      <section className="py-20 px-4 md:px-0 transition-colors">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          {/* Left: Eldoret Image */}
+          <div className="relative w-full h-[500px] overflow-hidden rounded-2xl flex items-center justify-center">
+              <img
+                src={eldoretImages[0]}
+                alt="Eldoret Roadshow"
+                className="w-full h-full object-contain rounded-3xl"
+                style={{ display: "block" }}
+              />
+          </div>
+          {/* Right: Eldoret Info */}
+          <div>
+            <h2 className="text-2xl md:text-4xl font-bold mb-6 text-[#306CEC]" style={{ fontFamily: "'League Spartan', 'DM Sans', Arial, sans-serif", textTransform: "uppercase" }}>
+              Next Stop: Eldoret
+            </h2>
+            <p className="text-lg mb-4 text-gray-700 dark:text-gray-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
+              The Impact360 Roadshow is heading to Eldoret — the heart of Kenya's North Rift and a city known for its enterprising spirit, agricultural innovation, and a fast-growing startup scene.
+            </p>
+            <ul className="list-disc pl-6 mb-4 text-base text-gray-700 dark:text-gray-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
+              <li>Meet founders building solutions for agritech, fintech, and logistics</li>
+              <li>Engage with Eldoret's vibrant university and youth ecosystem</li>
+              <li>Pitch sessions, panels, and hands-on workshops</li>
+              <li>Network with investors and ecosystem leaders from the region</li>
+              <li>Discover opportunities unique to Kenya's breadbasket</li>
+            </ul>
+            <div className="font-bold text-[#306CEC] text-lg mb-6" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
+              May 9th, 2026 · Eldoret, Kenya
+            </div>
+            <a
+              href="https://forms.gle/FoEdvsEvgt3ohDm48"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-[#306CEC] text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-[#4A80FF] transition-all duration-300 hover:scale-105"
+              style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}
+            >
+              Register Now
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* TOWNS SECTION */}
       <section className="py-20 px-4 md:px-0 transition-colors">
         <div className="max-w-6xl mx-auto">
@@ -251,7 +298,7 @@ export default function EventsPage() {
                 name: "Eldoret",
                 img: "/events/Eldoret.jpg",
                 desc: "Known for its enterprising spirit and startups.",
-                date: "April 25, 2026"
+                date: "May 9th, 2026"
               },
               {
                 name: "Kisumu",
@@ -318,9 +365,25 @@ export default function EventsPage() {
                       <div className="text-[#4A80FF] font-extrabold text-2xl mb-4" style={{ fontFamily: "'League Spartan', Arial, sans-serif", textShadow: "0 2px 8px rgba(0, 0, 0, 0.8)" }}>
                         {town.date}
                       </div>
-                      <Link to="/subscription" className="px-6 py-2 bg-[#306CEC] text-white rounded-lg font-semibold hover:bg-[#4A80FF] transition-colors duration-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-                        Get Ticket
-                      </Link>
+                      {town.name === "Nakuru" ? (
+                        <button disabled className="px-6 py-2 bg-gray-400 text-white rounded-lg font-semibold cursor-not-allowed" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
+                          Event Passed
+                        </button>
+                      ) : town.name === "Eldoret" ? (
+                        <a
+                          href="https://forms.gle/FoEdvsEvgt3ohDm48"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-6 py-2 bg-[#306CEC] text-white rounded-lg font-semibold hover:bg-[#4A80FF] transition-colors duration-300"
+                          style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}
+                        >
+                          Register Now
+                        </a>
+                      ) : (
+                        <Link to="/subscription" className="px-6 py-2 bg-[#306CEC] text-white rounded-lg font-semibold hover:bg-[#4A80FF] transition-colors duration-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
+                          Get Ticket
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -672,7 +735,7 @@ const videos = [
     id: 2,
     title: "Founders Taking The Stage",
     location: "Eldoret, Kenya",
-    date: "April 18, 2026",
+    date: "May 9th, 2026",
     tag: "PITCHES",
     youtubeId: "DDM1aMN1YRE",
     thumb: "https://i.ytimg.com/vi/DDM1aMN1YRE/hqdefault.jpg",
@@ -850,7 +913,7 @@ function VideoCard({ video, cardIndex, cardRef, darkMode }) {
       ref={cardRef}
       style={{
         position: "absolute",
-        width: isMobile ? "min(150px, 80vw)" : "min(200px, 22vw)",
+        width: isMobile ? "min(280px, 80vw)" : "min(380px, 30vw)",
         borderRadius: "20px",
         overflow: "hidden",
         willChange: "transform, opacity, filter",
@@ -866,8 +929,8 @@ function VideoCard({ video, cardIndex, cardRef, darkMode }) {
         }
       }}
     >
-      {/* Portrait 9:16 ratio for Shorts */}
-      <div style={{ position: "relative", aspectRatio: "9/16", overflow: "hidden", background: "#000" }}>
+      {/* Square ratio */}
+      <div style={{ position: "relative", aspectRatio: "1/1", overflow: "hidden", background: "#000" }}>
         <img
           src={video.thumb}
           alt={video.title}
