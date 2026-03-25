@@ -260,7 +260,7 @@ export default function EventsPage() {
               <li>Discover opportunities unique to Kenya's breadbasket</li>
             </ul>
             <div className="font-bold text-[#306CEC] text-lg mb-6" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-              May 9th, 2026 · Eldoret, Kenya
+              May 23rd, 2026 · Eldoret, Kenya
             </div>
             <a
               href="https://forms.gle/FoEdvsEvgt3ohDm48"
@@ -298,7 +298,7 @@ export default function EventsPage() {
                 name: "Eldoret",
                 img: "/events/Eldoret.jpg",
                 desc: "Known for its enterprising spirit and startups.",
-                date: "May 9th, 2026"
+                date: "May 23rd, 2026"
               },
               {
                 name: "Kisumu",

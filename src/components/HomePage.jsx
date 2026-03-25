@@ -6,20 +6,18 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 export default function HomePage() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [currentPhoto, setCurrentPhoto] = useState(0);
-  const [showFooter, setShowFooter] = useState(false);
   const [showQR, setShowQR] = useState(false);
+    const [currentPhoto, setCurrentPhoto] = useState(0);
   const { darkMode } = useDarkMode();
 
-  const photos = [
-    "/photo_1.jpg",
-    "/photo_2.jpg",
-    "/photo_3.jpg",
-    "/photo_4.jpg",
-    "/photo_5.jpg",
-    "/photo_6.jpg"
-  ];
+  const photos = React.useMemo(() => [
+    "/DSC_2851.jpg",
+    "/DSC_2843.jpg",
+    "/DSC_2790.jpg",
+    "/DSC_2726.jpg",
+    "/DSC_2703.jpg",
+    "/DSC_2690.jpg"
+  ], []);
 
   const featuresData = [
     { icon: Lightbulb, title: "Innovation", desc: "Transform ideas into reality with cutting-edge tools" },
@@ -53,7 +51,7 @@ export default function HomePage() {
     img.onload = () => {
       setImagesLoaded(true);
     };
-  }, []);
+  }, [photos]);
 
   // Auto slideshow every 3 seconds - only start after first image loads
   useEffect(() => {
