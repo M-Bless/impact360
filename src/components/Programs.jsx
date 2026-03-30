@@ -75,9 +75,6 @@ export default function ProgramsPage() {
   const navigate = useNavigate();
   const { darkMode } = useDarkMode();
 
-  const handleSubscribe = () => {
-    navigate("/subscription");
-  };
 
   const mainPrograms = [
     {
@@ -166,18 +163,7 @@ export default function ProgramsPage() {
     }
   ];
 
-  const benefits = [
-    {
-      Icon: Users,
-      title: "Expert Mentorship",
-      description: "Connect with successful entrepreneurs who have built and scaled businesses in Africa and beyond."
-    },
-    {
-      Icon: Globe,
-      title: "Decentralized Access",
-      description: "Programs and events delivered across counties and towns, not just in capital cities."
-    },
-    {
+  // ...existing code...
       Icon: Lightbulb,
       title: "Practical Learning",
       description: "Real-world knowledge and actionable insights you can apply immediately to your venture."

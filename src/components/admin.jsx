@@ -8,9 +8,7 @@ import {
   deleteDoc, 
   query, 
   orderBy,
-  onSnapshot,
-  addDoc,
-  where
+  onSnapshot
 } from 'firebase/firestore';
 import { 
   signInWithEmailAndPassword, 
@@ -140,7 +138,7 @@ const AdminDashboard = () => {
       }
     });
     return () => unsubscribe();
-  }, []);
+  }, [loadSubmissions]);
 
   useEffect(() => {
     if (!isAuthenticated) return;
