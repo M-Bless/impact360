@@ -88,7 +88,7 @@ export default function Subscription() {
   const subscriptionPlans = {
     spotlight: [
       { name: "Student", price: "999", period: "mo", features: ["1 event access"] },
-      { name: "Pro", price: "2,099", period: "mo", features: ["1 event access"], popular: true },
+      { name: "Pro", price: "1,899", period: "mo", features: ["1 event access"], popular: true },
       { name: "Premium", price: "4,099", period: "mo", features: ["1 event access"] }
     ],
     momentum: [
