@@ -1,10 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Rocket, Zap, GraduationCap, Wrench, Dumbbell, Laptop, Handshake, Mic, Calendar, Users, Globe, Lightbulb, Link, Target, Sparkles } from "lucide-react";
+import { Rocket, Zap, GraduationCap, Wrench, Dumbbell, Laptop, Handshake, Mic, Calendar, Users, Globe, Target, Sparkles } from "lucide-react";
 import { useDarkMode } from "../DarkModeContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { useNavigate } from "react-router-dom";
+
 
 const ProgramCard = ({ Icon, title, description, features, gradient, delay = 0, darkMode }) => (
   <motion.div
@@ -72,9 +72,7 @@ const EventCard = ({ type, title, description, image, delay = 0, darkMode }) => 
 );
 
 export default function ProgramsPage() {
-  const navigate = useNavigate();
   const { darkMode } = useDarkMode();
-
 
   const mainPrograms = [
     {
@@ -164,16 +162,6 @@ export default function ProgramsPage() {
   ];
 
   // ...existing code...
-      Icon: Lightbulb,
-      title: "Practical Learning",
-      description: "Real-world knowledge and actionable insights you can apply immediately to your venture."
-    },
-    {
-      Icon: Link,
-      title: "Community Network",
-      description: "Join a growing community of 10,000+ founders, mentors, and supporters across Africa."
-    }
-  ];
 
   const mainPrograms_with_gradient = mainPrograms.map(p => ({
     ...p,
