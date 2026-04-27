@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useDarkMode } from "../DarkModeContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import LocalEventsCarousel from "./LocalEventsCarousel";
 
 /* ---------------------------- Main Events Page --------------------------- */
 
@@ -473,56 +474,24 @@ export default function EventsPage() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-16"
+            className="mb-16 text-center flex flex-col items-center"
           >
             <p className="text-[#306CEC] text-sm font-bold tracking-[0.25em] uppercase mb-4" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-              Between the Roadshows
+              Local Events
             </p>
             <h2
               className={`text-4xl md:text-7xl font-black leading-[0.95] mb-6 ${darkMode ? "text-white" : "text-black"}`}
               style={{ fontFamily: "'League Spartan', sans-serif", textTransform: "uppercase" }}
             >
-              We meet.<br />
-              <span style={{ WebkitTextStroke: "2px #306CEC", color: "transparent" }}>Every month.</span>
+              <span style={{ WebkitTextStroke: "2px #306CEC", color: "transparent" }}>Locals.</span>
             </h2>
-            <p className={`text-lg md:text-xl max-w-2xl ${darkMode ? "text-white/60" : "text-black/60"}`} style={{ fontFamily: "'DM Sans', sans-serif" }}>
-              Nakuru. A room full of builders. Founders sharing real stories, 
-              not pitch decks. Pull up, connect, and leave with something useful.
+            <p className={`text-lg md:text-xl max-w-2xl mx-auto ${darkMode ? "text-white/60" : "text-black/60"}`} style={{ fontFamily: "'DM Sans', sans-serif" }}>
+              A community where established local founders share their real-world experiences to help upcoming businesses thrive.Just genuine connections, mentorship, and practical advice to grow together.
             </p>
           </motion.div>
 
-          {/* Numbered items — offset grid */}
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8 mb-20">
-            {[
-              { num: "01", title: "Founder Stories", desc: "A local founder gets on stage. No scripts. Real talk about what worked, what didn't, and what they wish they knew." },
-              { num: "02", title: "Hands-On Sessions", desc: "Pitching, fundraising, product thinking — we pick a topic and go deep. You leave with something you can actually use." },
-              { num: "03", title: "Open Floor", desc: "The best part. Meet the person building something crazy next to you. Co-founders, mentors, investors — they're all here." },
-            ].map((item, i) => (
-              <motion.div
-                key={item.num}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15 }}
-                className={`relative group ${i === 1 ? "md:mt-12" : ""}`}
-              >
-                <div className={`border rounded-2xl p-8 hover:border-[#306CEC]/50 transition-all duration-500 h-full backdrop-blur-sm ${darkMode ? "border-white/10 bg-white/[0.02] hover:bg-white/[0.05]" : "border-black/10 bg-black/[0.02] hover:bg-black/[0.05]"}`}>
-                  <span
-                    className="text-6xl md:text-7xl font-black text-[#306CEC] group-hover:text-[#4A80FF] transition-colors duration-500 block mb-4"
-                    style={{ fontFamily: "'League Spartan', sans-serif" }}
-                  >
-                    {item.num}
-                  </span>
-                  <h3 className={`text-xl font-bold mb-3 ${darkMode ? "text-white" : "text-black"}`} style={{ fontFamily: "'League Spartan', sans-serif", textTransform: "uppercase" }}>
-                    {item.title}
-                  </h3>
-                  <p className={`text-base leading-relaxed ${darkMode ? "text-white/50" : "text-black/50"}`} style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                    {item.desc}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          {/* Cinematic Events Carousel */}
+          <LocalEventsCarousel darkMode={darkMode} />
 
           {/* Bottom CTA band */}
           <motion.div
