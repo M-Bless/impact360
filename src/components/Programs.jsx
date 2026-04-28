@@ -161,6 +161,44 @@ export default function ProgramsPage() {
     }
   ];
 
+  const forgeVentures = [
+    { name: "Blavia", category: "Startup", description: "Specializing in SME digitization." },
+    { name: "Tangaza", category: "Startup", description: "Innovative solutions in hardware." },
+    { name: "Campus Mart", category: "Startup", description: "The premier student-led e-commerce marketplace." },
+    { name: "Glotech", category: "SME", description: "Reliable service-provider for tech solutions." },
+    { name: "Synchro", category: "Startup", description: "Revolutionizing the Fintech landscape." },
+    { name: "Inua360", category: "Startup", description: "Empowering businesses through digital finance." },
+    { name: "Dalia", category: "Startup", description: "Smart solutions for modern Agritech." },
+  ];
+
+  const ForgeSection = () => (
+    <section className={`py-24 px-6 transition-colors duration-1000 ${darkMode ? 'bg-[#0a0a0a]' : 'bg-gray-50'}`}>
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-[#306CEC]'}`}>
+            Businesses Helped Through Forge
+          </h2>
+          <p className={`text-xl ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            Real ventures, real impact.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {forgeVentures.map((venture, index) => (
+            <motion.div 
+              key={index} 
+              whileHover={{ y: -10 }}
+              className={`p-8 rounded-3xl border ${darkMode ? 'bg-[#111] border-gray-800' : 'bg-white border-blue-100'} shadow-xl`}
+            >
+              <span className="text-xs font-bold uppercase tracking-wider text-[#306CEC]">{venture.category}</span>
+              <h4 className={`text-2xl font-bold mt-2 mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{venture.name}</h4>
+              <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>{venture.description}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
   // ...existing code...
 
   const mainPrograms_with_gradient = mainPrograms.map(p => ({
@@ -380,7 +418,7 @@ export default function ProgramsPage() {
           </div>
         </div>
       </section>
-
+            <ForgeSection />
       {/* IMPACT360 OS SECTION */}
       <section className={`py-24 px-6 transition-colors duration-1000 ${
         darkMode
