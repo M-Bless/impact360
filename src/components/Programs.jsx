@@ -1,9 +1,13 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Rocket, Zap, GraduationCap, Wrench, Dumbbell, Laptop, Handshake, Mic, Calendar, Users, Globe, Target, Sparkles } from "lucide-react";
+import React, { useState } from "react"; // Added useState here
+import { motion, AnimatePresence } from "framer-motion"; // Added AnimatePresence here
+import { 
+  Rocket, Zap, GraduationCap, Wrench, Dumbbell, Laptop, 
+  Handshake, Mic, Calendar, Users, Globe, Target, Sparkles 
+} from "lucide-react";
 import { useDarkMode } from "../DarkModeContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+
 
 
 const ProgramCard = ({ Icon, title, description, features, gradient, delay = 0, darkMode }) => (
@@ -160,46 +164,100 @@ export default function ProgramsPage() {
       description: "Expert panels discussing current trends, challenges, and opportunities in entrepreneurship and innovation."
     }
   ];
+const forgeVenturesList = [
+  {
+    name: "Blavia",
+    category: "Startup",
+    logo: "/assets/BLAVIA.jpeg",
+    description: "Specializing in SME digitization."
+  },
+  {
+    name: "Campus Mart",
+    category: "Marketplace",
+    logo: "/assets/CAMPUSMART.jpeg",
+    description: "A specialized marketplace built specifically for the university ecosystem."
+  },
+  {
+    name: "GloTech Agency",
+    category: "Dev House",
+    logo: "/assets/GLOTECH.jpeg",
+    description: "A technical development house and digital infrastructure provider."
+  },
+  {
+    name: "Synchro",
+    category: "Fintech",
+    logo: "/assets/SYNCHRO.jpeg",
+    description: "Revolutionizing the Fintech landscape."
+  },
+  {
+    name: "Donjo Video",
+    category: "Hiring Platform",
+    logo: "/assets/DONJO_VIDEO.jpeg",
+    description: "A specialized hiring platform connecting top-tier video editing talent with global brands and creators."
+  }
+];
 
-  const forgeVentures = [
-    { name: "Blavia", category: "Startup", description: "Specializing in SME digitization." },
-    { name: "Tangaza", category: "Startup", description: "Innovative solutions in hardware." },
-    { name: "Campus Mart", category: "Startup", description: "The premier student-led e-commerce marketplace." },
-    { name: "Glotech", category: "SME", description: "Reliable service-provider for tech solutions." },
-    { name: "Synchro", category: "Startup", description: "Revolutionizing the Fintech landscape." },
-    { name: "Inua360", category: "Startup", description: "Empowering businesses through digital finance." },
-    { name: "Dalia", category: "Startup", description: "Smart solutions for modern Agritech." },
-  ];
+// 1. Put this above the ProgramsPage function
+const ForgeSection = ({ darkMode }) => {
+  const [selectedVenture, setSelectedVenture] = useState(null);
+  const ventures = [...forgeVenturesList, ...forgeVenturesList];
 
-  const ForgeSection = () => (
-    <section className={`py-24 px-6 transition-colors duration-1000 ${darkMode ? 'bg-[#0a0a0a]' : 'bg-gray-50'}`}>
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-[#306CEC]'}`}>
-            Businesses Helped Through Forge
-          </h2>
-          <p className={`text-xl ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-            Real ventures, real impact.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {forgeVentures.map((venture, index) => (
-            <motion.div 
-              key={index} 
-              whileHover={{ y: -10 }}
-              className={`p-8 rounded-3xl border ${darkMode ? 'bg-[#111] border-gray-800' : 'bg-white border-blue-100'} shadow-xl`}
+  return (
+    <section className="py-20 bg-black overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 mb-12 text-center"> {/* Add text-center here */}
+  <h2 className="text-3xl font-bold text-[#306CEC]">OUR FORGE NETWORK</h2>
+  <p className="text-gray-400 text-sm">Helping African builders scale</p>
+</div>
+
+      {/* Carousel */}
+      <div className="flex mb-10">
+        <motion.div
+          className="flex gap-6 cursor-pointer"
+          animate={selectedVenture ? { x: 0 } : { x: ["0%", "-50%"] }}
+          transition={{ ease: "linear", duration: 20, repeat: Infinity }}
+        >
+          {ventures.map((v, i) => (
+            <div
+              key={i}
+              onMouseEnter={() => setSelectedVenture(v)}
+              onMouseLeave={() => setSelectedVenture(null)}
+              className="w-48 h-48 flex-shrink-0 bg-[#0A0A0A] border border-gray-800 rounded-2xl flex flex-col items-center justify-center p-4 hover:border-[#306CEC] transition-all"
             >
-              <span className="text-xs font-bold uppercase tracking-wider text-[#306CEC]">{venture.category}</span>
-              <h4 className={`text-2xl font-bold mt-2 mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{venture.name}</h4>
-              <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>{venture.description}</p>
-            </motion.div>
+              <img 
+                src={v.logo} 
+                className="h-20 w-20 object-contain mb-2" 
+                onError={(e) => e.target.style.opacity = '0'}
+              />
+              <span className="text-white text-xs font-bold uppercase">{v.name}</span>
+            </div>
           ))}
-        </div>
+        </motion.div>
+      </div>
+
+      {/* Detail Box */}
+      <div className="max-w-4xl mx-auto px-6 h-32">
+        <AnimatePresence mode="wait">
+          {selectedVenture && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="bg-[#0A0A0A] border border-gray-800 p-6 rounded-2xl flex gap-6 items-center"
+            >
+              <div className="w-12 h-12 bg-white p-2 rounded-lg flex-shrink-0">
+                <img src={selectedVenture.logo} className="object-contain w-full h-full" />
+              </div>
+              <div>
+                <h3 className="text-white font-bold">{selectedVenture.name}</h3>
+                <p className="text-gray-400 text-sm">{selectedVenture.description}</p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );
-
-  // ...existing code...
+};
 
   const mainPrograms_with_gradient = mainPrograms.map(p => ({
     ...p,
