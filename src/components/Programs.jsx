@@ -1,9 +1,13 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Rocket, Zap, GraduationCap, Wrench, Dumbbell, Laptop, Handshake, Mic, Calendar, Users, Globe, Target, Sparkles } from "lucide-react";
+import React, { useState } from "react"; // Added useState here
+import { motion, AnimatePresence } from "framer-motion"; // Added AnimatePresence here
+import { 
+  Rocket, Zap, GraduationCap, Wrench, Dumbbell, Laptop, 
+  Handshake, Mic, Calendar, Users, Globe, Target, Sparkles 
+} from "lucide-react";
 import { useDarkMode } from "../DarkModeContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+
 
 
 const ProgramCard = ({ Icon, title, description, features, gradient, delay = 0, darkMode }) => (
@@ -160,8 +164,101 @@ export default function ProgramsPage() {
       description: "Expert panels discussing current trends, challenges, and opportunities in entrepreneurship and innovation."
     }
   ];
+const forgeVenturesList = [
+  {
+    name: "Blavia",
+    category: "Startup",
+    logo: "/assets/BLAVIA.jpeg",
+    description: "Specializing in SME digitization."
+  },
+  {
+    name: "Campus Mart",
+    category: "Marketplace",
+    logo: "/assets/CAMPUSMART.jpeg",
+    description: "A specialized marketplace built specifically for the university ecosystem."
+  },
+  {
+    name: "GloTech Agency",
+    category: "Dev House",
+    logo: "/assets/GLOTECH.jpeg",
+    description: "A technical development house and digital infrastructure provider."
+  },
+  {
+    name: "Synchro",
+    category: "Fintech",
+    logo: "/assets/SYNCHRO.jpeg",
+    description: "Revolutionizing the Fintech landscape."
+  },
+  {
+    name: "Donjo Video",
+    category: "Hiring Platform",
+    logo: "/assets/DONJO_VIDEO.jpeg",
+    description: "A specialized hiring platform connecting top-tier video editing talent with global brands and creators."
+  }
+];
 
-  // ...existing code...
+// 1. Put this above the ProgramsPage function
+const ForgeSection = ({ darkMode }) => {
+  const [selectedVenture, setSelectedVenture] = useState(null);
+  const ventures = [...forgeVenturesList, ...forgeVenturesList];
+
+  return (
+    <section className="py-20 bg-black overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 mb-12 text-center"> {/* Add text-center here */}
+  <h2 className="text-3xl font-bold text-[#306CEC]">OUR FORGE NETWORK</h2>
+  <p className="text-gray-400 text-sm">Helping African builders scale</p>
+</div>
+
+      {/* Carousel */}
+      <div className="flex mb-10">
+        <motion.div
+          className="flex gap-6 cursor-pointer"
+          animate={selectedVenture ? { x: 0 } : { x: ["0%", "-50%"] }}
+          transition={{ ease: "linear", duration: 20, repeat: Infinity }}
+        >
+          {ventures.map((v, i) => (
+            <div
+              key={i}
+              onMouseEnter={() => setSelectedVenture(v)}
+              onMouseLeave={() => setSelectedVenture(null)}
+              className="w-48 h-48 flex-shrink-0 bg-[#0A0A0A] border border-gray-800 rounded-2xl flex flex-col items-center justify-center p-4 hover:border-[#306CEC] transition-all"
+            >
+              <img 
+                src={v.logo} 
+                alt={`${v.name} logo`}
+                className="h-20 w-20 object-contain mb-2" 
+                onError={(e) => e.target.style.opacity = '0'}
+              />
+              <span className="text-white text-xs font-bold uppercase">{v.name}</span>
+            </div>
+          ))}
+        </motion.div>
+      </div>
+
+      {/* Detail Box */}
+      <div className="max-w-4xl mx-auto px-6 h-32">
+        <AnimatePresence mode="wait">
+          {selectedVenture && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="bg-[#0A0A0A] border border-gray-800 p-6 rounded-2xl flex gap-6 items-center"
+            >
+              <div className="w-12 h-12 bg-white p-2 rounded-lg flex-shrink-0">
+                <img src={selectedVenture.logo} alt={`${selectedVenture.name} logo`} className="object-contain w-full h-full" />
+              </div>
+              <div>
+                <h3 className="text-white font-bold">{selectedVenture.name}</h3>
+                <p className="text-gray-400 text-sm">{selectedVenture.description}</p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+};
 
   const mainPrograms_with_gradient = mainPrograms.map(p => ({
     ...p,
@@ -380,7 +477,7 @@ export default function ProgramsPage() {
           </div>
         </div>
       </section>
-
+            <ForgeSection />
       {/* IMPACT360 OS SECTION */}
       <section className={`py-24 px-6 transition-colors duration-1000 ${
         darkMode
