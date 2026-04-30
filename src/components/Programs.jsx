@@ -225,6 +225,7 @@ const ForgeSection = ({ darkMode }) => {
             >
               <img 
                 src={v.logo} 
+                alt={`${v.name} logo`}
                 className="h-20 w-20 object-contain mb-2" 
                 onError={(e) => e.target.style.opacity = '0'}
               />
@@ -245,7 +246,7 @@ const ForgeSection = ({ darkMode }) => {
               className="bg-[#0A0A0A] border border-gray-800 p-6 rounded-2xl flex gap-6 items-center"
             >
               <div className="w-12 h-12 bg-white p-2 rounded-lg flex-shrink-0">
-                <img src={selectedVenture.logo} className="object-contain w-full h-full" />
+                <img src={selectedVenture.logo} alt={`${selectedVenture.name} logo`} className="object-contain w-full h-full" />
               </div>
               <div>
                 <h3 className="text-white font-bold">{selectedVenture.name}</h3>
