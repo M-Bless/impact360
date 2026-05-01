@@ -874,6 +874,8 @@ const videos = [
   },
 ];
 
+const displayedVideos = videos.slice(0, 5);
+
 function VideoCard({ video, cardIndex, cardRef, darkMode }) {
   const isMobile = window.innerWidth < 768;
 
@@ -962,8 +964,8 @@ function VideoCard({ video, cardIndex, cardRef, darkMode }) {
 
 function VideoHighlights({ darkMode }) {
   const containerRef = React.useRef(null);
-  const cardRefs     = React.useRef(videos.map(() => React.createRef()));
-  const pipRefs      = React.useRef(videos.map(() => React.createRef()));
+  const cardRefs     = React.useRef(displayedVideos.map(() => React.createRef()));
+  const pipRefs      = React.useRef(displayedVideos.map(() => React.createRef()));
   const tagRef       = React.useRef(null);
   const titleRef     = React.useRef(null);
   const locationRef  = React.useRef(null);
@@ -983,7 +985,7 @@ function VideoHighlights({ darkMode }) {
       const rect       = el.getBoundingClientRect();
       const scrollable = el.scrollHeight - window.innerHeight;
       const scrolled   = Math.max(0, -rect.top);
-      rawRef.current   = Math.min(1, scrolled / Math.max(1, scrollable)) * videos.length;
+      rawRef.current   = Math.min(1, scrolled / Math.max(1, scrollable)) * displayedVideos.length;
     };
 
     const applyCard = (el, sp, i) => {
@@ -1018,10 +1020,10 @@ function VideoHighlights({ darkMode }) {
         if (ref.current) applyCard(ref.current, sp, i);
       });
 
-      const ai = Math.min(Math.floor(sp), videos.length - 1);
+      const ai = Math.min(Math.floor(sp), displayedVideos.length - 1);
 
       if (counterRef.current) {
-        counterRef.current.textContent = `${String(ai + 1).padStart(2,"0")} / ${String(videos.length).padStart(2,"0")}`;
+        counterRef.current.textContent = `${String(ai + 1).padStart(2,"0")} / ${String(displayedVideos.length).padStart(2,"0")}`;
       }
       if (hintRef.current) {
         hintRef.current.style.opacity = String(Math.max(0, 1 - sp * 2));
@@ -1034,7 +1036,7 @@ function VideoHighlights({ darkMode }) {
 
       if (ai !== prevIdxRef.current) {
         prevIdxRef.current = ai;
-        const v = videos[ai];
+        const v = displayedVideos[ai];
         if (tagRef.current)      tagRef.current.textContent      = v.tag;
         if (titleRef.current)    titleRef.current.textContent    = v.title;
         if (locationRef.current) locationRef.current.textContent = `${v.location} · ${v.date}`;
@@ -1052,7 +1054,7 @@ function VideoHighlights({ darkMode }) {
     };
   }, [darkMode]);
 
-  const first = videos[0];
+  const first = displayedVideos[0];
 
   const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
 
@@ -1063,7 +1065,7 @@ function VideoHighlights({ darkMode }) {
   }, []);
 
   return (
-    <div ref={containerRef} style={{ position: "relative", height: isMobile ? `${150 + videos.length * 120}vh` : `${100 + videos.length * 90}vh` }}>
+    <div ref={containerRef} style={{ position: "relative", height: isMobile ? `${150 + displayedVideos.length * 120}vh` : `${100 + displayedVideos.length * 90}vh` }}>
       <div style={{
         position: "sticky", top: 0, height: "100vh", overflow: "hidden",
         background: darkMode
@@ -1107,7 +1109,7 @@ function VideoHighlights({ darkMode }) {
                 </p>
               </div>
               <div style={{ display: "flex", gap: "7px" }}>
-                {videos.map((_, i) => (
+                {displayedVideos.map((_, i) => (
                   <div key={i} ref={pipRefs.current[i]} style={{
                     height: "3px", borderRadius: "2px",
                     width: i === 0 ? "28px" : "10px",
@@ -1134,7 +1136,7 @@ function VideoHighlights({ darkMode }) {
         }}>
           <div style={{ position: "absolute", width: isMobile ? "200px" : "380px", height: isMobile ? "200px" : "380px", borderRadius: "50%", background: "radial-gradient(circle, rgba(48,108,236,0.18) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-          {videos.map((video, i) => (
+          {displayedVideos.map((video, i) => (
             <VideoCard
               key={video.id}
               video={video}
@@ -1150,7 +1152,7 @@ function VideoHighlights({ darkMode }) {
           </div>
 
           <div ref={counterRef} style={{ position: "absolute", top: isMobile ? "20px" : "44px", right: isMobile ? "20px" : "40px", color: darkMode ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.25)", fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em", fontFamily: "'DM Sans', sans-serif" }}>
-            01 / {String(videos.length).padStart(2, "0")}
+            01 / {String(displayedVideos.length).padStart(2, "0")}
           </div>
         </div>
 
