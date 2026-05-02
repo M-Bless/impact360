@@ -1,9 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Lightbulb, Users, TrendingUp, Rocket, Calendar } from "lucide-react";
 import { useDarkMode } from "../DarkModeContext";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+
+function CountUp({ target, duration = 1.5 }) {
+  const ref = React.useRef(null);
+  const inView = useInView(ref, { once: true });
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    let startTime = null;
+    const step = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
+      setCount(Math.floor(progress * target));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [inView, target, duration]);
+
+  return <span ref={ref}>{count}</span>;
+}
 
 export default function HomePage() {
   const [showQR, setShowQR] = useState(false);
@@ -191,170 +211,335 @@ export default function HomePage() {
         </div>
       </section>
 
-       
-    {/* WHAT WE OFFER SECTION */}
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: false, amount: 0.2 }}
-    >
-      <section className={`py-24 px-6 relative overflow-hidden transition-colors duration-1000 ${darkMode ? 'bg-[#000000]' : 'bg-[#FFFEF9]'}`}>
-        {/* Decorative elements */}
-        <div className={`absolute top-0 left-0 w-64 h-64 rounded-full blur-3xl ${darkMode ? 'bg-[#306CEC]/10' : 'bg-[#306CEC]/5'}`}></div>
-        <div className={`absolute bottom-0 right-0 w-96 h-96 rounded-full blur-3xl ${darkMode ? 'bg-[#306CEC]/10' : 'bg-[#306CEC]/5'}`}></div>
-        
-        <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            viewport={{ once: true, amount: 0.3 }}
-            className="text-center mb-20"
-          >
-            <h2 className={`text-5xl md:text-6xl font-bold mb-4 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
-              What We Offer
-            </h2>
-            <p className={`text-xl ${darkMode ? 'text-gray-400' : 'text-[#000000]/70'}`}>
-              Clear, structured pathways for founders to grow
-            </p>
-          </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {offers.map((offer, index) => {
-              const IconComponent = offer.icon;
-              return (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 60, scale: 0.9 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ 
-                    delay: index * 0.2, 
-                    duration: 0.7,
-                    ease: [0.25, 0.46, 0.45, 0.94]
-                  }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  className={`rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 group ${darkMode ? 'bg-[#1a1f3a] border border-[#306CEC]/20' : 'bg-white'}`}
-                  whileHover={{ y: -12, scale: 1.02 }}
-                >
-                  <div className="relative h-64 overflow-hidden">
-                    <motion.img
-                      src={offer.image}
-                      alt={offer.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className={`absolute inset-0 flex items-end p-8 transition-all duration-500 ${
-                      // Remove all blue and use only black for hover
-                      'bg-gradient-to-t from-black/60 via-black/30 to-transparent group-hover:from-black group-hover:via-black/40'
-                    }`}>
-                      <motion.div 
-                        className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 w-20 h-20 flex items-center justify-center"
-                        whileHover={{ scale: 1.2, rotate: 5 }}
-                        transition={{ type: "spring", stiffness: 300 }}
-                      >
-                        <IconComponent className="w-12 h-12 text-white" strokeWidth={1.5} />
-                      </motion.div>
-                    </div>
-                  </div>
-                  <div className="p-8 relative">
-                    {/* Top bar: black on hover */}
-                    <div className="absolute top-0 left-0 w-20 h-1 transform origin-left transition-all duration-500 group-hover:w-full bg-black"></div>
-                    <h3 className="text-3xl font-bold mb-4 mt-2 transition-colors duration-300 text-[#306CEC]" style={{ fontFamily: 'League Spartan, sans-serif' }}>
-                      {offer.title}
-                    </h3>
-                    <p className={`text-lg mb-6 leading-relaxed ${darkMode ? 'text-gray-300' : 'text-[#000000]/70'}`}>
-                      {offer.description}
-                    </p>
-                    <a
-                      href={offer.link}
-                      className="inline-flex items-center font-semibold gap-2 transition-all duration-300 group-hover:gap-4 text-[#306CEC]"
-                      style={{ fontFamily: 'League Spartan, sans-serif' }}
-                    >
-                      Learn More 
-                      <motion.span
-                        animate={{ x: [0, 5, 0] }}
-                        transition={{ repeat: Infinity, duration: 1.5 }}
-                      >
-                        →
-                      </motion.span>
-                    </a>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-    </motion.div>
-      
-
-      {/* WHY CHOOSE US SECTION */}
-      <motion.section
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: false, amount: 0.2 }}
-        className={`py-24 px-6 transition-colors duration-1000 ${darkMode ? 'bg-[#000000]' : 'bg-[#F5F6F8]'}`}
-      >
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2
-              className={`text-5xl md:text-6xl font-bold mb-3 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`}
-              style={{ fontFamily: "League Spartan, sans-serif" }}
+      {/* STATS STRIP */}
+      <div className={`py-20 px-6 transition-colors duration-1000 ${darkMode ? 'bg-[#000000]' : 'bg-[#FFFEF9]'}`}>
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+          {[
+            { value: 10, label: "Founders Supported" },
+            { value: 1,  label: "Cities Visited" },
+            { value: 3,  label: "Programs Running" },
+            { value: 1,  label: "Strategic Partner" },
+          ].map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1, duration: 0.5 }}
+              viewport={{ once: true }}
             >
-              Why Choose Impact360
-            </h2>
+              <p className="text-5xl md:text-6xl font-black leading-none mb-3 text-[#306CEC]" style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                +<CountUp target={stat.value} />
+              </p>
+              <p className={`text-sm font-semibold tracking-widest uppercase ${darkMode ? 'text-white/50' : 'text-black/40'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>{stat.label}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
 
-            <p className={`text-xl ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-              Built for founders who want to make a difference
+      {/* WHAT WE DO — alternating split rows */}
+      <section className={`transition-colors duration-1000 ${darkMode ? 'bg-[#000000]' : 'bg-[#FFFEF9]'}`}>
+        {offers.map((offer, index) => {
+          const IconComponent = offer.icon;
+          const isEven = index % 2 === 0;
+          return (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+              viewport={{ once: true, amount: 0.25 }}
+              className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} min-h-[480px]`}
+            >
+              {/* Image half */}
+              <div className="relative w-full md:w-1/2 h-72 md:h-auto overflow-hidden">
+                <img
+                  src={offer.image}
+                  alt={offer.title}
+                  className="w-full h-full object-cover scale-100 hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-black/30" />
+                <div className="absolute bottom-6 left-6">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 w-14 h-14 flex items-center justify-center">
+                    <IconComponent className="w-8 h-8 text-white" strokeWidth={1.5} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Content half */}
+              <div className={`w-full md:w-1/2 flex items-center px-10 md:px-16 py-14 ${darkMode ? 'bg-[#0d0d0d]' : 'bg-white'}`}>
+                <div className="max-w-md">
+                  <p className="text-xs font-bold tracking-[0.2em] text-[#306CEC] uppercase mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                    {String(index + 1).padStart(2, '0')} — What We Offer
+                  </p>
+                  <h3
+                    className={`text-4xl md:text-5xl font-black leading-tight mb-5 ${darkMode ? 'text-white' : 'text-[#111]'}`}
+                    style={{ fontFamily: 'League Spartan, sans-serif' }}
+                  >
+                    {offer.title}
+                  </h3>
+                  <div className={`h-px w-12 mb-5 bg-[#306CEC]`} />
+                  <p className={`text-base leading-relaxed mb-8 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                    {offer.description}
+                  </p>
+                  <a
+                    href={offer.link}
+                    className="inline-flex items-center gap-3 text-sm font-bold tracking-widest uppercase text-[#306CEC] hover:gap-5 transition-all duration-300"
+                    style={{ fontFamily: 'DM Sans, sans-serif' }}
+                  >
+                    Learn More <span>→</span>
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </section>
+
+      {/* WHY IMPACT360 — asymmetric editorial */}
+      <section className={`py-24 px-6 transition-colors duration-1000 ${darkMode ? 'bg-[#000000]' : 'bg-[#F5F6F8]'}`}>
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 items-start">
+
+          {/* Left: bold heading */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+            className="md:w-2/5 md:sticky md:top-28"
+          >
+            <p className="text-xs font-bold tracking-[0.2em] text-[#306CEC] uppercase mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>Why Us</p>
+            <h2
+              className={`text-5xl md:text-7xl font-black leading-none mb-6 ${darkMode ? 'text-white' : 'text-[#111]'}`}
+              style={{ fontFamily: 'League Spartan, sans-serif' }}
+            >
+              BUILT<br />FOR<br /><span className="text-[#306CEC]">FOUNDERS</span>
+            </h2>
+            <p className={`text-base leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
+              Everything we do is designed around the needs of African founders — from idea to scale.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          {/* Right: feature list */}
+          <div className="md:w-3/5 flex flex-col gap-0">
             {featuresData.map((item, i) => {
               const IconComponent = item.icon;
               return (
                 <motion.div
                   key={i}
-                  className={`border p-10 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 group ${
-                    darkMode 
-                      ? 'bg-[#1a1f3a] border-[#306CEC]/20' 
-                      : 'bg-white border-[#306CEC]/20'
-                  }`}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.2, duration: 0.6 }}
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.15, duration: 0.6 }}
                   viewport={{ once: true }}
-                  whileHover={{ y: -10 }}
+                  className={`flex items-start gap-6 py-8 border-b transition-colors duration-300 group cursor-default ${
+                    darkMode ? 'border-white/8 hover:bg-white/3' : 'border-black/8 hover:bg-black/2'
+                  }`}
                 >
-                  {/* Blue top bar */}
-                  <div className={`h-2 w-full rounded-full mb-6 ${darkMode ? 'bg-[#306CEC]' : 'bg-[#306CEC]'}`}></div>
-
-                  <IconComponent className={`w-16 h-16 mb-6 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} strokeWidth={1.5} />
-
-                  <h3
-                    className={`text-3xl font-bold mb-3 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`}
-                    style={{ fontFamily: "League Spartan, sans-serif" }}
-                  >
-                    {item.title}
-                  </h3>
-
-                  <p className={`text-lg leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                    {item.desc}
-                  </p>
+                  <span className={`text-xs font-bold tracking-widest mt-1 ${darkMode ? 'text-white/30' : 'text-black/30'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <IconComponent className="w-5 h-5 text-[#306CEC]" strokeWidth={2} />
+                      <h3
+                        className={`text-2xl font-black ${darkMode ? 'text-white' : 'text-[#111]'}`}
+                        style={{ fontFamily: 'League Spartan, sans-serif' }}
+                      >
+                        {item.title}
+                      </h3>
+                    </div>
+                    <p className={`text-base leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                      {item.desc}
+                    </p>
+                  </div>
+                  <span className={`text-2xl mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[#306CEC]`}>→</span>
                 </motion.div>
               );
             })}
           </div>
+
+        </div>
+      </section>
+
+      {/* TOIG COMPANIES */}
+      <section className={`py-24 px-6 transition-colors duration-1000 ${darkMode ? 'bg-[#000000]' : 'bg-[#F5F6F8]'}`}>
+        <div className="max-w-7xl mx-auto">
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="mb-14"
+          >
+            <p className="text-xs font-bold tracking-[0.25em] text-[#306CEC] uppercase mb-3" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+              Portfolio
+            </p>
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+              <h2
+                className={`text-5xl md:text-6xl font-black leading-none ${darkMode ? 'text-white' : 'text-[#111]'}`}
+                style={{ fontFamily: 'League Spartan, sans-serif' }}
+              >
+                TOIG<br /><span className="text-[#306CEC]">COMPANIES</span>
+              </h2>
+              <p className={`max-w-sm text-base leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                Ventures built and accelerated through the Impact360 Forge program.
+              </p>
+            </div>
+            <div className={`h-px w-full mt-8 ${darkMode ? 'bg-white/8' : 'bg-black/8'}`} />
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { name: "I³Plus",    category: "Marketing Agency",  logo: "/companyLogos/5 (1).png",    desc: "Creative marketing solutions", invert: false, fit: "cover"   },
+              { name: "iTek",      category: "ICT Agency",        logo: "/companyLogos/Picture1.png", desc: "Digital & ICT infrastructure", invert: true,  fit: "contain" },
+              { name: "I³Studios", category: "Media Production",  logo: "/companyLogos/11 (1).png",   desc: "Professional media production", invert: false, fit: "cover"   },
+              { name: "i3x Africa",  category: "Event Agency",      logo: "/companyLogos/africa.jpg", desc: "Events & experiences", invert: false, fit: "cover" },
+            ].map((company, i) => (
+              <motion.div
+                key={company.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -6 }}
+                className="group rounded-2xl overflow-hidden bg-black transition-all duration-300 cursor-default hover:shadow-xl hover:shadow-black/30"
+              >
+                {/* Logo image */}
+                <div className="w-full h-32 overflow-hidden bg-black flex items-center justify-center">
+                  {company.logo ? (
+                    <img
+                      src={company.logo}
+                      alt={company.name}
+                      className={`w-full h-full ${company.fit === 'contain' ? 'object-contain object-top pt-3 px-4 pb-4' : 'object-cover'} ${company.invert ? 'invert hue-rotate-180' : ''}`}
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full border-2 border-dashed border-white/20 flex items-center justify-center">
+                      <span className="text-white/20 text-xl">+</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Info */}
+                <div className={`px-4 py-3 text-center ${darkMode ? 'bg-[#0d0d0d]' : 'bg-white'}`}>
+                  <h3 className={`text-sm font-black leading-tight mb-0.5 ${darkMode ? 'text-white' : 'text-[#111]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                    {company.name}
+                  </h3>
+                  <p className={`text-[10px] font-semibold tracking-widest uppercase ${darkMode ? 'text-gray-500' : 'text-gray-400'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                    {company.category}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PARTNERSHIP SECTION */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.9 }}
+        viewport={{ once: true, amount: 0.3 }}
+        className={`py-28 px-6 transition-colors duration-1000 ${darkMode ? 'bg-black' : 'bg-white'}`}
+      >
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="text-xs font-bold tracking-[0.25em] text-[#306CEC] uppercase mb-10"
+            style={{ fontFamily: 'DM Sans, sans-serif' }}
+          >
+            Official Partnership
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            viewport={{ once: true }}
+            className="flex items-center justify-center gap-8 mb-10"
+          >
+            <img
+              src="/logo2-transparent.png"
+              alt="Impact360"
+              className="h-24 md:h-36 w-auto object-contain"
+            />
+            <span className="text-4xl md:text-6xl font-light text-[#306CEC]">×</span>
+            <div className={`rounded-xl px-6 py-3 flex items-center justify-center ${darkMode ? 'bg-black' : 'bg-white'}`}>
+              <img
+                src="/companyLogos/DINAO-logo-RGB-transparant-01.png"
+                alt="DINAO"
+                className="h-20 md:h-32 w-auto object-contain"
+              />
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            viewport={{ once: true }}
+            className={`h-px w-full mb-10 origin-left ${darkMode ? 'bg-white/10' : 'bg-black/10'}`}
+          />
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true }}
+            className={`text-lg leading-relaxed max-w-2xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}
+            style={{ fontFamily: 'DM Sans, sans-serif' }}
+          >
+            Together, Impact360 and DINAO are expanding access to entrepreneurship resources, funding pathways, and mentorship networks — bringing world-class support to founders in every corner of Africa.
+          </motion.p>
         </div>
       </motion.section>
 
-      {/* FOOTER - Shows only when scrolled near bottom */}
+      {/* CTA SECTION */}
+      <section className={`py-24 px-6 transition-colors duration-1000 ${darkMode ? 'bg-[#000000]' : 'bg-[#F5F6F8]'}`}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          viewport={{ once: true }}
+          className="max-w-4xl mx-auto text-center"
+        >
+          <p className="text-xs font-bold tracking-[0.25em] text-[#306CEC] uppercase mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+            Get Involved
+          </p>
+          <h2
+            className={`text-5xl md:text-7xl font-black leading-tight mb-6 ${darkMode ? 'text-white' : 'text-[#111]'}`}
+            style={{ fontFamily: 'League Spartan, sans-serif' }}
+          >
+            READY TO BUILD<br />
+            <span className="text-[#306CEC]">YOUR FUTURE?</span>
+          </h2>
+          <p className={`text-lg mb-10 max-w-xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
+            Join hundreds of founders already building with Impact360 across Africa.
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <a href="/programs">
+              <button
+                className="bg-[#306CEC] text-white px-10 py-4 rounded-full font-bold hover:bg-[#4A80FF] transition-all duration-300 shadow-lg hover:shadow-xl"
+                style={{ fontFamily: 'League Spartan, sans-serif' }}
+              >
+                Explore Programs
+              </button>
+            </a>
+            <button
+              onClick={() => setShowQR(true)}
+              className={`border-2 px-10 py-4 rounded-full font-bold transition-all duration-300 ${darkMode ? 'border-white/30 text-white hover:border-white' : 'border-black/20 text-[#111] hover:border-black'}`}
+              style={{ fontFamily: 'League Spartan, sans-serif' }}
+            >
+              Join Community
+            </button>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* FOOTER */}
       <Footer/>
 
     </div>
