@@ -57,7 +57,7 @@ const membershipBenefits = {
 };
 
 export default function Subscription() {
-  const [selectedPlan, setSelectedPlan] = useState('spotlight');
+  const [selectedPlan, setSelectedPlan] = useState('tickets');
   const [showPaymentInfo, setShowPaymentInfo] = useState(false);
   const [showTicketForm, setShowTicketForm] = useState(false);
   const [planToSubscribe, setPlanToSubscribe] = useState(null);
@@ -71,9 +71,10 @@ export default function Subscription() {
     phone: '',
     mpesaMessage: ''
   });
-  const [subscriptionType, setSubscriptionType] = useState('Events'); // NEW: 'Events' or 'Membership'
-  const [showTypeSelector, setShowTypeSelector] = useState(false); // NEW
-  const [pendingPlan, setPendingPlan] = useState(null); // NEW
+  const [subscriptionType, setSubscriptionType] = useState('Events');
+  const [showTypeSelector, setShowTypeSelector] = useState(false);
+  const [pendingPlan, setPendingPlan] = useState(null);
+  const [openFaq, setOpenFaq] = useState(null);
   const { darkMode } = useDarkMode();
 
   // Initialize EmailJS
@@ -86,6 +87,20 @@ export default function Subscription() {
   const MPESA_ACCOUNT = "1118559";
 
   const subscriptionPlans = {
+    tickets: [
+      { name: "Student", price: "599", period: "ticket", features: [
+        "Access to 1 Impact360 event",
+        "Valid student ID required at entry",
+        "Access to all sessions & workshops",
+        "Networking with founders & speakers"
+      ] },
+      { name: "Standard", price: "1,199", period: "ticket", features: [
+        "Access to 1 Impact360 event",
+        "Access to all sessions & workshops",
+        "Networking with founders & speakers",
+        "Event swag & materials"
+      ], popular: true }
+    ],
     spotlight: [
       { name: "Student", price: "999", period: "mo", features: ["1 event access"] },
       { name: "Pro", price: "1,899", period: "mo", features: ["1 event access"], popular: true },
@@ -134,13 +149,6 @@ export default function Subscription() {
       ], save: "7,378" }
     ]
   };
-
-  const benefits = [
-    { Icon: Ticket, title: "Event Access", description: "Priority access to all our workshops, masterclasses, and networking events" },
-    { Icon: BookOpen, title: "Resources", description: "Get slides, toolkits, templates, and exclusive materials from every session" },
-    { Icon: Users, title: "Community", description: "Connect with fellow entrepreneurs, mentors, and industry leaders" },
-    { Icon: Gift, title: "Perks", description: "Enjoy discounts, merch, certificates, and special recognition opportunities" }
-  ];
 
   const extractMpesaCode = (message) => {
     const codeMatch = message.match(/\b[A-Z]{2}\d{8}\b|\b[A-Z0-9]{10}\b/);
@@ -261,13 +269,11 @@ export default function Subscription() {
 
   // Show type selector modal when subscribe is clicked
   const handleSubscribeClick = (plan) => {
-    // For Membership plans, go directly to payment
     if (selectedPlan === 'membership') {
       setSubscriptionType('Membership');
       setPlanToSubscribe(plan);
       setShowPaymentInfo(true);
     } else {
-      // For Spotlight, Momentum, Mastery - go directly to payment
       setPendingPlan(plan);
       setSubscriptionType('Events');
       setPlanToSubscribe(plan);
@@ -516,174 +522,316 @@ export default function Subscription() {
     );
   };
 
-  return (
-    <div className={`transition-colors duration-1000 ${darkMode ? 'bg-black' : 'bg-[#FFFEF9]'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
-      <Navbar />
-     
+  const faqs = [
+    { question: "How do I get my ticket after payment?", answer: "After submitting your M-Pesa confirmation, our team verifies your payment within 24–48 hours and sends your QR-code ticket directly to your email." },
+    { question: "Can I upgrade my membership tier later?", answer: "Yes — you can upgrade at any time and we'll prorate the difference for the remaining period." },
+    { question: "Is student pricing available for membership too?", answer: "Absolutely. The Student membership tier is designed for students and early-stage learners at a reduced annual rate." },
+    { question: "What happens if I miss an event?", answer: "Ticket holders can transfer their ticket to a future event within the same year, subject to availability." },
+    { question: "Are there group or corporate rates?", answer: "Yes. Contact us directly for group bookings of 5+ tickets or corporate membership packages." },
+  ];
 
-      {/* Header Section - Responsive */}
-      <section className={`relative pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-14 md:pb-16 px-4 sm:px-6 overflow-hidden transition-colors duration-1000 ${darkMode ? 'bg-black' : 'bg-gradient-to-br from-[#306CEC] to-[#1a4d9e]'}`}>
-        <motion.div 
-          className={`absolute top-20 right-10 w-48 sm:w-64 md:w-72 h-48 sm:h-64 md:h-72 rounded-full blur-3xl ${darkMode ? 'bg-[#306CEC]/10' : 'bg-white/10'}`}
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity }}
-        />
-        <motion.div 
-          className={`absolute bottom-10 left-10 w-64 sm:w-80 md:w-96 h-64 sm:h-80 md:h-96 rounded-full blur-3xl ${darkMode ? 'bg-[#306CEC]/10' : 'bg-white/10'}`}
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.5, 0.3, 0.5] }}
-          transition={{ duration: 10, repeat: Infinity }}
-        />
-        
-         <div className="max-w-7xl mx-auto relative z-10 text-center">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 ${darkMode ? 'text-[#306CEC]' : 'text-white'} px-4`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
-              SUBSCRIPTION PLANS
+  return (
+    <div className={`min-h-screen transition-colors duration-1000 ${darkMode ? 'bg-[#080808]' : 'bg-[#f0ede6]'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
+      <Navbar />
+
+      {/* ─── PLAN SELECTOR + CONTENT ─── */}
+      <section className="pt-28 pb-24 px-6">
+        <div className="max-w-5xl mx-auto">
+
+          {/* Compact page header */}
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+            className="text-center mb-10">
+            <span className={`inline-flex items-center gap-2 text-[#306CEC] text-xs font-bold tracking-[0.22em] uppercase px-4 py-1.5 rounded-full border mb-5 ${darkMode ? 'border-[#306CEC]/25 bg-[#306CEC]/8' : 'border-[#306CEC]/25 bg-[#306CEC]/6'}`}>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#306CEC] animate-pulse" />
+              Impact360 · 2026 Access
+            </span>
+            <h1 className={`font-black leading-tight tracking-tight mb-3 ${darkMode ? 'text-white' : 'text-[#0a0a14]'}`}
+              style={{ fontSize: 'clamp(32px, 5vw, 56px)', fontFamily: 'League Spartan, sans-serif' }}>
+              SECURE YOUR <span className="text-[#306CEC]">ACCESS.</span>
             </h1>
-            <p className={`text-base sm:text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto ${darkMode ? 'text-gray-300' : 'text-white/90'} px-4`}>
-              Choose the perfect plan to accelerate your entrepreneurial journey
+            <p className={`text-sm max-w-md mx-auto ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+              Join Kenya's boldest community of founders and builders.
             </p>
           </motion.div>
+
+          {/* Pill toggle */}
+          <div className="flex justify-center mb-10">
+            <div className={`inline-flex p-1.5 rounded-full ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-black/5 border border-black/8'}`}>
+              {[{ key: 'tickets', label: 'Event Tickets' }, { key: 'membership', label: 'Membership' }].map(tab => (
+                <motion.button key={tab.key} onClick={() => setSelectedPlan(tab.key)} whileTap={{ scale: 0.95 }}
+                  className={`px-6 py-2.5 rounded-full font-black text-sm tracking-wide transition-all duration-300 ${
+                    selectedPlan === tab.key
+                      ? 'bg-[#306CEC] text-white shadow-md shadow-[#306CEC]/30'
+                      : darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'
+                  }`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                  {tab.label.toUpperCase()}
+                </motion.button>
+              ))}
+            </div>
+          </div>
+
+          <AnimatePresence mode="wait">
+            {/* ── TICKETS: full-width horizontal rows ── */}
+            {selectedPlan === 'tickets' && (
+              <motion.div key="t" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.35 }}>
+                <div className="space-y-4">
+                  {subscriptionPlans.tickets.map((plan, i) => (
+                    <motion.div key={plan.name}
+                      initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.12, duration: 0.5 }}
+                      whileHover={{ x: 6 }}
+                      onClick={() => handleSubscribeClick(plan)}
+                      className={`group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 p-7 md:p-9 rounded-2xl border cursor-pointer transition-all duration-300 ${
+                        plan.popular
+                          ? 'bg-[#306CEC] border-[#306CEC]'
+                          : darkMode
+                          ? 'bg-white/[0.03] border-white/8 hover:border-[#306CEC]/50 hover:bg-[#306CEC]/5'
+                          : 'bg-white border-gray-200 hover:border-[#306CEC]/40 hover:shadow-xl'
+                      }`}>
+                      {/* Left */}
+                      <div className="flex items-center gap-5">
+                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 ${plan.popular ? 'bg-white/20' : darkMode ? 'bg-white/6' : 'bg-[#306CEC]/8'}`}>
+                          <Ticket className={`w-7 h-7 ${plan.popular ? 'text-white' : 'text-[#306CEC]'}`} />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-3 flex-wrap">
+                            <h3 className={`font-black text-2xl md:text-3xl leading-none ${plan.popular ? 'text-white' : darkMode ? 'text-white' : 'text-[#0a0a14]'}`}
+                              style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                              {plan.name.toUpperCase()}
+                            </h3>
+                            {plan.popular && <span className="text-[10px] font-black bg-white/20 text-white px-2.5 py-1 rounded-full tracking-widest">POPULAR</span>}
+                          </div>
+                          <p className={`text-xs mt-1 tracking-wide ${plan.popular ? 'text-white/60' : darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                            Single event · Admit one
+                          </p>
+                        </div>
+                      </div>
+                      {/* Center: price */}
+                      <div className="sm:text-center">
+                        <p className={`text-[10px] tracking-[0.2em] uppercase mb-1 ${plan.popular ? 'text-white/50' : darkMode ? 'text-gray-600' : 'text-gray-400'}`}>Price</p>
+                        <p className={`font-black leading-none ${plan.popular ? 'text-white' : darkMode ? 'text-white' : 'text-[#0a0a14]'}`}
+                          style={{ fontSize: 'clamp(40px, 5vw, 64px)', fontFamily: 'League Spartan, sans-serif' }}>
+                          KES {plan.price}
+                        </p>
+                      </div>
+                      {/* Right: CTA */}
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} onClick={e => { e.stopPropagation(); handleSubscribeClick(plan); }}
+                        className={`px-7 py-3.5 rounded-xl font-black text-sm tracking-wider transition-all shrink-0 ${
+                          plan.popular ? 'bg-white text-[#306CEC] hover:bg-gray-50' : 'bg-[#306CEC] text-white hover:bg-[#2558d4]'
+                        }`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                        GET TICKET →
+                      </motion.div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Ticket note */}
+                <p className={`mt-6 text-xs text-center tracking-wide ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+                  One ticket = one event. Valid for a single Impact360 event of your choice.
+                </p>
+              </motion.div>
+            )}
+
+            {/* ── MEMBERSHIP ── */}
+            {selectedPlan === 'membership' && (
+              <motion.div key="m" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.35 }}>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-6">
+                  {subscriptionPlans.membership.map((plan, index) => {
+                    const planKey = `membership-${plan.name}-${index}`;
+                    const isExpanded = expandedPlans[planKey] === true;
+                    const visibleFeatures = isExpanded ? plan.features : plan.features.slice(0, 3);
+                    const hasMore = plan.features.length > 3;
+                    return (
+                      <motion.div key={planKey}
+                        initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1, duration: 0.5 }} viewport={{ once: true }}
+                        whileHover={{ y: -5 }}
+                        className={`relative rounded-2xl p-7 flex flex-col transition-all ${
+                          plan.popular
+                            ? 'bg-[#306CEC] shadow-xl shadow-[#306CEC]/20'
+                            : darkMode ? 'bg-white/[0.04] border border-white/8 hover:border-white/18' : 'bg-white border border-gray-150 hover:border-[#306CEC]/25 shadow-sm hover:shadow-md'
+                        }`}>
+                        {plan.popular && (
+                          <span className="absolute -top-3 left-6 text-[10px] font-black bg-white text-[#306CEC] px-3 py-1 rounded-full tracking-widest shadow"
+                            style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                            POPULAR
+                          </span>
+                        )}
+                        <h3 className={`font-black text-lg mb-1 ${plan.popular ? 'text-white' : 'text-[#306CEC]'}`}
+                          style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                          {plan.name.toUpperCase()}
+                        </h3>
+                        {plan.save && (
+                          <span className={`self-start text-[10px] font-bold px-2 py-0.5 rounded-full mb-4 tracking-wide ${plan.popular ? 'bg-white/20 text-white' : darkMode ? 'bg-[#306CEC]/15 text-[#306CEC]' : 'bg-green-100 text-green-700'}`}>
+                            SAVE KES {plan.save}
+                          </span>
+                        )}
+                        <div className={`flex items-baseline gap-1 mb-1 mt-2 ${plan.popular ? 'text-white' : darkMode ? 'text-white' : 'text-[#0a0a14]'}`}>
+                          <span className="text-sm font-semibold">KES</span>
+                          <span className="text-4xl md:text-5xl font-black leading-none" style={{ fontFamily: 'League Spartan, sans-serif' }}>{plan.price}</span>
+                        </div>
+                        <p className={`text-[10px] tracking-widest uppercase mb-6 ${plan.popular ? 'text-white/50' : darkMode ? 'text-gray-600' : 'text-gray-400'}`}>/ year</p>
+
+                        <div className="space-y-2.5 mb-6 flex-grow">
+                          <AnimatePresence mode="wait">
+                            {visibleFeatures.map((feature, i) => (
+                              <motion.div key={`${planKey}-f-${i}`} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={{ delay: i * 0.02 }}
+                                className="flex items-start gap-2">
+                                <Check className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${plan.popular ? 'text-white/70' : 'text-[#306CEC]'}`} strokeWidth={3} />
+                                <span className={`text-sm leading-snug ${plan.popular ? 'text-white/80' : darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{feature}</span>
+                              </motion.div>
+                            ))}
+                          </AnimatePresence>
+                          {hasMore && (
+                            <button onClick={() => togglePlanExpansion(planKey)}
+                              className={`text-xs font-bold transition-colors ${plan.popular ? 'text-white/55 hover:text-white' : 'text-[#306CEC]'}`}>
+                              {isExpanded ? '− less' : `+ ${plan.features.length - 3} more`}
+                            </button>
+                          )}
+                        </div>
+
+                        <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                          onClick={() => handleSubscribeClick(plan)}
+                          className={`w-full py-3 rounded-xl font-black text-sm tracking-wider transition-all ${
+                            plan.popular ? 'bg-white text-[#306CEC] hover:bg-gray-50' : 'bg-[#306CEC] text-white hover:bg-[#2558d4]'
+                          }`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
+                          GET STARTED →
+                        </motion.button>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </section>
 
-      {/* Plan Period Selector - Responsive */}
-      <section className={`py-12 sm:py-14 md:py-16 px-4 sm:px-6 transition-colors duration-1000 ${darkMode ? 'bg-black' : 'bg-[#FFFEF9]'}`}>
-        <div className="max-w-7xl mx-auto">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            whileInView={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.6 }} 
-            viewport={{ once: true }} 
-            className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 mb-12 sm:mb-14 md:mb-16"
-          >
-            {([
-              { key: 'spotlight', label: 'Spotlight Pass' },
-              { key: 'momentum', label: 'Momentum Pass' },
-              { key: 'mastery', label: 'Mastery Pass' },
-              { key: 'membership', label: 'Membership' }
-            ]).map((plan) => (
-              <motion.button 
-                key={plan.key} 
-                onClick={() => {
-                  setSelectedPlan(plan.key);
-                  // State will persist - each plan tracks its own expansion independently
-                }} 
-                whileHover={{ scale: 1.05 }} 
-                whileTap={{ scale: 0.95 }}
-                className={`px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 rounded-full font-bold text-sm sm:text-base md:text-lg transition-all duration-300 ${
-                  selectedPlan === plan.key
-                    ? darkMode
-                      ? 'bg-[#306CEC] text-white shadow-xl'
-                      : 'bg-[#306CEC] text-white shadow-xl'
-                    : darkMode
-                    ? 'bg-[#1a1f3a] text-gray-300 hover:bg-[#252b47] shadow-lg border border-[#306CEC]/20'
-                    : 'bg-white text-gray-600 hover:bg-gray-50 shadow-lg'
-                }`}
-                style={{ fontFamily: 'League Spartan, sans-serif' }}
-              >
-                {plan.label.toUpperCase()}
-              </motion.button>
-            ))}
-
+      {/* ─── PERKS ─── */}
+      <section className={`py-20 px-6 ${darkMode ? 'bg-white/[0.02]' : 'bg-white'} border-y ${darkMode ? 'border-white/6' : 'border-gray-100'}`}>
+        <div className="max-w-5xl mx-auto">
+          <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}
+            className="text-center mb-14">
+            <p className={`text-[10px] font-bold tracking-[0.22em] uppercase mb-3 ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>What you get</p>
+            <h2 className={`text-3xl md:text-4xl font-black mb-4 ${darkMode ? 'text-white' : 'text-[#0a0a14]'}`}
+              style={{ fontFamily: 'League Spartan, sans-serif' }}>
+              WHAT YOU GET
+            </h2>
+            <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+              Every ticket and membership comes packed with value.
+            </p>
           </motion.div>
 
-          {/* Pricing Cards - Responsive Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 md:gap-8 max-w-6xl mx-auto">
-            {subscriptionPlans[selectedPlan].map((plan, index) => {
-              const planKey = `${selectedPlan}-${plan.name}-${index}`;
-              const isExpanded = expandedPlans[planKey] === true;
-              const visibleFeatures = isExpanded ? plan.features : plan.features.slice(0, 3);
-              const hasMore = plan.features.length > 3;
-
-              return (
-              <motion.div 
-                key={planKey}
-                initial={{ opacity: 0, y: 30 }} 
-                whileInView={{ opacity: 1, y: 0 }} 
-                transition={{ delay: index * 0.1, duration: 0.6 }} 
-                viewport={{ once: true }}
-                whileHover={{ y: -10, scale: plan.popular ? 1.02 : 1.05 }}
-                className={`relative rounded-2xl sm:rounded-3xl p-8 sm:p-10 md:p-12 shadow-2xl flex flex-col transition-colors duration-1000 ${
-                  plan.popular
-                    ? darkMode
-                      ? 'bg-black border-2 border-[#306CEC] text-white'
-                      : 'bg-gradient-to-br from-[#306CEC] to-[#1a4d9e] text-white scale-105'
-                    : darkMode
-                    ? 'bg-black border border-[#306CEC]/20 text-white'
-                    : 'bg-white text-gray-900'
-                }`}
-              >
-                <div className="text-center mb-8 sm:mb-10">
-                  <h3 className={`text-2xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4 ${plan.popular ? darkMode ? 'text-[#306CEC]' : 'text-white' : darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
-                    {plan.name.toUpperCase()}
-                  </h3>
-                  {plan.save && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mb-3 sm:mb-4">
-                      <div className={`inline-block px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-bold ${
-                        darkMode ? 'bg-[#306CEC]/20 text-[#306CEC] border border-[#306CEC]/30' : plan.popular ? 'bg-yellow-400 text-gray-900' : 'bg-green-100 text-green-700'
-                      }`}>
-                        Save KES. {plan.save}
-                      </div>
-                    </motion.div>
-                  )}
-                  <div className="flex items-baseline justify-center gap-1 sm:gap-2">
-                    <span className="text-base sm:text-lg">KES.</span>
-                    <span className="text-3xl sm:text-4xl md:text-5xl font-bold">{plan.price}</span>
-                  </div>
-                  <div className={`text-xs sm:text-sm mt-2 sm:mt-3 ${plan.popular ? darkMode ? 'text-gray-400' : 'text-white/80' : darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    Subscription
-                  </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { Icon: Ticket,   title: 'Event Access',  desc: 'Priority entry to every Impact360 workshop, masterclass, and city roadshow.' },
+              { Icon: BookOpen, title: 'Resources',      desc: 'Slides, playbooks, templates, and curated session materials.' },
+              { Icon: Users,    title: 'Community',      desc: 'Connect with founders, mentors, and industry leaders directly.' },
+              { Icon: Gift,     title: 'Perks',          desc: 'Discounts, certificates, merch, and special recognition.' },
+            ].map(({ Icon, title, desc }, i) => (
+              <motion.div key={title}
+                initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08, duration: 0.5 }} viewport={{ once: true }}
+                whileHover={{ y: -5 }}
+                className={`rounded-2xl p-6 transition-all ${darkMode ? 'bg-white/[0.04] border border-white/8 hover:border-[#306CEC]/30' : 'bg-gray-50 border border-gray-100 hover:border-[#306CEC]/25 hover:shadow-md'}`}>
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-5 ${darkMode ? 'bg-[#306CEC]/15' : 'bg-[#306CEC]/10'}`}>
+                  <Icon className="w-5 h-5 text-[#306CEC]" strokeWidth={2} />
                 </div>
-
-                <div className="space-y-4 sm:space-y-5 mb-8 sm:mb-10 flex-grow">
-                  <AnimatePresence mode="wait">
-                    {visibleFeatures.map((feature, i) => (
-                      <motion.div 
-                        key={`${planKey}-feature-${i}`}
-                        initial={{ opacity: 0, x: -20 }} 
-                        animate={{ opacity: 1, x: 0 }} 
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ delay: 0.05 + i * 0.02 }} 
-                        className="flex items-start gap-2 sm:gap-3"
-                      >
-                        <Check className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 mt-0.5 ${plan.popular ? darkMode ? 'text-[#306CEC]' : 'text-yellow-300' : darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} strokeWidth={2.5} />
-                        <span className={`text-sm sm:text-base ${darkMode ? 'text-gray-300' : plan.popular ? 'text-white/90' : 'text-gray-600'}`}>{feature}</span>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </div>
-
-                {hasMore && (
-                  <button
-                    onClick={() => {
-                      console.log('Toggling:', planKey, 'Current:', isExpanded);
-                      togglePlanExpansion(planKey);
-                    }}
-                    className={`text-xs font-bold mb-4 transition-colors ${
-                      darkMode ? 'text-[#306CEC] hover:text-[#1a9bd1]' : plan.popular ? 'text-white hover:text-gray-200' : 'text-[#306CEC] hover:text-[#1a9bd1]'
-                    }`}
-                  >
-                    {isExpanded ? '- Show Less' : '+ Show More'}
-                  </button>
-                )}
-
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleSubscribeClick(plan)}
-                  className={`w-full py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl ${
-                    darkMode ? 'bg-[#306CEC] text-white hover:bg-[#1a9bd1]' : plan.popular ? 'bg-white text-[#306CEC] hover:bg-gray-100' : 'bg-[#306CEC] text-white hover:bg-[#1a9bd1]'
-                  }`}
-                  style={{ fontFamily: 'League Spartan, sans-serif' }}
-                >
-                  SUBSCRIBE NOW
-                </motion.button>
+                <h3 className={`font-black text-sm mb-2 ${darkMode ? 'text-white' : 'text-[#0a0a14]'}`}
+                  style={{ fontFamily: 'League Spartan, sans-serif' }}>{title.toUpperCase()}</h3>
+                <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>{desc}</p>
               </motion.div>
-            );
-            })}
-
+            ))}
           </div>
         </div>
+      </section>
+
+      {/* ─── FAQ ─── */}
+      <section className="py-20 px-6">
+        <div className="max-w-5xl mx-auto">
+          <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}
+            className="text-center mb-12">
+            <p className={`text-[10px] font-bold tracking-[0.22em] uppercase mb-3 ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>FAQ</p>
+            <h2 className={`text-3xl md:text-4xl font-black ${darkMode ? 'text-white' : 'text-[#0a0a14]'}`}
+              style={{ fontFamily: 'League Spartan, sans-serif' }}>
+              COMMON QUESTIONS
+            </h2>
+          </motion.div>
+
+          <div className="space-y-3">
+            {faqs.map((faq, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.06, duration: 0.4 }} viewport={{ once: true }}
+                className={`rounded-2xl overflow-hidden border transition-all ${
+                  openFaq === i
+                    ? darkMode ? 'border-[#306CEC]/35 bg-[#306CEC]/7' : 'border-[#306CEC]/25 bg-[#306CEC]/4'
+                    : darkMode ? 'border-white/7 bg-white/[0.025] hover:border-white/14' : 'border-gray-200 bg-white hover:border-gray-300'
+                }`}>
+                <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between px-6 py-5 text-left gap-4">
+                  <span className={`font-bold text-sm md:text-base leading-snug ${darkMode ? 'text-white' : 'text-[#0a0a14]'}`}>
+                    {faq.question}
+                  </span>
+                  <motion.span animate={{ rotate: openFaq === i ? 45 : 0 }} transition={{ duration: 0.22 }}
+                    className={`text-xl font-light shrink-0 leading-none ${openFaq === i ? 'text-[#306CEC]' : darkMode ? 'text-white/25' : 'text-black/25'}`}>
+                    +
+                  </motion.span>
+                </button>
+                <AnimatePresence>
+                  {openFaq === i && (
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.28 }}>
+                      <p className={`px-6 pb-5 text-sm leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{faq.answer}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── CTA ─── */}
+      <section className={`py-24 px-6 transition-colors duration-1000 ${darkMode ? 'bg-[#000000]' : 'bg-[#F5F6F8]'}`}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          viewport={{ once: true }}
+          className="max-w-4xl mx-auto text-center"
+        >
+          <p className="text-xs font-bold tracking-[0.25em] text-[#306CEC] uppercase mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+            Don't miss out
+          </p>
+          <h2
+            className={`text-5xl md:text-7xl font-black leading-tight mb-6 ${darkMode ? 'text-white' : 'text-[#111]'}`}
+            style={{ fontFamily: 'League Spartan, sans-serif' }}
+          >
+            THE ROOM IS<br />
+            <span className="text-[#306CEC]">FILLING UP.</span>
+          </h2>
+          <p className={`text-lg mb-10 max-w-xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
+            Spots are limited. Secure your ticket or membership before they're gone.
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <motion.button
+              whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+              onClick={() => { setSelectedPlan('tickets'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              className="bg-[#306CEC] text-white px-10 py-4 rounded-full font-bold hover:bg-[#4A80FF] transition-all duration-300 shadow-lg hover:shadow-xl"
+              style={{ fontFamily: 'League Spartan, sans-serif' }}
+            >
+              Get a Ticket →
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+              onClick={() => { setSelectedPlan('membership'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              className={`border-2 px-10 py-4 rounded-full font-bold transition-all duration-300 ${darkMode ? 'border-white/30 text-white hover:border-white' : 'border-black/20 text-[#111] hover:border-black'}`}
+              style={{ fontFamily: 'League Spartan, sans-serif' }}
+            >
+              Join as Member
+            </motion.button>
+          </div>
+        </motion.div>
       </section>
 
       {/* Type Selector Modal */}
@@ -1111,169 +1259,6 @@ Dear John Doe, you have sent Ksh. 999.0 to THE O'GAD IMPACT GROUP LTD for 111855
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Post-Event Experiences Section - Responsive */}
-      <section className={`py-12 sm:py-14 md:py-16 px-4 sm:px-6 transition-colors duration-1000 ${darkMode ? 'bg-black' : 'bg-[#FFFEF9]'}`}>
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            viewport={{ once: true }}
-            className={`relative rounded-2xl sm:rounded-3xl p-8 sm:p-12 md:p-16 shadow-2xl overflow-hidden transition-colors duration-1000 ${
-              darkMode ? 'bg-[#1a1f3a] border border-[#306CEC]/20' : 'bg-gradient-to-br from-[#306CEC] to-[#1a4d9e]'
-            }`}
-          >
-            <div className={`absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 rounded-full blur-3xl ${darkMode ? 'bg-[#306CEC]/10' : 'bg-white/10'}`}></div>
-            <div className={`absolute bottom-0 left-0 w-64 sm:w-96 h-64 sm:h-96 rounded-full blur-3xl ${darkMode ? 'bg-[#306CEC]/10' : 'bg-white/10'}`}></div>
-            
-            <div className="relative z-10 text-center">
-              <motion.h2 
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-                viewport={{ once: true }}
-                className={`text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 sm:mb-6 ${darkMode ? 'text-[#306CEC]' : 'text-white'}`}
-                style={{ fontFamily: 'League Spartan, sans-serif' }}
-              >
-                EXTEND YOUR EXPERIENCE
-              </motion.h2>
-              
-              <motion.p 
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                viewport={{ once: true }}
-                className={`text-base sm:text-lg md:text-xl mb-3 sm:mb-4 max-w-3xl mx-auto leading-relaxed ${darkMode ? 'text-gray-300' : 'text-white/90'}`}
-              >
-                Don't rush home after the event! Join us for optional leisure activities — unwind, explore scenic locations, and build deeper connections in a relaxed setting.
-              </motion.p>
-              
-              <motion.p 
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-                viewport={{ once: true }}
-                className={`text-xs sm:text-sm mb-6 sm:mb-8 ${darkMode ? 'text-gray-400' : 'text-white/70'}`}
-              >
-                 Unique experiences for each city • Separate booking & pricing
-              </motion.p>
-              
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.5 }}
-                viewport={{ once: true }}
-                className={`inline-flex items-center gap-2 backdrop-blur-sm text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg border-2 ${
-                  darkMode ? 'bg-[#306CEC]/20 border-[#306CEC]/30' : 'bg-white/20 border-white/30'
-                }`}
-              >
-                <span className="text-xl sm:text-2xl"></span>
-                Details Coming Soon
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-      {/* Benefits Section - Responsive */}
-      <section className={`py-16 sm:py-20 md:py-24 px-4 sm:px-6 transition-colors duration-1000 ${darkMode ? 'bg-black' : 'bg-[#F5F5f0]'}`}>
-        <div className="max-w-7xl mx-auto">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }} 
-            whileInView={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.8 }} 
-            viewport={{ once: true }} 
-            className="text-center mb-12 sm:mb-14 md:mb-16"
-          >
-            <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
-              WHY SUBSCRIBE?
-            </h2>
-            <p className={`text-base sm:text-lg md:text-xl max-w-3xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-              Get exclusive access to events, resources, and a thriving community
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7 md:gap-8">
-            {benefits.map((benefit, index) => {
-              const IconComponent = benefit.Icon;
-              return (
-                <motion.div 
-                  key={index} 
-                  initial={{ opacity: 0, y: 30 }} 
-                  whileInView={{ opacity: 1, y: 0 }} 
-                  transition={{ delay: index * 0.1, duration: 0.6 }} 
-                  viewport={{ once: true }} 
-                  whileHover={{ y: -5 }}
-                  className={`p-6 sm:p-7 md:p-8 rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-center ${
-                    darkMode ? 'bg-[#1a1f3a] border border-[#306CEC]/20' : 'bg-white'
-                  }`}
-                >
-                  <IconComponent className={`w-12 h-12 sm:w-14 sm:h-14 mx-auto mb-3 sm:mb-4 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} strokeWidth={1.5} />
-                  <h3 className={`text-lg sm:text-xl font-bold mb-2 sm:mb-3 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
-                    {benefit.title.toUpperCase()}
-                  </h3>
-                  <p className={`leading-relaxed text-sm sm:text-base ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{benefit.description}</p>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section - Responsive */}
-      <section className={`py-16 sm:py-20 md:py-24 px-4 sm:px-6 transition-colors duration-1000 ${darkMode ? 'bg-black' : 'bg-[#FFFEF9]'}`}>
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-12 sm:mb-14 md:mb-16"
-          >
-            <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
-              FREQUENTLY ASKED QUESTIONS
-            </h2>
-          </motion.div>
-
-          <div className="space-y-4 sm:space-y-5 md:space-y-6">
-            {[
-
-              {
-                question: "Can I upgrade my plan later?",
-                answer: "Yes! You can upgrade your subscription at any time and we'll prorate the difference."
-              },
-              {
-                question: "What happens if I miss an event?",
-                answer: "Most plans include replay access, so you can watch recorded sessions at your convenience."
-              },
-              {
-                question: "Are there refunds available?",
-                answer: "We offer a 7-day money-back guarantee if you're not satisfied with your subscription."
-              },
-              {
-                question: "Can I bring guests to events?",
-                answer: "Student and Pro quarterly plans include guest passes. Premium plans offer additional guest invites."
-              }
-            ].map((faq, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-                viewport={{ once: true }}
-                className={`p-5 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg transition-colors duration-1000 ${
-                  darkMode ? 'bg-[#1a1f3a] border border-[#306CEC]/20' : 'bg-white'
-                }`}
-              >
-                <h3 className={`text-base sm:text-lg md:text-xl font-bold mb-2 sm:mb-3 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} style={{ fontFamily: 'League Spartan, sans-serif' }}>
-                  {faq.question.toUpperCase()}
-                </h3>
-                <p className={`leading-relaxed text-sm sm:text-base ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{faq.answer}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <Footer />
     </div>
