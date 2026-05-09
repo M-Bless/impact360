@@ -382,7 +382,7 @@ export default function EventsPage() {
                         </a>
                       ) : (
                         <Link to="/subscription" className="px-6 py-2 bg-[#306CEC] text-white rounded-lg font-semibold hover:bg-[#4A80FF] transition-colors duration-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-                          Get Ticket
+                          Register Now
                         </Link>
                       )}
                     </div>
