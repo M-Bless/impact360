@@ -692,6 +692,8 @@ export default function EventsPage() {
 }
 */
 
+
+
 /* ─────────────────────────────────────────────
    VIDEO HIGHLIGHTS — horizontal scroll-driven card stack
 ───────────────────────────────────────────── */
