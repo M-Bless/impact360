@@ -381,9 +381,15 @@ export default function EventsPage() {
                           Register Now
                         </a>
                       ) : (
-                        <Link to="/subscription" className="px-6 py-2 bg-[#306CEC] text-white rounded-lg font-semibold hover:bg-[#4A80FF] transition-colors duration-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
+                        <a
+                          href="https://forms.gle/FoEdvsEvgt3ohDm48"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-6 py-2 bg-[#306CEC] text-white rounded-lg font-semibold hover:bg-[#4A80FF] transition-colors duration-300"
+                          style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}
+                        >
                           Register Now
-                        </Link>
+                        </a>
                       )}
                     </div>
                   </div>
