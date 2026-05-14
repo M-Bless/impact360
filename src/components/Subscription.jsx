@@ -524,7 +524,7 @@ export default function Subscription() {
 
   const faqs = [
     { question: "How do I get my ticket after payment?", answer: "After submitting your M-Pesa confirmation, our team verifies your payment within 24–48 hours and sends your QR-code ticket directly to your email." },
-    { question: "Can I upgrade my membership tier later?", answer: "Yes — you can upgrade at any time and we'll prorate the difference for the remaining period." },
+    { question: "Can I upgrade my membership tier later?", answer: "Yes, you can upgrade at any time and we'll prorate the difference for the remaining period." },
     { question: "Is student pricing available for membership too?", answer: "Absolutely. The Student membership tier is designed for students and early-stage learners at a reduced annual rate." },
     { question: "What happens if I miss an event?", answer: "Ticket holders can transfer their ticket to a future event within the same year, subject to availability." },
     { question: "Are there group or corporate rates?", answer: "Yes. Contact us directly for group bookings of 5+ tickets or corporate membership packages." },

@@ -1,256 +1,126 @@
-import React, { useState } from "react"; // Added useState here
-import { motion, AnimatePresence } from "framer-motion"; // Added AnimatePresence here
-import { 
-  Rocket, Zap, GraduationCap, Wrench, Dumbbell, Laptop, 
-  Handshake, Mic, Calendar, Users, Globe, Target, Sparkles 
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Rocket, Zap, GraduationCap, Wrench, Dumbbell,
+  Laptop, Handshake, Mic, Target, Sparkles, Users, Globe, ArrowRight
 } from "lucide-react";
 import { useDarkMode } from "../DarkModeContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-
-
-const ProgramCard = ({ Icon, title, description, features, gradient, delay = 0, darkMode }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ delay, duration: 0.2 }}
-    viewport={{ once: true }}
-    whileHover={{ y: -10, scale: 1.02 }}
-    className={`${gradient} text-[#FFFEF9] p-10 rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-300 relative overflow-hidden group`}
-  >
-    <div className="absolute top-0 right-0 w-40 h-40 bg-[#FFFEF9]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-    
-    <div className="relative z-10">
-      <Icon className="w-16 h-16 mb-6" strokeWidth={1.5} />
-      <h3 className="text-3xl font-bold mb-4">{title}</h3>
-      <p className="text-[#FFFEF9]/90 text-lg leading-relaxed mb-6">{description}</p>
-      
-      <div className="space-y-3">
-        {features.map((feature, i) => (
-          <div key={i} className="flex items-start space-x-3">
-            <div className="w-2 h-2 rounded-full bg-[#FFFEF9] mt-2 flex-shrink-0"></div>
-            <p className="text-[#FFFEF9]/90">{feature}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </motion.div>
-);
-
-const EventCard = ({ type, title, description, image, delay = 0, darkMode }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ delay, duration: 0.2 }}
-    viewport={{ once: true }}
-    whileHover={{ y: -12, scale: 1.02 }}
-    className={`rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 group ${
-      darkMode ? 'bg-[#1a1f3a] border border-[#306CEC]/20' : 'bg-white'
-    }`}
-  >
-    <div className="relative h-64 overflow-hidden">
-      <motion.img
-        src={image}
-        alt={title}
-        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-      />
-      <div className={`absolute inset-0 flex items-end p-0 transition-all duration-500 ${
-        'bg-gradient-to-t from-black/60 via-black/30 to-transparent group-hover:from-black group-hover:via-black/40'
-      }`}>
-        {/* Overlay content can go here if needed */}
-      </div>
-      <div className={`absolute top-4 left-4 px-4 py-2 rounded-full font-bold text-sm ${
-        darkMode
-          ? 'bg-[#306CEC] text-white'
-          : 'bg-[#FFFEF9] text-[#306CEC]'
-      }`}>
-        {type}
-      </div>
-    </div>
-    <div className="p-8">
-      <h3 className={`text-2xl font-bold mb-3 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`}>{title}</h3>
-      <p className={`leading-relaxed mb-6 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{description}</p>
-    </div>
-  </motion.div>
-);
-
-export default function ProgramsPage() {
-  const { darkMode } = useDarkMode();
-
-  const mainPrograms = [
-    {
-      Icon: Rocket,
-      title: "Incubation Program",
-      description: "Transform your idea into a viable business with structured support, mentorship, and resources over 3-6 months.",
-      features: [
-        "Idea validation and market research support",
-        "Business model development workshops",
-        "1-on-1 mentorship from experienced entrepreneurs",
-        "Access to co-working spaces and resources",
-        "Pitch training and investor connections",
-        "Legal and technical advisory services"
-      ],
-      gradientLight: "bg-gradient-to-br from-[#306CEC] to-[#1a4d9e]",
-      gradientDark: "bg-gradient-to-br from-[#1a3a66] to-[#0f1f3a]"
-    },
-    {
-      Icon: Zap,
-      title: "Acceleration Program",
-      description: "Scale your existing startup rapidly with intensive support, funding opportunities, and expert guidance over 3-4 months.",
-      features: [
-        "Growth strategy development and execution",
-        "Access to funding and investment networks",
-        "Marketing and sales optimization workshops",
-        "Technical infrastructure scaling support",
-        "Partnership and collaboration opportunities",
-        "Demo day with investors and stakeholders"
-      ],
-      gradientLight: "bg-gradient-to-br from-[#1a4d9e] to-[#000000]",
-      gradientDark: "bg-gradient-to-br from-[#1a2d4d] to-[#0f1a2e]"
-    }
-  ];
-
-  const upcomingEvents = [
-    {
-      type: "Workshop",
-      title: "From Idea to Market Fit",
-      description: "Learn practical strategies for validating your idea, finding your target market, and achieving product-market fit from industry experts.",
-      image: "/events/workshop.png"
-    },
-    {
-      type: "Meetup",
-      title: "Founders Connect",
-      description: "Monthly networking event where founders, mentors, and investors come together to share experiences and build connections.",
-      image: "/events/meetup.png"
-    },
-    {
-      type: "Panel Discussion",
-      title: "Scaling Beyond Borders",
-      description: "Hear from founders who successfully expanded their businesses across Africa and internationally about challenges and opportunities.",
-      image: "/events/panel.png"
-    }
-  ];
-
-  const eventTypes = [
-    {
-      Icon: GraduationCap,
-      title: "Masterclasses",
-      description: "Deep-dive sessions with successful entrepreneurs who share years of experience building and scaling businesses."
-    },
-    {
-      Icon: Wrench,
-      title: "Workshops",
-      description: "Hands-on, practical sessions focused on specific skills like pitch development, financial modeling, and product design."
-    },
-    {
-      Icon: Dumbbell,
-      title: "Bootcamps",
-      description: "Intensive multi-day programs covering comprehensive topics from fundraising to market entry strategies."
-    },
-    {
-      Icon: Laptop,
-      title: "Hackathons",
-      description: "Collaborative coding events where teams build innovative solutions to real-world challenges in limited time."
-    },
-    {
-      Icon: Handshake,
-      title: "Meetups",
-      description: "Casual networking events connecting founders, mentors, investors, and ecosystem players."
-    },
-    {
-      Icon: Mic,
-      title: "Panel Discussions",
-      description: "Expert panels discussing current trends, challenges, and opportunities in entrepreneurship and innovation."
-    }
-  ];
-const forgeVenturesList = [
+/* ─── DATA ─── */
+const mainPrograms = [
   {
-    name: "Blavia",
-    category: "Startup",
-    logo: "/assets/BLAVIA.jpeg",
-    description: "Specializing in SME digitization."
+    Icon: Rocket,
+    tag: "3–6 Months",
+    title: "Incubation Program",
+    description: "Transform your idea into a viable business with structured support, mentorship, and resources.",
+    features: [
+      "Idea validation and market research support",
+      "Business model development workshops",
+      "1-on-1 mentorship from experienced entrepreneurs",
+      "Access to co-working spaces and resources",
+      "Pitch training and investor connections",
+      "Legal and technical advisory services",
+    ],
   },
   {
-    name: "Campus Mart",
-    category: "Marketplace",
-    logo: "/assets/CAMPUSMART.jpeg",
-    description: "A specialized marketplace built specifically for the university ecosystem."
+    Icon: Zap,
+    tag: "3–4 Months",
+    title: "Acceleration Program",
+    description: "Scale your existing startup rapidly with intensive support, funding opportunities, and expert guidance.",
+    features: [
+      "Growth strategy development and execution",
+      "Access to funding and investment networks",
+      "Marketing and sales optimization workshops",
+      "Technical infrastructure scaling support",
+      "Partnership and collaboration opportunities",
+      "Demo day with investors and stakeholders",
+    ],
   },
-  {
-    name: "GloTech Agency",
-    category: "Dev House",
-    logo: "/assets/GLOTECH.jpeg",
-    description: "A technical development house and digital infrastructure provider."
-  },
-  {
-    name: "Synchro",
-    category: "Fintech",
-    logo: "/assets/SYNCHRO.jpeg",
-    description: "Revolutionizing the Fintech landscape."
-  },
-  {
-    name: "Donjo Video",
-    category: "Hiring Platform",
-    logo: "/assets/DONJO_VIDEO.jpeg",
-    description: "A specialized hiring platform connecting top-tier video editing talent with global brands and creators."
-  }
 ];
 
-// 1. Put this above the ProgramsPage function
-const ForgeSection = ({ darkMode }) => {
-  const [selectedVenture, setSelectedVenture] = useState(null);
-  const ventures = [...forgeVenturesList, ...forgeVenturesList];
+const eventTypes = [
+  { Icon: GraduationCap, title: "Masterclasses", description: "Deep-dive sessions with successful entrepreneurs sharing years of experience building and scaling businesses." },
+  { Icon: Wrench,        title: "Workshops",     description: "Hands-on, practical sessions focused on specific skills like pitch development, financial modeling, and product design." },
+  { Icon: Dumbbell,      title: "Bootcamps",     description: "Intensive multi-day programs covering fundraising, market entry strategies, and more." },
+  { Icon: Laptop,        title: "Hackathons",    description: "Collaborative events where teams build innovative solutions to real-world challenges in limited time." },
+  { Icon: Handshake,     title: "Meetups",       description: "Casual networking events connecting founders, mentors, investors, and ecosystem players." },
+  { Icon: Mic,           title: "Panels",        description: "Expert panels discussing current trends, challenges, and opportunities in entrepreneurship." },
+];
+
+const forgeVenturesList = [
+  { name: "Blavia",       category: "Startup",          logo: "/assets/BLAVIA.jpeg",      description: "Specializing in SME digitization." },
+  { name: "Campus Mart",  category: "Marketplace",      logo: "/assets/CAMPUSMART.jpeg",  description: "A specialized marketplace built for the university ecosystem." },
+  { name: "GloTech",      category: "Dev House",        logo: "/assets/GLOTECH.jpeg",     description: "A technical development house and digital infrastructure provider." },
+  { name: "Synchro",      category: "Fintech",          logo: "/assets/SYNCHRO.jpeg",     description: "Revolutionizing the Fintech landscape." },
+  { name: "Donjo Video",  category: "Hiring Platform",  logo: "/assets/DONJO_VIDEO.jpeg", description: "Connecting top-tier video editing talent with global brands and creators." },
+];
+
+/* ─── FORGE NETWORK ─── */
+function ForgeNetwork({ darkMode }) {
+  const [selected, setSelected] = useState(null);
+  const doubled = [...forgeVenturesList, ...forgeVenturesList];
+  const bg     = darkMode ? "#000" : "#FFFEF9";
+  const card   = darkMode ? "#0f0f0f" : "#fff";
+  const border = darkMode ? "rgba(255,255,255,0.07)" : "rgba(10,10,20,0.08)";
 
   return (
-    <section className="py-20 bg-black overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 mb-12 text-center"> {/* Add text-center here */}
-  <h2 className="text-3xl font-bold text-[#306CEC]">OUR FORGE NETWORK</h2>
-  <p className="text-gray-400 text-sm">Helping African builders scale</p>
-</div>
+    <section style={{ background: bg, padding: "80px 0 96px", overflow: "hidden" }}>
+      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 48px 48px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+          <div style={{ height: "1px", width: "28px", background: "#306CEC" }} />
+          <span style={{ fontSize: "10px", fontWeight: 800, color: "#306CEC", letterSpacing: "0.28em", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>Our Network</span>
+        </div>
+        <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 3rem)", fontWeight: 900, fontFamily: "'League Spartan', sans-serif", letterSpacing: "-0.02em", textTransform: "uppercase", color: darkMode ? "#fff" : "#0a0a14" }}>
+          Forge <span style={{ color: "#306CEC" }}>Ventures.</span>
+        </h2>
+      </div>
 
-      {/* Carousel */}
-      <div className="flex mb-10">
+      {/* Scrolling logos */}
+      <div style={{ overflow: "hidden" }}>
         <motion.div
-          className="flex gap-6 cursor-pointer"
-          animate={selectedVenture ? { x: 0 } : { x: ["0%", "-50%"] }}
-          transition={{ ease: "linear", duration: 20, repeat: Infinity }}
+          style={{ display: "flex", gap: "16px" }}
+          animate={selected ? { x: 0 } : { x: ["0%", "-50%"] }}
+          transition={{ ease: "linear", duration: 22, repeat: Infinity }}
         >
-          {ventures.map((v, i) => (
+          {doubled.map((v, i) => (
             <div
               key={i}
-              onMouseEnter={() => setSelectedVenture(v)}
-              onMouseLeave={() => setSelectedVenture(null)}
-              className="w-48 h-48 flex-shrink-0 bg-[#0A0A0A] border border-gray-800 rounded-2xl flex flex-col items-center justify-center p-4 hover:border-[#306CEC] transition-all"
+              onMouseEnter={() => setSelected(v)}
+              onMouseLeave={() => setSelected(null)}
+              style={{
+                width: "160px", height: "160px", flexShrink: 0,
+                background: card, border: `1px solid ${selected?.name === v.name ? "#306CEC" : border}`,
+                borderRadius: "16px", display: "flex", flexDirection: "column",
+                alignItems: "center", justifyContent: "center", padding: "16px",
+                cursor: "pointer", transition: "border-color 0.2s",
+              }}
             >
-              <img 
-                src={v.logo} 
-                alt={`${v.name} logo`}
-                className="h-20 w-20 object-contain mb-2" 
-                onError={(e) => e.target.style.opacity = '0'}
-              />
-              <span className="text-white text-xs font-bold uppercase">{v.name}</span>
+              <img src={v.logo} alt={v.name} style={{ height: "64px", width: "64px", objectFit: "contain", marginBottom: "8px" }} onError={e => { e.target.style.opacity = "0"; }} />
+              <span style={{ fontSize: "11px", fontWeight: 800, textTransform: "uppercase", color: darkMode ? "#fff" : "#0a0a14", fontFamily: "'League Spartan', sans-serif", textAlign: "center" }}>{v.name}</span>
             </div>
           ))}
         </motion.div>
       </div>
 
-      {/* Detail Box */}
-      <div className="max-w-4xl mx-auto px-6 h-32">
+      {/* Detail box */}
+      <div style={{ maxWidth: "1280px", margin: "24px auto 0", padding: "0 48px", minHeight: "80px" }}>
         <AnimatePresence mode="wait">
-          {selectedVenture && (
+          {selected && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="bg-[#0A0A0A] border border-gray-800 p-6 rounded-2xl flex gap-6 items-center"
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
+              style={{ background: card, border: `1px solid ${border}`, borderRadius: "16px", padding: "20px 24px", display: "flex", gap: "16px", alignItems: "center" }}
             >
-              <div className="w-12 h-12 bg-white p-2 rounded-lg flex-shrink-0">
-                <img src={selectedVenture.logo} alt={`${selectedVenture.name} logo`} className="object-contain w-full h-full" />
+              <div style={{ width: "48px", height: "48px", background: "#fff", borderRadius: "10px", padding: "6px", flexShrink: 0 }}>
+                <img src={selected.logo} alt={selected.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
               </div>
               <div>
-                <h3 className="text-white font-bold">{selectedVenture.name}</h3>
-                <p className="text-gray-400 text-sm">{selectedVenture.description}</p>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                  <span style={{ fontWeight: 800, fontSize: "14px", color: darkMode ? "#fff" : "#0a0a14", fontFamily: "'League Spartan', sans-serif" }}>{selected.name}</span>
+                  <span style={{ fontSize: "9px", fontWeight: 700, color: "#306CEC", background: "rgba(48,108,236,0.1)", padding: "2px 8px", borderRadius: "100px", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>{selected.category}</span>
+                </div>
+                <p style={{ fontSize: "13px", color: darkMode ? "rgba(255,255,255,0.5)" : "rgba(10,10,20,0.5)", fontFamily: "'DM Sans', sans-serif" }}>{selected.description}</p>
               </div>
             </motion.div>
           )}
@@ -258,443 +128,85 @@ const ForgeSection = ({ darkMode }) => {
       </div>
     </section>
   );
-};
+}
 
-  const mainPrograms_with_gradient = mainPrograms.map(p => ({
-    ...p,
-    gradient: darkMode ? p.gradientDark : p.gradientLight
-  }));
+/* ─── MAIN PAGE ─── */
+export default function ProgramsPage() {
+  const { darkMode } = useDarkMode();
+
+  const bg     = darkMode ? "#000"                    : "#FFFEF9";
+  const altBg  = darkMode ? "#0a0a14"                 : "#F5F6F8";
+  const fg     = darkMode ? "#fff"                    : "#0a0a14";
+  const muted  = darkMode ? "rgba(255,255,255,0.5)"   : "rgba(10,10,20,0.5)";
+  const border = darkMode ? "rgba(255,255,255,0.07)"  : "rgba(10,10,20,0.08)";
+  const card   = darkMode ? "#0f0f0f"                 : "#fff";
 
   return (
-    <div className={`font-sans transition-colors duration-1000 ${darkMode ? 'bg-[#000000]' : 'bg-[#FFFEF9]'}`}>
+    <div style={{ backgroundColor: bg, color: fg }} className="font-sans min-h-screen transition-colors duration-700">
       <Navbar />
-      
-      {/* Hero Section */}
-      <section className={`relative pt-32 pb-16 px-6 overflow-hidden transition-colors duration-1000 ${darkMode ? 'bg-[#000000]' : 'bg-[#FFFEF9]'}`}>
-        {/* Animated background shapes */}
-        <motion.div
-          className={`absolute top-20 right-10 w-72 h-72 rounded-full blur-3xl ${darkMode ? 'bg-[#306CEC]/10' : 'bg-[#306CEC]/5'}`}
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 3, repeat: Infinity }}
-        />
-        <motion.div
-          className={`absolute bottom-10 left-10 w-96 h-96 rounded-full blur-3xl ${darkMode ? 'bg-[#306CEC]/10' : 'bg-[#4A80FF]/5'}`}
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.5, 0.3, 0.5] }}
-          transition={{ duration: 4, repeat: Infinity }}
-        />
 
-        <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              <span className={`bg-clip-text text-transparent ${
-                darkMode
-                  ? 'bg-gradient-to-r from-[#306CEC] via-[#4A80FF] to-[#306CEC]'
-                  : 'bg-gradient-to-r from-[#306CEC] via-[#4A80FF] to-[#306CEC]'
-              }`}>
-                Our Programs
-              </span>
-            </h1>
-            <p className={`text-xl md:text-2xl max-w-3xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-              Comprehensive programs designed to support you at every stage of your entrepreneurial journey
-            </p>
-          </motion.div>
+      {/* ── HERO ── */}
+      <section style={{ padding: "130px 0 64px", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, right: 0, width: "50%", height: "100%", background: "radial-gradient(ellipse at 80% 30%, rgba(48,108,236,0.1) 0%, transparent 65%)", pointerEvents: "none" }} />
+        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 48px" }}>
+          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+            style={{ color: "#306CEC", fontSize: "11px", fontWeight: 800, letterSpacing: "0.28em", textTransform: "uppercase", marginBottom: "20px", fontFamily: "'DM Sans', sans-serif" }}>
+            What We Offer
+          </motion.p>
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+            style={{ fontSize: "clamp(3.5rem, 10vw, 8rem)", fontWeight: 900, lineHeight: 0.9, letterSpacing: "-0.04em", fontFamily: "'League Spartan', sans-serif", textTransform: "uppercase", marginBottom: "36px" }}>
+            Our<br /><span style={{ color: "#306CEC" }}>Programs.</span>
+          </motion.h1>
+          <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.22 }}
+            style={{ fontSize: "17px", lineHeight: 1.75, maxWidth: "520px", color: muted, fontFamily: "'DM Sans', sans-serif" }}>
+            Comprehensive support at every stage of your entrepreneurial journey, from idea to scale.
+          </motion.p>
         </div>
       </section>
 
-      {/* Main Programs Section */}
-      <section className={`py-16 px-6 transition-colors duration-1000 ${darkMode ? 'bg-[#000000]' : 'bg-[#FFFEF9]'}`}>
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12">
-            {mainPrograms_with_gradient.map((program, index) => (
-              <ProgramCard key={index} {...program} delay={index * 0.2} darkMode={darkMode} />
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Divider */}
+      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 48px" }}>
+        <div style={{ height: "1px", background: border }} />
+      </div>
 
-      {/* FORGE WEEKLY SESSION */}
-      <section className={`py-24 px-6 transition-colors duration-1000 ${
-        darkMode
-          ? 'bg-[#000000]'
-          : 'bg-gradient-to-b from-[#F5F5F0] to-[#FFFEF9]'
-      }`}>
-        <motion.div
-          className="absolute top-0 left-0 w-full h-full opacity-5"
-          style={{
-            backgroundImage: 'radial-gradient(circle, #306CEC 1px, transparent 1px)',
-            backgroundSize: '50px 50px'
-          }}
-        />
-        
-        <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <motion.div
-              initial={{ scale: 0,}}
-              whileInView={{ scale: 1, rotate: 0 }}
-              transition={{ duration: 0.5, }}
-              className="inline-block mb-6"
-            >
-              <div className={`px-6 py-3 rounded-full font-bold text-sm uppercase tracking-wider shadow-2xl ${
-                darkMode
-                  ? 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF] text-white'
-                  : 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF] text-white'
-              }`}>
-                 Weekly Session
-              </div>
-            </motion.div>
-            
-            <h2 className={`text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent ${
-              darkMode
-                ? 'bg-gradient-to-r from-[#306CEC] via-[#4A80FF] to-[#306CEC]'
-                : 'bg-gradient-to-r from-[#306CEC] via-[#4A80FF] to-[#306CEC]'
-            }`}>
-              FORGE
-            </h2>
-            
-            <p className={`text-2xl font-semibold mb-4 ${darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'}`}>
-              Happens Every Week
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* IMAGE */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.03 }}
-              className="relative rounded-3xl overflow-hidden shadow-2xl group"
-            >
-              <img
-                src="/events/forge.png"
-                alt="FORGE Weekly Build Session"
-                className="w-full h-[500px] object-cover group-hover:scale-110 transition-transform duration-700"
-              />
-              <div className={`absolute inset-0 ${
-                darkMode
-                  ? 'bg-gradient-to-t from-[#306CEC]/80 via-[#306CEC]/20 to-transparent'
-                  : 'bg-gradient-to-t from-[#306CEC]/70 via-[#306CEC]/20 to-transparent'
-              }`}></div>
-              
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3 }}
-                className="absolute top-6 right-6"
-              >
-                
-              </motion.div>
-            </motion.div>
-
-            {/* CONTENT */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <p className={`text-xl leading-relaxed mb-8 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                A weekly build session where we take <span className={`font-bold ${darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'}`}>raw ideas</span> and turn them into <span className={`font-bold ${darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'}`}>real businesses</span>, <span className={`font-bold ${darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'}`}>real systems</span>, and <span className={`font-bold ${darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'}`}>real action</span>.
-              </p>
-
-              <div className={`space-y-6 mb-10 p-8 rounded-2xl border transition-colors duration-1000 ${
-                darkMode
-                  ? 'bg-[#1a1f3a] border-[#306CEC]/30'
-                  : 'bg-white border-[#306CEC]/10 shadow-lg'
-              }`}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="flex items-start gap-4 group"
-                >
-                  <Rocket className={`w-6 h-6 flex-shrink-0 mt-1 group-hover:scale-125 transition-transform ${
-                    darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'
-                  }`} strokeWidth={2} />
-                  <div>
-                    <h4 className={`text-lg font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Live, Practical & Hands-On</h4>
-                    <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Build in real-time with guidance and feedback</p>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="flex items-start gap-4 group"
-                >
-                  <Target className={`w-6 h-6 flex-shrink-0 mt-1 group-hover:scale-125 transition-transform ${
-                    darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'
-                  }`} strokeWidth={2} />
-                  <div>
-                    <h4 className={`text-lg font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>No Theory, No Waiting</h4>
-                    <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Skip the fluff and get straight to execution</p>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="flex items-start gap-4 group"
-                >
-                  <Sparkles className={`w-6 h-6 flex-shrink-0 mt-1 group-hover:scale-125 transition-transform ${
-                    darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'
-                  }`} strokeWidth={2} />
-                  <div>
-                    <h4 className={`text-lg font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Just Execution</h4>
-                    <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Turn ideas into tangible progress every single week</p>
-                  </div>
-                </motion.div>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 }}
-                whileHover={{ scale: 1.05 }}
-                className={`p-6 rounded-2xl text-center font-bold text-lg shadow-2xl ${
-                  darkMode
-                    ? 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF] text-white'
-                    : 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF] text-white'
-                }`}
-              >
-                If you're ready to stop planning and start building, this is your room.
-              </motion.div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-            <ForgeSection />
-      {/* IMPACT360 OS SECTION */}
-      <section className={`py-24 px-6 transition-colors duration-1000 ${
-        darkMode
-          ? 'bg-[#000000]'
-          : 'bg-gradient-to-b from-[#F5F5F0] to-[#FFFEF9]'
-      }`}>
-        <motion.div
-          className="absolute top-0 left-0 w-full h-full opacity-5"
-          style={{
-            backgroundImage: 'radial-gradient(circle, #306CEC 1px, transparent 1px)',
-            backgroundSize: '50px 50px'
-          }}
-        />
-        
-        <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <motion.div
-              initial={{ scale: 0,}}
-              whileInView={{ scale: 1, rotate: 0 }}
-              transition={{ duration: 0.5, }}
-              className="inline-block mb-6"
-            >
-              <div className={`px-6 py-3 rounded-full font-bold text-sm uppercase tracking-wider shadow-2xl ${
-                darkMode
-                  ? 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF] text-white'
-                  : 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF] text-white'
-              }`}>
-                 Our Infrastructure
-              </div>
-            </motion.div>
-            
-            <h2 className={`text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent ${
-              darkMode
-                ? 'bg-gradient-to-r from-[#306CEC] via-[#4A80FF] to-[#306CEC]'
-                : 'bg-gradient-to-r from-[#306CEC] via-[#4A80FF] to-[#306CEC]'
-            }`}>
-              Impact360 OS
-            </h2>
-            
-            <p className={`text-2xl font-semibold mb-4 ${darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'}`}>
-              The Operating System For African Builders
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* CONTENT */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <p className={`text-xl leading-relaxed mb-8 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                A comprehensive ecosystem designed to <span className={`font-bold ${darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'}`}>empower African entrepreneurs</span> with <span className={`font-bold ${darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'}`}>tools, networks</span>, and <span className={`font-bold ${darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'}`}>resources</span> to build world-class solutions.
-              </p>
-
-              <div className={`space-y-6 mb-10 p-8 rounded-2xl border transition-colors duration-1000 ${
-                darkMode
-                  ? 'bg-[#1a1f3a] border-[#306CEC]/30'
-                  : 'bg-white border-[#306CEC]/10 shadow-lg'
-              }`}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="flex items-start gap-4 group"
-                >
-                  <Laptop className={`w-6 h-6 flex-shrink-0 mt-1 group-hover:scale-125 transition-transform ${
-                    darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'
-                  }`} strokeWidth={2} />
-                  <div>
-                    <h4 className={`text-lg font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Complete Tech Stack</h4>
-                    <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Access to cutting-edge tools and technologies</p>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="flex items-start gap-4 group"
-                >
-                  <Users className={`w-6 h-6 flex-shrink-0 mt-1 group-hover:scale-125 transition-transform ${
-                    darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'
-                  }`} strokeWidth={2} />
-                  <div>
-                    <h4 className={`text-lg font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Global Network</h4>
-                    <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Connect with builders and investors across Africa</p>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="flex items-start gap-4 group"
-                >
-                  <Globe className={`w-6 h-6 flex-shrink-0 mt-1 group-hover:scale-125 transition-transform ${
-                    darkMode ? 'text-[#4A80FF]' : 'text-[#306CEC]'
-                  }`} strokeWidth={2} />
-                  <div>
-                    <h4 className={`text-lg font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Scale Globally</h4>
-                    <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Build in Africa, scale to the world</p>
-                  </div>
-                </motion.div>
-              </div>
-
-              <motion.a
-                href="https://impact360-os.vercel.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 }}
-                whileHover={{ scale: 1.05 }}
-                className={`inline-block p-6 rounded-2xl text-center font-bold text-lg shadow-2xl cursor-pointer transition-all ${
-                  darkMode
-                    ? 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF] text-white hover:shadow-3xl'
-                    : 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF] text-white hover:shadow-3xl'
-                }`}
-              >
-                Join the operating system built for African innovation.
-              </motion.a>
-            </motion.div>
-
-            {/* IMAGE */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.03 }}
-              className="relative rounded-3xl overflow-hidden shadow-2xl group"
-            >
-              <img
-                src="https://i.pinimg.com/736x/f5/e8/72/f5e87230f73c9811d9f9a69feb392b5a.jpg"
-                alt="Impact360 OS"
-                className="w-full h-[500px] object-cover group-hover:scale-110 transition-transform duration-700"
-              />
-              <div className={`absolute inset-0 ${
-                darkMode
-                  ? 'bg-gradient-to-t from-[#306CEC]/80 via-[#306CEC]/20 to-transparent'
-                  : 'bg-gradient-to-t from-[#306CEC]/70 via-[#306CEC]/20 to-transparent'
-              }`}></div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Events Overview Section */}
-      <section className={`py-24 px-6 transition-colors duration-1000 ${
-        darkMode
-          ? 'bg-[#000000]'
-          : 'bg-gradient-to-b from-[#F5F5F0] to-[#FFFEF9]'
-      }`}>
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              whileInView={{ scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className="inline-block mb-4"
-            >
-              <GraduationCap className={`w-14 h-14 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} strokeWidth={1.5} />
-            </motion.div>
-            <h2 className={`text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent ${
-              darkMode
-                ? 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF]'
-                : 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF]'
-            }`}>
-              Learning Events
-            </h2>
-            <p className={`text-lg md:text-xl max-w-3xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-              Connect with successful entrepreneurs who share years of experience and answer your questions
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {eventTypes.map((type, index) => {
-              const IconComponent = type.Icon;
+      {/* ── MAIN PROGRAMS ── */}
+      <section style={{ padding: "80px 0", background: bg }}>
+        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 48px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
+            {mainPrograms.map((program, i) => {
+              const { Icon, tag, title, description, features } = program;
               return (
                 <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.6 }}
-                  viewport={{ once: true }}
-                  whileHover={{ y: -5, scale: 1.02 }}
-                  className={`p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group ${
-                    darkMode
-                      ? 'bg-[#1a1f3a] border border-[#306CEC]/20 hover:border-[#306CEC]'
-                      : 'bg-white border border-gray-100'
-                  }`}
+                  key={i}
+                  initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.12 }}
+                  style={{ background: card, border: `1px solid ${border}`, borderRadius: "20px", padding: "40px", position: "relative", overflow: "hidden" }}
                 >
-                  <IconComponent className={`w-14 h-14 mb-4 group-hover:transition-colors ${
-                    darkMode
-                      ? 'text-[#306CEC] group-hover:text-[#4A80FF]'
-                      : 'text-[#306CEC] group-hover:text-[#4A80FF]'
-                  }`} strokeWidth={1.5} />
-                  <h3 className={`text-2xl font-bold mb-3 group-hover:transition-colors ${
-                    darkMode
-                      ? 'text-[#306CEC] group-hover:text-[#4A80FF]'
-                      : 'text-[#306CEC] group-hover:text-[#4A80FF]'
-                  }`}>{type.title}</h3>
-                  <p className={`leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{type.description}</p>
+                  {/* Subtle blue glow corner */}
+                  <div style={{ position: "absolute", top: 0, right: 0, width: "180px", height: "180px", background: "radial-gradient(circle at top right, rgba(48,108,236,0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
+
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "28px" }}>
+                    <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "rgba(48,108,236,0.1)", border: "1px solid rgba(48,108,236,0.2)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <Icon size={22} color="#306CEC" strokeWidth={1.8} />
+                    </div>
+                    <span style={{ fontSize: "10px", fontWeight: 800, color: "#306CEC", letterSpacing: "0.18em", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif", background: "rgba(48,108,236,0.08)", padding: "4px 12px", borderRadius: "100px" }}>{tag}</span>
+                  </div>
+
+                  <h3 style={{ fontSize: "clamp(1.4rem, 2.5vw, 2rem)", fontWeight: 900, fontFamily: "'League Spartan', sans-serif", letterSpacing: "-0.02em", textTransform: "uppercase", marginBottom: "12px", color: fg }}>
+                    {title}
+                  </h3>
+                  <p style={{ fontSize: "14px", lineHeight: 1.75, color: muted, fontFamily: "'DM Sans', sans-serif", marginBottom: "28px" }}>
+                    {description}
+                  </p>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                    {features.map((f, j) => (
+                      <div key={j} style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                        <div style={{ width: "5px", height: "5px", borderRadius: "50%", background: "#306CEC", flexShrink: 0, marginTop: "7px" }} />
+                        <p style={{ fontSize: "13px", color: muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>{f}</p>
+                      </div>
+                    ))}
+                  </div>
                 </motion.div>
               );
             })}
@@ -702,39 +214,144 @@ const ForgeSection = ({ darkMode }) => {
         </div>
       </section>
 
-    {/* Upcoming Events Section */}
-      <section className={`py-24 px-6 transition-colors duration-1000 ${darkMode ? 'bg-[#000000]' :  'bg-gradient-to-b from-[#F5F5F0] to-[#FFFEF9]'}`}>
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              whileInView={{ scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className="inline-block mb-4"
-            >
-              <Calendar className={`w-14 h-14 ${darkMode ? 'text-[#306CEC]' : 'text-[#306CEC]'}`} strokeWidth={1.5} />
-            </motion.div>
-            <h2 className={`text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent ${
-              darkMode
-                ? 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF]'
-                : 'bg-gradient-to-r from-[#306CEC] to-[#4A80FF]'
-            }`}>
-              Upcoming Events
-            </h2>
-            <p className={`text-lg md:text-xl max-w-3xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-              Join our next events and learn from those who have successfully built businesses
-            </p>
+      {/* ── FORGE ── */}
+      <section style={{ background: altBg, padding: "80px 0" }}>
+        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 48px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center" }} className="lg:grid-cols-2 grid-cols-1">
+
+          {/* Image */}
+          <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            style={{ borderRadius: "20px", overflow: "hidden", position: "relative", height: "480px" }} className="group">
+            <img src="/events/forge.png" alt="FORGE Weekly Session" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.7s ease" }} className="group-hover:scale-105" />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(48,108,236,0.6) 0%, transparent 55%)" }} />
+            <div style={{ position: "absolute", bottom: "24px", left: "24px" }}>
+              <span style={{ background: "#306CEC", color: "#fff", fontSize: "9px", fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", padding: "6px 14px", borderRadius: "100px", fontFamily: "'DM Sans', sans-serif" }}>Weekly Session</span>
+            </div>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {upcomingEvents.map((event, index) => (
-              <EventCard key={index} {...event} delay={index * 0.1} darkMode={darkMode} />
+          {/* Content */}
+          <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+              <div style={{ height: "1px", width: "28px", background: "#306CEC" }} />
+              <span style={{ fontSize: "10px", fontWeight: 800, color: "#306CEC", letterSpacing: "0.28em", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>Build Program</span>
+            </div>
+            <h2 style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", fontWeight: 900, fontFamily: "'League Spartan', sans-serif", letterSpacing: "-0.03em", lineHeight: 0.9, textTransform: "uppercase", marginBottom: "24px", color: fg }}>
+              Forge.<span style={{ color: "#306CEC" }}>_</span>
+            </h2>
+            <p style={{ fontSize: "16px", lineHeight: 1.75, color: muted, fontFamily: "'DM Sans', sans-serif", marginBottom: "36px", maxWidth: "420px" }}>
+              A weekly build session where we take raw ideas and turn them into real businesses, real systems, and real action.
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "36px" }}>
+              {[
+                { Icon: Rocket,    title: "Live, Practical and Hands-On", desc: "Build in real-time with guidance and feedback" },
+                { Icon: Target,    title: "No Theory. No Waiting.",        desc: "Skip the fluff and get straight to execution" },
+                { Icon: Sparkles,  title: "Just Execution",                desc: "Turn ideas into tangible progress every week" },
+              ].map(({ Icon, title, desc }, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "14px" }}>
+                  <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "rgba(48,108,236,0.1)", border: "1px solid rgba(48,108,236,0.18)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <Icon size={16} color="#306CEC" strokeWidth={1.8} />
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "14px", fontWeight: 700, color: fg, fontFamily: "'League Spartan', sans-serif", marginBottom: "2px" }}>{title}</p>
+                    <p style={{ fontSize: "12px", color: muted, fontFamily: "'DM Sans', sans-serif" }}>{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ padding: "18px 24px", borderRadius: "14px", background: "rgba(48,108,236,0.08)", border: "1px solid rgba(48,108,236,0.2)" }}>
+              <p style={{ fontSize: "14px", fontWeight: 600, color: fg, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
+                If you're ready to stop planning and start building, this is your room.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── FORGE NETWORK ── */}
+      <ForgeNetwork darkMode={darkMode} />
+
+      {/* ── IMPACT360 OS ── */}
+      <section style={{ background: altBg, padding: "80px 0" }}>
+        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 48px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center" }}>
+
+          {/* Content */}
+          <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+              <div style={{ height: "1px", width: "28px", background: "#306CEC" }} />
+              <span style={{ fontSize: "10px", fontWeight: 800, color: "#306CEC", letterSpacing: "0.28em", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>Our Infrastructure</span>
+            </div>
+            <h2 style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", fontWeight: 900, fontFamily: "'League Spartan', sans-serif", letterSpacing: "-0.03em", lineHeight: 0.9, textTransform: "uppercase", marginBottom: "24px", color: fg }}>
+              Impact360 <span style={{ color: "#306CEC" }}>OS.</span>
+            </h2>
+            <p style={{ fontSize: "15px", lineHeight: 1.75, color: muted, fontFamily: "'DM Sans', sans-serif", marginBottom: "36px", maxWidth: "420px" }}>
+              The operating system for African builders. A comprehensive ecosystem with tools, networks, and resources to build world-class solutions.
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "36px" }}>
+              {[
+                { Icon: Laptop, title: "Complete Tech Stack",  desc: "Access to cutting-edge tools and technologies" },
+                { Icon: Users,  title: "Global Network",       desc: "Connect with builders and investors across Africa" },
+                { Icon: Globe,  title: "Scale Globally",       desc: "Build in Africa, scale to the world" },
+              ].map(({ Icon, title, desc }, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "14px" }}>
+                  <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "rgba(48,108,236,0.1)", border: "1px solid rgba(48,108,236,0.18)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <Icon size={16} color="#306CEC" strokeWidth={1.8} />
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "14px", fontWeight: 700, color: fg, fontFamily: "'League Spartan', sans-serif", marginBottom: "2px" }}>{title}</p>
+                    <p style={{ fontSize: "12px", color: muted, fontFamily: "'DM Sans', sans-serif" }}>{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <motion.a
+              href="https://impact360-os.vercel.app/" target="_blank" rel="noopener noreferrer"
+              whileHover={{ scale: 1.03 }}
+              style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: "#306CEC", color: "#fff", padding: "14px 28px", borderRadius: "100px", fontFamily: "'League Spartan', sans-serif", fontWeight: 800, fontSize: "13px", textDecoration: "none" }}
+            >
+              Explore Impact360 OS <ArrowRight size={14} />
+            </motion.a>
+          </motion.div>
+
+          {/* Image */}
+          <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            style={{ borderRadius: "20px", overflow: "hidden", position: "relative", height: "480px" }} className="group">
+            <img src="https://i.pinimg.com/736x/f5/e8/72/f5e87230f73c9811d9f9a69feb392b5a.jpg" alt="Impact360 OS"
+              style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.7s ease" }} className="group-hover:scale-105" />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(48,108,236,0.5) 0%, transparent 55%)" }} />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── LEARNING EVENTS ── */}
+      <section style={{ background: bg, padding: "80px 0 96px" }}>
+        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 48px" }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ marginBottom: "52px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+              <div style={{ height: "1px", width: "28px", background: "#306CEC" }} />
+              <span style={{ fontSize: "10px", fontWeight: 800, color: "#306CEC", letterSpacing: "0.28em", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>Learning</span>
+            </div>
+            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 3.2rem)", fontWeight: 900, fontFamily: "'League Spartan', sans-serif", letterSpacing: "-0.02em", textTransform: "uppercase", color: fg }}>
+              How We <span style={{ color: "#306CEC" }}>Teach.</span>
+            </h2>
+          </motion.div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
+            {eventTypes.map(({ Icon, title, description }, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.07 }}
+                style={{ background: card, border: `1px solid ${border}`, borderRadius: "16px", padding: "28px", transition: "border-color 0.2s" }}
+                className="hover:border-[#306CEC]/40"
+              >
+                <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "rgba(48,108,236,0.08)", border: "1px solid rgba(48,108,236,0.15)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px" }}>
+                  <Icon size={18} color="#306CEC" strokeWidth={1.8} />
+                </div>
+                <h3 style={{ fontSize: "16px", fontWeight: 800, fontFamily: "'League Spartan', sans-serif", color: fg, marginBottom: "8px" }}>{title}</h3>
+                <p style={{ fontSize: "13px", color: muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.65 }}>{description}</p>
+              </motion.div>
             ))}
           </div>
         </div>

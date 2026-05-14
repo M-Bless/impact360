@@ -26,7 +26,7 @@ const reportSections = [
     title: "Campaign Overview",
     icon: Globe,
     content: `The Impact360 Decentralization Roadshow landed in Nakuru as part of our mission to bring innovation infrastructure, entrepreneurial support, and tech ecosystem services beyond Nairobi. Nakuru, Kenya's fourth-largest city and a rapidly growing economic hub in the Rift Valley, was chosen for its vibrant youth population, emerging startup scene, and untapped potential for innovation-led growth.`,
-    highlight: "Nakuru — Rift Valley's Innovation Frontier",
+    highlight: "Nakuru: Rift Valley's Innovation Frontier",
   },
   {
     id: "objectives",
@@ -90,7 +90,7 @@ const reportSections = [
       },
       {
         title: "AgriTech Dominance",
-        description: "Over 40% of pitches focused on agricultural technology — reflecting Nakuru's position as a farming economy ripe for digital transformation.",
+        description: "Over 40% of pitches focused on agricultural technology, reflecting Nakuru's position as a farming economy ripe for digital transformation.",
         metric: "40% AgriTech",
         icon: TrendingUp,
       },
@@ -463,7 +463,7 @@ export default function CampaignReport() {
             transition={{ duration: 0.7, delay: 0.5 }}
             className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed"
           >
-            A comprehensive report on Impact360's decentralization roadshow in Nakuru — mapping talent, 
+            A comprehensive report on Impact360's decentralization roadshow in Nakuru, mapping talent,
             connecting ecosystems, and building the foundation for innovation beyond the capital.
           </motion.p>
 
@@ -777,7 +777,7 @@ export default function CampaignReport() {
             Decentralization Starts With You
           </h2>
           <p className="text-lg text-white/80 mb-10 max-w-xl mx-auto leading-relaxed">
-            Whether you're a founder, mentor, investor, or community leader — join Impact360 in
+            Whether you're a founder, mentor, investor, or community leader, join Impact360 in
             building thriving innovation ecosystems across every county in Kenya.
           </p>
 
