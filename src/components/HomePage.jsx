@@ -315,7 +315,7 @@ export default function HomePage() {
               BUILT<br />FOR<br /><span className="text-[#306CEC]">FOUNDERS</span>
             </h2>
             <p className={`text-base leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
-              Everything we do is designed around the needs of African founders — from idea to scale.
+              Everything we do is designed around the needs of African founders, from idea to scale.
             </p>
           </motion.div>
 
@@ -492,7 +492,7 @@ export default function HomePage() {
             className={`text-lg leading-relaxed max-w-2xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}
             style={{ fontFamily: 'DM Sans, sans-serif' }}
           >
-            Together, Impact360 and DINAO are expanding access to entrepreneurship resources, funding pathways, and mentorship networks — bringing world-class support to founders in every corner of Africa.
+            Together, Impact360 and DINAO are expanding access to entrepreneurship resources, funding pathways, and mentorship networks, bringing world-class support to founders in every corner of Africa.
           </motion.p>
         </div>
       </motion.section>

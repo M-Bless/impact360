@@ -29,7 +29,7 @@ export default function EventsPage() {
   }, [speakerImages.length]);
 
   // --- Eldoret Section State ---
-  const eldoretImages = ["/events/Eldoret_roadshow.jpeg"];
+  const eldoretImages = ["/gallery/eldoretposter.png"];
   // No auto-rotation needed for single image
 
   return (
@@ -179,7 +179,7 @@ export default function EventsPage() {
             “The Impact360 Roadshow brought real opportunities to our town. It’s more than an event—it's a movement for local founders.”
           </blockquote>
           <div className="mt-4 text-[#306CEC] font-bold" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-            — Local Founder, Nakuru
+            Local Founder, Nakuru
           </div>
         </div>
       </motion.section>
@@ -251,7 +251,7 @@ export default function EventsPage() {
               Next Stop: Eldoret
             </h2>
             <p className="text-lg mb-4 text-gray-700 dark:text-gray-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-              The Impact360 Roadshow is heading to Eldoret — the heart of Kenya's North Rift and a city known for its enterprising spirit, agricultural innovation, and a fast-growing startup scene.
+              The Impact360 Roadshow is heading to Eldoret, the heart of Kenya's North Rift and a city known for its enterprising spirit, agricultural innovation, and a fast-growing startup scene.
             </p>
             <ul className="list-disc pl-6 mb-4 text-base text-gray-700 dark:text-gray-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
               <li>Meet founders building solutions for agritech, fintech, and logistics</li>
@@ -293,55 +293,64 @@ export default function EventsPage() {
                 name: "Nakuru",
                 img: "/events/Nakuru.jpg",
                 desc: "A fast-growing city with a dynamic youth ecosystem.",
-                date: "Feb 7, 2026"
+                date: "Feb 7, 2026",
+                formUrl: null
               },
               {
                 name: "Eldoret",
                 img: "/events/Eldoret.jpg",
                 desc: "Known for its enterprising spirit and startups.",
-                date: "May 23rd, 2026"
+                date: "May 23rd, 2026",
+                formUrl: "https://forms.gle/FoEdvsEvgt3ohDm48"
               },
               {
                 name: "Kisumu",
                 img: "/events/Kisumu.jpg",
                 desc: "A lakeside city with a rising innovation scene.",
-                date: "June 6, 2026"
+                date: "June 6, 2026",
+                formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScFx9A1ybkhFQ8ooByPDaHMHc31ufVHBeWK_A-r3VLDxVczDg/viewform?usp=publish-editor"
               },
               {
                 name: "Nairobi",
                 img: "/events/Nairobi.jpg",
                 desc: "Kenya's capital, a vibrant tech and innovation hub.",
-                date: "Coming Soon"
+                date: "Coming Soon",
+                formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfBnrBvB8v6THmM1-_bzauyY3lymRe7ULXrVC9iHUn1TXy4Hg/viewform?usp=publish-editor"
               },
               {
                 name: "Mombasa",
                 img: "/events/Mombasa.jpg",
                 desc: "Coastal city blending trade, tourism, and tech.",
-                date: "Coming Soon"
+                date: "Coming Soon",
+                formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfOYPX3TuQl14679C2UaAXElzUcP5x4iVd0tJrQAIlB8nQa-w/viewform?usp=publish-editor"
               },
               {
                 name: "Arusha",
                 img: "/events/Arusha.jpg",
                 desc: "Tanzania's gateway to East African entrepreneurship.",
-                date: "Coming Soon"
+                date: "Coming Soon",
+                formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScbaFJyZ6az4BkW93Of8YHi5sRSCmkeqTzanJDQcoXJibV_RQ/viewform?usp=publish-editor"
               },
               {
                 name: "Kigali",
                 img: "/events/Kigali.jpg",
                 desc: "Rwanda's capital, a model for smart city growth.",
-                date: "Coming Soon"
+                date: "Coming Soon",
+                formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSeqU-HkwV1JpShk-Ucme6DcusnA23L7XuPt6eebuZvxSjQpBg/viewform?usp=publish-editor"
               },
               {
                 name: "Addis Ababa",
                 img: "/events/Addis ababa.jpg",
                 desc: "Ethiopia's capital, a center for continental diplomacy and startups.",
-                date: "Coming Soon"
+                date: "Coming Soon",
+                formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSf-NKlWnfDjdJOttoQIx0Ff3Ix97WJju0DV2qeRCkDI5PBN3w/viewform?usp=publish-editor"
               },
               {
                 name: "Kampala",
                 img: "/events/Kampala.jpg",
                 desc: "Uganda's capital, a vibrant city with a growing tech ecosystem.",
-                date: "Comming Soon"
+                date: "Coming Soon",
+                formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSckl1mHRVrdRj_bEWtRXKKAiTmttOtdQCoNiCPzy4e54SgElQ/viewform?usp=publish-editor"
               }
             ].map((town, idx) => (
               <div
@@ -366,13 +375,13 @@ export default function EventsPage() {
                       <div className="text-[#4A80FF] font-extrabold text-2xl mb-4" style={{ fontFamily: "'League Spartan', Arial, sans-serif", textShadow: "0 2px 8px rgba(0, 0, 0, 0.8)" }}>
                         {town.date}
                       </div>
-                      {town.name === "Nakuru" ? (
+                      {town.formUrl === null ? (
                         <button disabled className="px-6 py-2 bg-gray-400 text-white rounded-lg font-semibold cursor-not-allowed" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
                           Event Passed
                         </button>
-                      ) : town.name === "Eldoret" ? (
+                      ) : town.formUrl ? (
                         <a
-                          href="https://forms.gle/FoEdvsEvgt3ohDm48"
+                          href={town.formUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="px-6 py-2 bg-[#306CEC] text-white rounded-lg font-semibold hover:bg-[#4A80FF] transition-colors duration-300"
