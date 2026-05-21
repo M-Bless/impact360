@@ -1,7 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, X, Loader2, CheckCircle } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useDarkMode } from "../DarkModeContext";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
