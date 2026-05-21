@@ -60,7 +60,7 @@ const forgeVenturesList = [
 /* ─── FORGE NETWORK ─── */
 function ForgeNetwork({ darkMode }) {
   const [selected, setSelected] = useState(null);
-  const doubled = [...forgeVenturesList, ...forgeVenturesList];
+  const copies = [...forgeVenturesList, ...forgeVenturesList, ...forgeVenturesList, ...forgeVenturesList];
   const bg     = darkMode ? "#000" : "#FFFEF9";
   const card   = darkMode ? "#0f0f0f" : "#fff";
   const border = darkMode ? "rgba(255,255,255,0.07)" : "rgba(10,10,20,0.08)";
@@ -78,13 +78,22 @@ function ForgeNetwork({ darkMode }) {
       </div>
 
       {/* Scrolling logos */}
+      <style>{`
+        @keyframes forgeMarquee {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-25%); }
+        }
+      `}</style>
       <div style={{ overflow: "hidden" }}>
-        <motion.div
-          style={{ display: "flex", gap: "16px" }}
-          animate={selected ? { x: 0 } : { x: ["0%", "-50%"] }}
-          transition={{ ease: "linear", duration: 22, repeat: Infinity }}
+        <div
+          style={{
+            display: "flex", gap: "16px", width: "fit-content",
+            paddingRight: "16px",
+            animation: "forgeMarquee 22s linear infinite",
+            animationPlayState: selected ? "paused" : "running",
+          }}
         >
-          {doubled.map((v, i) => (
+          {copies.map((v, i) => (
             <div
               key={i}
               onMouseEnter={() => setSelected(v)}
@@ -101,7 +110,7 @@ function ForgeNetwork({ darkMode }) {
               <span style={{ fontSize: "11px", fontWeight: 800, textTransform: "uppercase", color: darkMode ? "#fff" : "#0a0a14", fontFamily: "'League Spartan', sans-serif", textAlign: "center" }}>{v.name}</span>
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
 
       {/* Detail box */}

@@ -104,6 +104,10 @@ const AdminDashboard = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [newsletterSubscribers, setNewsletterSubscribers] = useState([]);
   const [showNewsletterModal, setShowNewsletterModal] = useState(false);
+  const [roadshowRegs, setRoadshowRegs] = useState([]);
+  const [selectedRoadshowReg, setSelectedRoadshowReg] = useState(null);
+  const [activeSection, setActiveSection] = useState('subscriptions');
+  const [roadshowCityFilter, setRoadshowCityFilter] = useState('all');
 
   // Fetch newsletter subscribers
   useEffect(() => {
@@ -119,6 +123,16 @@ const AdminDashboard = () => {
       }
     };
     fetchSubscribers();
+  }, [isAuthenticated]);
+
+  // Fetch roadshow registrations (real-time)
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const q = query(collection(db, 'roadshowRegistrations'), orderBy('submittedAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setRoadshowRegs(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+    return () => unsubscribe();
   }, [isAuthenticated]);
 
   // Initialize EmailJS
@@ -834,29 +848,31 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
               />
             </div>
 
-            {/* Event/Membership filter buttons */}
-            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mb-2">
+            {/* Section tabs */}
+            <div className="flex flex-wrap gap-2 mb-2">
               <button
-                onClick={() => setFilter('event')}
+                onClick={() => setActiveSection('subscriptions')}
                 className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
-                  filter === 'event' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                Event
-              </button>
-              <button
-                onClick={() => setFilter('membership')}
-                className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
-                  filter === 'membership' ? 'bg-pink-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  activeSection === 'subscriptions' ? 'bg-pink-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
                 Membership
               </button>
               <button
-                onClick={() => setShowNewsletterModal(true)}
-                className="px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-200 ml-2"
+                onClick={() => setActiveSection('locals')}
+                className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
+                  activeSection === 'locals' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border border-emerald-200'
+                }`}
               >
-                Newsletter Subscribers
+                Locals ({submissions.filter(s => s.type === 'event').length})
+              </button>
+              <button
+                onClick={() => { setActiveSection('roadshow'); setRoadshowCityFilter('all'); setSelectedRoadshowReg(null); }}
+                className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
+                  activeSection === 'roadshow' ? 'bg-indigo-600 text-white' : 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200 border border-indigo-200'
+                }`}
+              >
+                Roadshow Registrations ({roadshowRegs.length})
               </button>
             </div>
 
@@ -976,7 +992,174 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
           </div>
         </div>
 
-        <div className="lg:hidden space-y-4">
+        {activeSection === 'locals' && (() => {
+          const localSubs = submissions.filter(s => s.type === 'event');
+          const localFiltered = localSubs
+            .filter(s => s.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) || s.email?.toLowerCase().includes(searchTerm.toLowerCase()) || s.mpesaCode?.toLowerCase().includes(searchTerm.toLowerCase()));
+          return (
+            <div className="space-y-4">
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { label: 'Total', value: localSubs.length, color: 'blue' },
+                  { label: 'Pending', value: localSubs.filter(s => s.status === 'pending').length, color: 'yellow' },
+                  { label: 'Approved', value: localSubs.filter(s => s.status === 'approved').length, color: 'green' },
+                ].map(({ label, value, color }) => (
+                  <div key={label} className="bg-white rounded-lg shadow p-4">
+                    <p className={`text-gray-500 text-xs`}>{label}</p>
+                    <p className={`text-2xl font-bold text-${color}-600`}>{value}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Table */}
+              <div className="bg-white rounded-lg shadow overflow-hidden">
+                {localFiltered.length === 0 ? (
+                  <div className="text-center py-12 text-gray-500">
+                    <Mail className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                    <p className="font-medium">No local event submissions yet</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full text-sm">
+                      <thead className="bg-gray-50 border-b">
+                        <tr>
+                          <th className="px-4 py-3 text-left font-semibold text-gray-600">Name</th>
+                          <th className="px-4 py-3 text-left font-semibold text-gray-600">Email</th>
+                          <th className="px-4 py-3 text-left font-semibold text-gray-600">Phone</th>
+                          <th className="px-4 py-3 text-left font-semibold text-gray-600">Plan</th>
+                          <th className="px-4 py-3 text-left font-semibold text-gray-600">City</th>
+                          <th className="px-4 py-3 text-left font-semibold text-gray-600">M-Pesa</th>
+                          <th className="px-4 py-3 text-left font-semibold text-gray-600">Amount</th>
+                          <th className="px-4 py-3 text-left font-semibold text-gray-600">Status</th>
+                          <th className="px-4 py-3 text-left font-semibold text-gray-600">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {localFiltered.map((s, idx) => (
+                          <tr key={s.id} className={`border-t ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                            <td className="px-4 py-3 font-medium text-gray-900">{s.fullName}</td>
+                            <td className="px-4 py-3 text-gray-600">{s.email}</td>
+                            <td className="px-4 py-3 text-gray-600">{s.phone}</td>
+                            <td className="px-4 py-3"><span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold">{s.planName}</span></td>
+                            <td className="px-4 py-3 text-gray-600">{s.city}</td>
+                            <td className="px-4 py-3 font-mono text-xs text-gray-700">{s.mpesaCode || '—'}</td>
+                            <td className="px-4 py-3 text-gray-700">KES {s.amount || '—'}</td>
+                            <td className="px-4 py-3">
+                              <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                                s.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                s.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                'bg-red-100 text-red-800'
+                              }`}>{s.status?.toUpperCase()}</span>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="flex gap-2">
+                                <button onClick={() => setSelectedSubmission(s)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded" title="View"><Eye className="w-4 h-4" /></button>
+                                {s.status === 'pending' && <>
+                                  <button onClick={() => handleApprove(s)} disabled={loading} className="p-1.5 text-green-600 hover:bg-green-50 rounded" title="Approve"><Check className="w-4 h-4" /></button>
+                                  <button onClick={() => { setSelectedSubmission(s); setShowRejectModal(true); }} disabled={loading} className="p-1.5 text-red-600 hover:bg-red-50 rounded" title="Reject"><X className="w-4 h-4" /></button>
+                                </>}
+                                <button onClick={() => openEditModal(s)} className="p-1.5 text-purple-600 hover:bg-purple-50 rounded" title="Edit"><Edit className="w-4 h-4" /></button>
+                                <button onClick={() => { setSelectedSubmission(s); setShowDeleteModal(true); }} className="p-1.5 text-red-600 hover:bg-red-50 rounded" title="Delete"><Trash2 className="w-4 h-4" /></button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })()}
+
+        {activeSection === 'roadshow' && (() => {
+          const cities = ['Nakuru', 'Eldoret', 'Kisumu', 'Nairobi', 'Mombasa', 'Arusha', 'Kigali', 'Addis Ababa', 'Kampala'];
+          const filtered = roadshowCityFilter === 'all' ? roadshowRegs : roadshowRegs.filter(r => r.city === roadshowCityFilter);
+          return (
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Roadshow Registrations</h2>
+              {/* City filters */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                <button onClick={() => setRoadshowCityFilter('all')} className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${roadshowCityFilter === 'all' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
+                  All ({roadshowRegs.length})
+                </button>
+                {cities.map(city => {
+                  const count = roadshowRegs.filter(r => r.city === city).length;
+                  return (
+                    <button key={city} onClick={() => setRoadshowCityFilter(city)} className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${roadshowCityFilter === city ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
+                      {city} {count > 0 && `(${count})`}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {filtered.length === 0 ? (
+                <p className="text-center text-gray-500 py-12">No registrations for this city yet.</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-sm">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left font-semibold text-gray-600">Name</th>
+                        <th className="px-4 py-3 text-left font-semibold text-gray-600">Email</th>
+                        <th className="px-4 py-3 text-left font-semibold text-gray-600">Phone</th>
+                        <th className="px-4 py-3 text-left font-semibold text-gray-600">Organization</th>
+                        <th className="px-4 py-3 text-left font-semibold text-gray-600">City</th>
+                        <th className="px-4 py-3 text-left font-semibold text-gray-600">Date</th>
+                        <th className="px-4 py-3"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filtered.map((reg, idx) => (
+                        <>
+                          <tr key={reg.id} className={`border-t cursor-pointer hover:bg-indigo-50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`} onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>
+                            <td className="px-4 py-3 font-medium text-gray-900">{reg.name}</td>
+                            <td className="px-4 py-3 text-gray-600">{reg.email}</td>
+                            <td className="px-4 py-3 text-gray-600">{reg.phone}</td>
+                            <td className="px-4 py-3 text-gray-600">{reg.organization}</td>
+                            <td className="px-4 py-3"><span className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-semibold">{reg.city}</span></td>
+                            <td className="px-4 py-3 text-gray-500 text-xs">{reg.submittedAt?.toDate ? reg.submittedAt.toDate().toLocaleDateString() : '—'}</td>
+                            <td className="px-4 py-3 text-indigo-500 text-xs">{selectedRoadshowReg?.id === reg.id ? '▲' : '▼'}</td>
+                          </tr>
+                          {selectedRoadshowReg?.id === reg.id && (
+                            <tr key={`${reg.id}-detail`} className="bg-indigo-50 border-t">
+                              <td colSpan={7} className="px-6 py-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                                  {reg.whySigningUp && (
+                                    <div>
+                                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Why signing up?</p>
+                                      <p className="text-gray-800">{reg.whySigningUp}</p>
+                                    </div>
+                                  )}
+                                  {reg.specificQuestions && (
+                                    <div>
+                                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Specific Questions</p>
+                                      <p className="text-gray-800">{reg.specificQuestions}</p>
+                                    </div>
+                                  )}
+                                  {reg.expectations && (
+                                    <div>
+                                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Expectations</p>
+                                      <p className="text-gray-800">{reg.expectations}</p>
+                                    </div>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          );
+        })()}
+
+        {activeSection === 'subscriptions' && <><div className="lg:hidden space-y-4">
           {filteredSubmissions.map((submission) => (
             <div key={submission.id} className="bg-white rounded-lg shadow p-4">
               <div className="flex justify-between items-start mb-3">
@@ -1169,10 +1352,10 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
             )}
           </div>
         </div>
+        </>}
       </div>
 
-      {showRejectModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      {showRejectModal && (<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-md w-full p-4 sm:p-6">
             <h3 className="text-lg font-bold mb-4">Reject Submission</h3>
             <p className="text-gray-600 mb-4 text-sm sm:text-base">
