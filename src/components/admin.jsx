@@ -108,6 +108,23 @@ const AdminDashboard = () => {
   const [selectedRoadshowReg, setSelectedRoadshowReg] = useState(null);
   const [activeSection, setActiveSection] = useState('subscriptions');
   const [roadshowCityFilter, setRoadshowCityFilter] = useState('all');
+  const [localTierFilter, setLocalTierFilter] = useState('all');
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [clearing, setClearing] = useState(false);
+
+  const clearAllRoadshowRegs = async () => {
+    setClearing(true);
+    try {
+      const snap = await getDocs(collection(db, 'roadshowRegistrations'));
+      await Promise.all(snap.docs.map(d => deleteDoc(doc(db, 'roadshowRegistrations', d.id))));
+      setSelectedRoadshowReg(null);
+    } catch (err) {
+      console.error('Clear failed:', err);
+    } finally {
+      setClearing(false);
+      setShowClearConfirm(false);
+    }
+  };
 
   // Fetch newsletter subscribers
   useEffect(() => {
@@ -859,7 +876,7 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                 Membership
               </button>
               <button
-                onClick={() => setActiveSection('locals')}
+                onClick={() => { setActiveSection('locals'); setLocalTierFilter('all'); }}
                 className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
                   activeSection === 'locals' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border border-emerald-200'
                 }`}
@@ -995,7 +1012,14 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
         {activeSection === 'locals' && (() => {
           const localSubs = submissions.filter(s => s.type === 'event');
           const localFiltered = localSubs
+            .filter(s => localTierFilter === 'all' || s.planName === localTierFilter)
             .filter(s => s.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) || s.email?.toLowerCase().includes(searchTerm.toLowerCase()) || s.mpesaCode?.toLowerCase().includes(searchTerm.toLowerCase()));
+
+          const tc = {
+            Student:  localSubs.filter(s => s.planName === 'Student').length,
+            Standard: localSubs.filter(s => s.planName === 'Standard').length,
+          };
+
           return (
             <div className="space-y-4">
               {/* Stats */}
@@ -1010,6 +1034,24 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                     <p className={`text-2xl font-bold text-${color}-600`}>{value}</p>
                   </div>
                 ))}
+              </div>
+
+              {/* Tier filter */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <div className="flex flex-wrap gap-2">
+                  <span className="text-xs font-semibold text-gray-500 w-full">Filter by Tier:</span>
+                  {[
+                    { key: 'all',      label: 'All',      count: localSubs.length },
+                    { key: 'Student',  label: 'Student',  count: tc.Student },
+                    { key: 'Standard', label: 'Standard', count: tc.Standard },
+                  ].map(({ key, label, count }) => (
+                    <button key={key}
+                      onClick={() => setLocalTierFilter(key)}
+                      className={`px-3 py-1.5 rounded-lg font-medium text-xs transition-colors ${localTierFilter === key ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
+                      {label} ({count})
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Table */}
@@ -1079,7 +1121,40 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
           const filtered = roadshowCityFilter === 'all' ? roadshowRegs : roadshowRegs.filter(r => r.city === roadshowCityFilter);
           return (
             <div className="bg-white rounded-lg shadow p-4 sm:p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Roadshow Registrations</h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-gray-900">Roadshow Registrations</h2>
+                {roadshowRegs.length > 0 && (
+                  <button
+                    onClick={() => setShowClearConfirm(true)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs font-semibold hover:bg-red-100 transition-colors"
+                  >
+                    <Trash2 size={13} /> Clear All Data
+                  </button>
+                )}
+              </div>
+
+              {/* Confirm clear dialog */}
+              {showClearConfirm && (
+                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm font-semibold text-red-700 mb-3">Delete all {roadshowRegs.length} registrations permanently? This cannot be undone.</p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={clearAllRoadshowRegs}
+                      disabled={clearing}
+                      className="px-4 py-1.5 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700 disabled:opacity-60"
+                    >
+                      {clearing ? 'Deleting…' : 'Yes, delete all'}
+                    </button>
+                    <button
+                      onClick={() => setShowClearConfirm(false)}
+                      className="px-4 py-1.5 bg-white text-gray-700 border border-gray-200 rounded-lg text-xs font-semibold hover:bg-gray-50"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* City filters */}
               <div className="flex flex-wrap gap-2 mb-6">
                 <button onClick={() => setRoadshowCityFilter('all')} className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${roadshowCityFilter === 'all' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
@@ -1126,7 +1201,13 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                           {selectedRoadshowReg?.id === reg.id && (
                             <tr key={`${reg.id}-detail`} className="bg-indigo-50 border-t">
                               <td colSpan={7} className="px-6 py-4">
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                                  {reg.whatYouDo && (
+                                    <div>
+                                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">What they do</p>
+                                      <p className="text-gray-800">{reg.whatYouDo}</p>
+                                    </div>
+                                  )}
                                   {reg.whySigningUp && (
                                     <div>
                                       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Why signing up?</p>

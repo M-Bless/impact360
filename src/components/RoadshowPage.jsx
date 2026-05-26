@@ -6,6 +6,60 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import emailjs from "@emailjs/browser";
+
+const EMAILJS_SERVICE_ID  = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+const EMAILJS_PUBLIC_KEY  = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+const EMAILJS_TEMPLATE    = process.env.REACT_APP_EMAILJS_TEMPLATE_USER;
+
+const sendRoadshowEmail = async (form, town) => {
+  try {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+    const isTBA = town.status === "tba";
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE, {
+      to_email: form.email,
+      email_subject: `Impact360 Roadshow ${town.name} — You're Registered!`,
+      welcome_message: isTBA
+        ? `<div style="padding:36px 28px;background:#F8F9FA;border-radius:14px;margin-bottom:28px;border-left:5px solid #306CEC;">
+            <h2 style="color:#306CEC;margin:0 0 18px;font-size:24px;font-weight:bold;">You're on the list, ${form.name}!</h2>
+            <p style="color:#333;font-size:15px;line-height:1.8;margin:0 0 14px;">
+              Thank you for registering your interest in the <strong>Impact360 Roadshow — ${town.name}</strong>.
+            </p>
+            <p style="color:#333;font-size:15px;line-height:1.8;margin:0 0 14px;">
+              We are still finalising the date for this city. <strong>We will reach out to you as soon as the date is confirmed.</strong> Keep an eye on your inbox!
+            </p>
+            <p style="color:#306CEC;font-size:16px;font-weight:bold;margin:0;">— Impact360 Team</p>
+           </div>`
+        : `<div style="padding:36px 28px;background:#F8F9FA;border-radius:14px;margin-bottom:28px;border-left:5px solid #306CEC;">
+            <h2 style="color:#306CEC;margin:0 0 18px;font-size:24px;font-weight:bold;">You're Registered, ${form.name}!</h2>
+            <p style="color:#333;font-size:15px;line-height:1.8;margin:0 0 14px;">
+              Your spot at the <strong>Impact360 Roadshow — ${town.name}</strong> has been confirmed.
+            </p>
+            <p style="color:#333;font-size:15px;line-height:1.8;margin:0 0 14px;">
+              <strong>Date:</strong> <span style="color:#306CEC;">${town.date}</span><br/>
+              <strong>City:</strong> ${town.name}
+            </p>
+            <p style="color:#333;font-size:15px;line-height:1.8;margin:0;">
+              We'll follow up with the venue details and agenda as the date approaches. See you there!
+            </p>
+            <p style="color:#306CEC;font-size:16px;font-weight:bold;margin:20px 0 0;">— Impact360 Team</p>
+           </div>`,
+      additional_info: `<div style="background:#EEF3FD;padding:28px;border-radius:12px;border-left:5px solid #306CEC;">
+          <h3 style="color:#306CEC;margin:0 0 16px;font-size:18px;font-weight:bold;">Your Registration Details</h3>
+          <ul style="color:#333;font-size:14px;line-height:2;list-style:none;padding:0;margin:0;">
+            <li><strong>Name:</strong> ${form.name}</li>
+            <li><strong>Email:</strong> ${form.email}</li>
+            <li><strong>Phone:</strong> ${form.phone}</li>
+            <li><strong>Organization:</strong> ${form.organization}</li>
+            <li><strong>City:</strong> ${town.name}</li>
+            ${!isTBA ? `<li><strong>Date:</strong> ${town.date}</li>` : ""}
+          </ul>
+        </div>`,
+    });
+  } catch (err) {
+    console.warn("Roadshow confirmation email failed:", err);
+  }
+};
 
 /* ─── VIDEO DATA ─── */
 const videos = [
@@ -150,101 +204,103 @@ function VideoHighlights({ darkMode }) {
   );
 }
 
-/* ── ROADSHOW REGISTRATION MODAL ── */
+
+/* ── REGISTRATION MODAL ── */
 function RegisterModal({ town, darkMode, onClose }) {
-  const [form, setForm] = React.useState({ name: '', email: '', phone: '', organization: '', whySigningUp: '', specificQuestions: '', expectations: '' });
-  const [status, setStatus] = React.useState('idle');
+  const [form, setForm] = React.useState({ name: "", email: "", phone: "", organization: "", whatYouDo: "", whySigningUp: "", expectations: "" });
+  const [status, setStatus] = React.useState("idle");
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus('loading');
+    setStatus("loading");
     try {
-      await addDoc(collection(db, 'roadshowRegistrations'), {
+      await addDoc(collection(db, "roadshowRegistrations"), {
         ...form,
         city: town.name,
         eventDate: town.date,
         submittedAt: serverTimestamp(),
-        status: 'registered',
+        status: "registered",
       });
-      setStatus('success');
+      await sendRoadshowEmail(form, town);
+      setStatus("success");
     } catch {
-      setStatus('error');
+      setStatus("error");
     }
   };
 
-  const overlay = { position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)' };
-  const card    = { background: darkMode ? '#0f0f0f' : '#fff', borderRadius: '20px', padding: '36px', width: '100%', maxWidth: '500px', maxHeight: '90vh', overflowY: 'auto', position: 'relative', border: `1px solid ${darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(10,10,20,0.1)'}`, boxShadow: '0 32px 80px rgba(0,0,0,0.4)' };
-  const label   = { display: 'block', fontSize: '11px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px', color: darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(10,10,20,0.5)', fontFamily: "'DM Sans', sans-serif" };
-  const input   = { width: '100%', padding: '12px 14px', borderRadius: '10px', border: `1px solid ${darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(10,10,20,0.12)'}`, background: darkMode ? 'rgba(255,255,255,0.04)' : '#f7f8fa', color: darkMode ? '#fff' : '#0a0a14', fontSize: '14px', fontFamily: "'DM Sans', sans-serif", outline: 'none', boxSizing: 'border-box' };
-  const textarea = { ...input, resize: 'vertical', minHeight: '80px', lineHeight: 1.6 };
+  const s = {
+    overlay: { position: "fixed", inset: 0, zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px", background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" },
+    card:    { background: darkMode ? "#0f0f0f" : "#fff", borderRadius: "20px", padding: "36px", width: "100%", maxWidth: "480px", maxHeight: "90vh", overflowY: "auto", position: "relative", border: `1px solid ${darkMode ? "rgba(255,255,255,0.08)" : "rgba(10,10,20,0.1)"}`, boxShadow: "0 32px 80px rgba(0,0,0,0.45)" },
+    label:   { display: "block", fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px", color: darkMode ? "rgba(255,255,255,0.45)" : "rgba(10,10,20,0.45)", fontFamily: "'DM Sans', sans-serif" },
+    input:   { width: "100%", padding: "12px 14px", borderRadius: "10px", border: `1px solid ${darkMode ? "rgba(255,255,255,0.1)" : "rgba(10,10,20,0.12)"}`, background: darkMode ? "rgba(255,255,255,0.04)" : "#f7f8fa", color: darkMode ? "#fff" : "#0a0a14", fontSize: "14px", fontFamily: "'DM Sans', sans-serif", outline: "none", boxSizing: "border-box" },
+  };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={overlay} onClick={onClose}>
-      <motion.div initial={{ opacity: 0, y: 24, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 24 }} transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }} style={card} onClick={e => e.stopPropagation()}>
-
-        {/* Close */}
-        <button onClick={onClose} style={{ position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', cursor: 'pointer', color: darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(10,10,20,0.4)', padding: '4px' }}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={s.overlay} onClick={onClose}>
+      <motion.div
+        initial={{ opacity: 0, y: 28, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 28 }} transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        style={s.card} onClick={e => e.stopPropagation()}
+      >
+        <button onClick={onClose} style={{ position: "absolute", top: "16px", right: "16px", background: "none", border: "none", cursor: "pointer", color: darkMode ? "rgba(255,255,255,0.4)" : "rgba(10,10,20,0.4)", padding: "4px" }}>
           <X size={18} />
         </button>
 
-        {status === 'success' ? (
-          <div style={{ textAlign: 'center', padding: '24px 0' }}>
-            <CheckCircle size={48} color="#306CEC" style={{ marginBottom: '16px' }} />
-            <h3 style={{ fontSize: '22px', fontWeight: 900, fontFamily: "'League Spartan', sans-serif", color: darkMode ? '#fff' : '#0a0a14', marginBottom: '8px', textTransform: 'uppercase' }}>You're Registered!</h3>
-            <p style={{ fontSize: '14px', color: darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(10,10,20,0.5)', fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
-              We'll be in touch with details for the <strong>{town.name}</strong> roadshow on <strong>{town.date}</strong>.
+        {status === "success" ? (
+          <div style={{ textAlign: "center", padding: "24px 0" }}>
+            <CheckCircle size={48} color="#306CEC" style={{ marginBottom: "16px" }} />
+            <h3 style={{ fontSize: "22px", fontWeight: 900, fontFamily: "'League Spartan', sans-serif", color: darkMode ? "#fff" : "#0a0a14", marginBottom: "8px", textTransform: "uppercase" }}>You're Registered!</h3>
+            <p style={{ fontSize: "14px", color: darkMode ? "rgba(255,255,255,0.5)" : "rgba(10,10,20,0.5)", fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
+              {town.status === "tba"
+                ? <>You're on the list for <strong>{town.name}</strong>. We'll email you as soon as the date is confirmed.</>
+                : <>You're confirmed for <strong>{town.name}</strong> on <strong>{town.date}</strong>. Check your inbox for the confirmation email.</>
+              }
             </p>
-            <button onClick={onClose} style={{ marginTop: '24px', background: '#306CEC', color: '#fff', border: 'none', borderRadius: '100px', padding: '12px 28px', fontWeight: 800, fontSize: '13px', fontFamily: "'League Spartan', sans-serif", cursor: 'pointer', letterSpacing: '0.04em' }}>
+            <button onClick={onClose} style={{ marginTop: "24px", background: "#306CEC", color: "#fff", border: "none", borderRadius: "100px", padding: "12px 28px", fontWeight: 800, fontSize: "13px", fontFamily: "'League Spartan', sans-serif", cursor: "pointer" }}>
               Done
             </button>
           </div>
         ) : (
           <>
-            {/* Header */}
-            <div style={{ marginBottom: '24px' }}>
-              <span style={{ fontSize: '10px', fontWeight: 800, color: '#306CEC', letterSpacing: '0.28em', textTransform: 'uppercase', fontFamily: "'DM Sans', sans-serif" }}>Roadshow Registration</span>
-              <h2 style={{ fontSize: '24px', fontWeight: 900, fontFamily: "'League Spartan', sans-serif", color: darkMode ? '#fff' : '#0a0a14', textTransform: 'uppercase', letterSpacing: '-0.02em', margin: '6px 0 4px' }}>{town.name}</h2>
-              <p style={{ fontSize: '12px', color: darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(10,10,20,0.4)', fontFamily: "'DM Sans', sans-serif" }}>{town.date}</p>
+            <div style={{ marginBottom: "24px" }}>
+              <span style={{ fontSize: "10px", fontWeight: 800, color: "#306CEC", letterSpacing: "0.28em", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>Roadshow Registration</span>
+              <h2 style={{ fontSize: "24px", fontWeight: 900, fontFamily: "'League Spartan', sans-serif", color: darkMode ? "#fff" : "#0a0a14", textTransform: "uppercase", letterSpacing: "-0.02em", margin: "6px 0 4px" }}>{town.name}</h2>
+              <p style={{ fontSize: "12px", color: darkMode ? "rgba(255,255,255,0.4)" : "rgba(10,10,20,0.4)", fontFamily: "'DM Sans', sans-serif" }}>{town.date}</p>
             </div>
 
             <form onSubmit={handleSubmit}>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={label}>Name</label>
-                <input style={input} name="name" value={form.name} onChange={handleChange} placeholder="Your full name" required />
+              {[
+                { label: "Full Name", name: "name", type: "text", placeholder: "Your full name", required: true },
+                { label: "Email", name: "email", type: "email", placeholder: "you@example.com", required: true },
+                { label: "Phone Number", name: "phone", type: "tel", placeholder: "+254 7XX XXX XXX", required: true },
+                { label: "Organization / Institution", name: "organization", type: "text", placeholder: "Company, university, or institution", required: true },
+              ].map(f => (
+                <div key={f.name} style={{ marginBottom: "16px" }}>
+                  <label style={s.label}>{f.label}</label>
+                  <input style={s.input} type={f.type} name={f.name} value={form[f.name]} onChange={handleChange} placeholder={f.placeholder} required={f.required} />
+                </div>
+              ))}
+              <div style={{ marginBottom: "16px" }}>
+                <label style={s.label}>What do you do?</label>
+                <textarea style={{ ...s.input, resize: "vertical", minHeight: "72px", lineHeight: 1.6 }} name="whatYouDo" value={form.whatYouDo} onChange={handleChange} placeholder="Briefly describe what you do..." />
               </div>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={label}>Email</label>
-                <input style={input} type="email" name="email" value={form.email} onChange={handleChange} placeholder="you@example.com" required />
+              <div style={{ marginBottom: "16px" }}>
+                <label style={s.label}>Why are you attending?</label>
+                <textarea style={{ ...s.input, resize: "vertical", minHeight: "80px", lineHeight: 1.6 }} name="whySigningUp" value={form.whySigningUp} onChange={handleChange} placeholder="Your motivation for joining..." />
               </div>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={label}>Phone Number</label>
-                <input style={input} type="tel" name="phone" value={form.phone} onChange={handleChange} placeholder="+254 7XX XXX XXX" required />
-              </div>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={label}>Organization / Institution</label>
-                <input style={input} name="organization" value={form.organization} onChange={handleChange} placeholder="Company, university, or institution" required />
-              </div>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={label}>Why are you signing up for the roadshow?</label>
-                <textarea style={textarea} name="whySigningUp" value={form.whySigningUp} onChange={handleChange} placeholder="Tell us your motivation..." />
-              </div>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={label}>Do you have any specific questions about the roadshow?</label>
-                <textarea style={textarea} name="specificQuestions" value={form.specificQuestions} onChange={handleChange} placeholder="Any questions you'd like answered..." />
-              </div>
-              <div style={{ marginBottom: '24px' }}>
-                <label style={label}>What are your expectations for the roadshow?</label>
-                <textarea style={textarea} name="expectations" value={form.expectations} onChange={handleChange} placeholder="What do you hope to gain or experience..." />
+              <div style={{ marginBottom: "24px" }}>
+                <label style={s.label}>What do you hope to gain?</label>
+                <textarea style={{ ...s.input, resize: "vertical", minHeight: "80px", lineHeight: 1.6 }} name="expectations" value={form.expectations} onChange={handleChange} placeholder="What you expect from the event..." />
               </div>
 
-              {status === 'error' && (
-                <p style={{ fontSize: '13px', color: '#ef4444', marginBottom: '12px', fontFamily: "'DM Sans', sans-serif" }}>Something went wrong. Please try again.</p>
+              {status === "error" && (
+                <p style={{ fontSize: "13px", color: "#ef4444", marginBottom: "12px", fontFamily: "'DM Sans', sans-serif" }}>Something went wrong. Please try again.</p>
               )}
 
-              <button type="submit" disabled={status === 'loading'} style={{ width: '100%', background: '#306CEC', color: '#fff', border: 'none', borderRadius: '100px', padding: '14px', fontWeight: 800, fontSize: '14px', fontFamily: "'League Spartan', sans-serif", cursor: status === 'loading' ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', opacity: status === 'loading' ? 0.7 : 1, letterSpacing: '0.04em' }}>
-                {status === 'loading' ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Submitting...</> : <>Register Now <ArrowRight size={15} /></>}
+              <button type="submit" disabled={status === "loading"} style={{ width: "100%", background: "#306CEC", color: "#fff", border: "none", borderRadius: "100px", padding: "14px", fontWeight: 800, fontSize: "14px", fontFamily: "'League Spartan', sans-serif", cursor: status === "loading" ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", opacity: status === "loading" ? 0.7 : 1 }}>
+                {status === "loading" ? <><Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} /> Submitting...</> : <>Register Now <ArrowRight size={15} /></>}
               </button>
             </form>
           </>
@@ -255,11 +311,11 @@ function RegisterModal({ town, darkMode, onClose }) {
 }
 
 /* ── 3D TOUR CAROUSEL ── */
-function TourCarousel({ towns, darkMode }) {
+function TourCarousel({ towns, darkMode, onRegister }) {
   const N = towns.length;
   const [active, setActive] = React.useState(1);
   const [paused, setPaused] = React.useState(false);
-  const [registerTown, setRegisterTown] = React.useState(null);
+  const [isDragging, setIsDragging] = React.useState(false);
   const [dragDelta, setDragDelta] = React.useState(0);
   const dragStartX   = React.useRef(null);
   const dragging     = React.useRef(false);
@@ -272,7 +328,7 @@ function TourCarousel({ towns, darkMode }) {
   // auto-rotate
   React.useEffect(() => {
     if (paused) return;
-    const t = setInterval(() => setActive(i => (i + 1) % N), 2800);
+    const t = setInterval(() => setActive(i => (i + 1) % N), 5000);
     return () => clearInterval(t);
   }, [paused, N]);
 
@@ -290,6 +346,7 @@ function TourCarousel({ towns, darkMode }) {
     const onUp = () => {
       if (!dragging.current) return;
       dragging.current = false;
+      setIsDragging(false);
       const steps = Math.round(dragDeltaRef.current / DEG_PER_CARD);
       setActive(i => ((i + steps) % N + N) % N);
       dragDeltaRef.current = 0;
@@ -311,8 +368,9 @@ function TourCarousel({ towns, darkMode }) {
   }, [N, DEG_PER_CARD]);
 
   const onPointerDown = (e) => {
-    dragging.current  = true;
+    dragging.current   = true;
     dragStartX.current = e.touches ? e.touches[0].clientX : e.clientX;
+    setIsDragging(true);
     setPaused(true);
   };
 
@@ -323,32 +381,41 @@ function TourCarousel({ towns, darkMode }) {
     <section style={{ background: bg, padding: "80px 0 96px", overflow: "hidden" }}>
       <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 48px", display: "flex", alignItems: "center", gap: "56px", flexWrap: "wrap" }}>
 
-        {/* LEFT: text */}
+        {/* LEFT: dynamic city info */}
         <div style={{ flex: "0 0 300px", minWidth: "260px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
             <div style={{ height: "1px", width: "28px", background: "#306CEC" }} />
             <span style={{ fontSize: "10px", fontWeight: 800, color: "#306CEC", letterSpacing: "0.28em", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>The Tour</span>
           </div>
-          <h2 style={{ fontSize: "clamp(1.8rem, 3.5vw, 3rem)", fontWeight: 900, fontFamily: "'League Spartan', sans-serif", letterSpacing: "-0.02em", lineHeight: 0.95, textTransform: "uppercase", color: darkMode ? "#fff" : "#0a0a14", marginBottom: "20px" }}>
+          <h2 style={{ fontSize: "clamp(1.8rem, 3.5vw, 3rem)", fontWeight: 900, fontFamily: "'League Spartan', sans-serif", letterSpacing: "-0.02em", lineHeight: 0.95, textTransform: "uppercase", color: darkMode ? "#fff" : "#0a0a14", marginBottom: "16px" }}>
             9 Cities. <span style={{ color: "#306CEC" }}>One Movement.</span>
           </h2>
-          <p style={{ fontSize: "14px", lineHeight: 1.75, color: muted, fontFamily: "'DM Sans', sans-serif", marginBottom: "24px", maxWidth: "280px" }}>
-            Taking Africa's entrepreneurship conversation beyond the capital, town by town, city by city.
+          <p style={{ fontSize: "14px", lineHeight: 1.75, color: muted, fontFamily: "'DM Sans', sans-serif", marginBottom: "28px", maxWidth: "280px" }}>
+            Taking Africa's entrepreneurship conversation beyond the capital, town by town.
           </p>
 
-          {/* Next Stop pill */}
-          <div style={{ display: "inline-flex", alignItems: "center", gap: "10px", padding: "8px 16px", borderRadius: "100px", background: "rgba(48,108,236,0.1)", border: "1px solid rgba(48,108,236,0.25)", marginBottom: "24px" }}>
-            <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#306CEC", flexShrink: 0, boxShadow: "0 0 6px #306CEC" }} />
-            <span style={{ fontSize: "10px", fontWeight: 700, color: "#306CEC", letterSpacing: "0.18em", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>Next Stop</span>
-            <div style={{ width: "1px", height: "10px", background: "rgba(48,108,236,0.3)" }} />
-            <span style={{ fontSize: "12px", fontWeight: 600, color: darkMode ? "rgba(255,255,255,0.75)" : "rgba(10,10,20,0.75)", fontFamily: "'DM Sans', sans-serif" }}>Eldoret · May 23, 2026</span>
-          </div>
+          {/* Active city panel */}
+          <div style={{ borderTop: `1px solid ${darkMode ? "rgba(255,255,255,0.08)" : "rgba(10,10,20,0.08)"}`, paddingTop: "24px" }}>
+            <div style={{ fontSize: "clamp(2rem, 4vw, 2.8rem)", fontWeight: 900, fontFamily: "'League Spartan', sans-serif", letterSpacing: "-0.03em", lineHeight: 0.92, textTransform: "uppercase", color: darkMode ? "#fff" : "#0a0a14", marginBottom: "6px", transition: "all 0.4s" }}>
+              {towns[active].name}
+            </div>
+            <div style={{ fontSize: "12px", color: "#306CEC", fontWeight: 700, fontFamily: "'DM Sans', sans-serif", marginBottom: "16px" }}>
+              {towns[active].date}
+            </div>
 
-          <a href="https://forms.gle/FoEdvsEvgt3ohDm48" target="_blank" rel="noopener noreferrer"
-            style={{ fontSize: "13px", fontWeight: 800, color: "#fff", display: "inline-flex", alignItems: "center", gap: "6px", fontFamily: "'League Spartan', sans-serif", textDecoration: "none", background: "#306CEC", padding: "12px 26px", borderRadius: "100px" }}
-          >
-            Register Now <ArrowRight size={14} />
-          </a>
+            {towns[active].status === "past" ? (
+              <span style={{ fontSize: "11px", color: muted, fontFamily: "'DM Sans', sans-serif", fontStyle: "italic" }}>This roadshow has concluded.</span>
+            ) : (
+              <button
+                onClick={() => onRegister(towns[active])}
+                style={{ display: "inline-flex", alignItems: "center", gap: "8px", fontSize: "13px", fontWeight: 800, color: "#fff", background: "#306CEC", padding: "12px 26px", borderRadius: "100px", border: "none", fontFamily: "'League Spartan', sans-serif", cursor: "pointer", boxShadow: "0 4px 20px rgba(48,108,236,0.4)", transition: "background 0.2s, transform 0.2s" }}
+                onMouseEnter={e => { e.currentTarget.style.background = "#4A80FF"; e.currentTarget.style.transform = "scale(1.04)"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "#306CEC"; e.currentTarget.style.transform = "scale(1)"; }}
+              >
+                Register Now <ArrowRight size={14} />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* RIGHT: 3D carousel */}
@@ -356,7 +423,7 @@ function TourCarousel({ towns, darkMode }) {
 
       {/* 3D Stage */}
       <div
-        style={{ perspective: "1100px", height: CARD_H + 80, position: "relative", cursor: dragging.current ? "grabbing" : "grab", userSelect: "none" }}
+        style={{ perspective: "1100px", height: CARD_H + 80, position: "relative", userSelect: "none" }}
         onMouseDown={onPointerDown}
         onTouchStart={onPointerDown}
       >
@@ -384,7 +451,7 @@ function TourCarousel({ towns, darkMode }) {
                   transform: `rotateY(${angle}deg) translateZ(${RADIUS}px)`,
                   borderRadius: "16px",
                   overflow: "hidden",
-                  cursor: "pointer",
+                  cursor: isDragging ? "grabbing" : "grab",
                   transition: "box-shadow 0.4s, opacity 0.4s",
                   opacity: town.status === "past" && !isActive ? 0.7 : 1,
                   boxShadow: town.status === "next"
@@ -400,12 +467,10 @@ function TourCarousel({ towns, darkMode }) {
                   src={town.img} alt={town.name} loading="lazy"
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: town.status === "past" ? "grayscale(70%) brightness(0.65)" : "none", transition: "filter 0.4s" }}
                 />
-                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.1) 55%, transparent 100%)" }} />
-                {/* Extra dim overlay for past events */}
-                {town.status === "past" && <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.3)" }} />}
-                {/* Blue accent overlay for next stop */}
-                {town.status === "next" && <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(48,108,236,0.45) 0%, transparent 55%)" }} />}
-                {isActive && town.status !== "next" && <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(48,108,236,0.5) 0%, transparent 60%)" }} />}
+                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.1) 55%, transparent 100%)", pointerEvents: "none" }} />
+                {town.status === "past" && <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.3)", pointerEvents: "none" }} />}
+                {town.status === "next" && <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(48,108,236,0.45) 0%, transparent 55%)", pointerEvents: "none" }} />}
+                {isActive && town.status !== "next" && <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(48,108,236,0.5) 0%, transparent 60%)", pointerEvents: "none" }} />}
 
                 {/* Status badge */}
                 <div style={{ position: "absolute", top: "12px", left: "12px" }}>
@@ -415,23 +480,9 @@ function TourCarousel({ towns, darkMode }) {
                 </div>
 
                 {/* Bottom info */}
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px" }}>
+                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px", pointerEvents: "none" }}>
                   <div style={{ fontSize: "16px", fontWeight: 900, color: "#fff", textTransform: "uppercase", fontFamily: "'League Spartan', sans-serif", letterSpacing: "-0.01em", marginBottom: "3px" }}>{town.name}</div>
-                  <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.55)", fontFamily: "'DM Sans', sans-serif" }}>{town.date}</div>
-                  {isActive && (
-                    <div style={{ marginTop: "10px" }}>
-                      {town.status === "past" ? (
-                        <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)", fontFamily: "'DM Sans', sans-serif", fontStyle: "italic" }}>Roadshow concluded · Feb 2026</span>
-                      ) : (
-                        <button
-                          onClick={() => { setRegisterTown(town); setPaused(true); }}
-                          style={{ display: "inline-flex", alignItems: "center", gap: "5px", fontSize: "11px", fontWeight: 800, color: "#fff", background: "rgba(255,255,255,0.18)", backdropFilter: "blur(8px)", padding: "6px 14px", borderRadius: "100px", border: "1px solid rgba(255,255,255,0.25)", fontFamily: "'League Spartan', sans-serif", cursor: "pointer" }}
-                        >
-                          Register Now <ArrowRight size={11} />
-                        </button>
-                      )}
-                    </div>
-                  )}
+                  <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.65)", fontFamily: "'DM Sans', sans-serif" }}>{town.date}</div>
                 </div>
               </div>
             );
@@ -504,20 +555,7 @@ function TourCarousel({ towns, darkMode }) {
         </div>{/* end right column */}
       </div>{/* end flex row */}
 
-      {/* Spinner keyframe */}
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-
-      {/* Registration modal */}
-      <AnimatePresence>
-        {registerTown && (
-          <RegisterModal
-            town={registerTown}
-            darkMode={darkMode}
-            onClose={() => { setRegisterTown(null); setPaused(false); }}
-          />
-        )}
-      </AnimatePresence>
-
     </section>
   );
 }
@@ -529,6 +567,7 @@ function TourCarousel({ towns, darkMode }) {
 export default function RoadshowPage() {
   const { darkMode } = useDarkMode();
   const [showQR, setShowQR] = React.useState(false);
+  const [registerTown, setRegisterTown] = React.useState(null);
 
   const speakerImages = ["/events/Timothy.jpeg", "/events/Deborah.jpeg", "/events/geofrey.jpeg", "/events/Gilbert.jpeg"];
   const [activeSpeaker, setActiveSpeaker] = React.useState(0);
@@ -562,6 +601,17 @@ export default function RoadshowPage() {
               </div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── REGISTRATION MODAL ── */}
+      <AnimatePresence>
+        {registerTown && (
+          <RegisterModal
+            town={registerTown}
+            darkMode={darkMode}
+            onClose={() => setRegisterTown(null)}
+          />
         )}
       </AnimatePresence>
 
@@ -710,7 +760,7 @@ export default function RoadshowPage() {
       </section>
 
       {/* ══ 4. THE TOUR — 3D revolving carousel ══ */}
-      <TourCarousel towns={towns} darkMode={darkMode} />
+      <TourCarousel towns={towns} darkMode={darkMode} onRegister={setRegisterTown} />
 
       {/* ══ 5. SPEAKERS ══ */}
       <section className="py-24 md:py-32" style={{ background: darkMode ? "#0a0a14" : "#F5F6F8" }}>
