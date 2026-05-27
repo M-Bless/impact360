@@ -18,7 +18,7 @@ export default function EventsPage() {
     "/events/Timothy.jpeg",
     "/events/Deborah.jpeg",
     "/events/geofrey.jpeg",
-    "/events/Gilbert.jpeg" 
+    "/events/Gilbert.jpeg"
   ];
   const [currentSpeaker, setCurrentSpeaker] = React.useState(0);
   React.useEffect(() => {
@@ -64,13 +64,13 @@ export default function EventsPage() {
               <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Join Our Community</h2>
               <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Scan the QR code to join our WhatsApp community</p>
               <div className={`p-8 rounded-2xl flex items-center justify-center ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
-                <img 
-                  src="/frame.png" 
+                <img
+                  src="/frame.png"
                   alt="WhatsApp QR Code"
                   className="w-64 h-64 object-contain"
                 />
               </div>
-              <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>Or click below to join directly</p>
+              <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Or click below to join directly</p>
               <a
                 href="https://chat.whatsapp.com/I0g8kpCNvSn84yWQxybzHa"
                 target="_blank"
@@ -102,7 +102,7 @@ export default function EventsPage() {
             className="text-5xl md:text-7xl mb-6 text-white font-extrabold drop-shadow-lg"
             style={{ fontFamily: "'League Spartan', 'DM Sans', Arial, sans-serif", textTransform: "uppercase" }}
           >
-           Impact360 Roadshow
+            Impact360 Roadshow
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -238,20 +238,20 @@ export default function EventsPage() {
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           {/* Left: Eldoret Image */}
           <div className="relative w-full h-[500px] overflow-hidden rounded-2xl flex items-center justify-center">
-              <img
-                src={eldoretImages[0]}
-                alt="Eldoret Roadshow"
-                className="w-full h-full object-contain rounded-3xl"
-                style={{ display: "block" }}
-              />
+            <img
+              src={eldoretImages[0]}
+              alt="Eldoret Roadshow"
+              className="w-full h-full object-contain rounded-3xl"
+              style={{ display: "block" }}
+            />
           </div>
           {/* Right: Eldoret Info */}
           <div>
             <h2 className="text-2xl md:text-4xl font-bold mb-6 text-[#306CEC]" style={{ fontFamily: "'League Spartan', 'DM Sans', Arial, sans-serif", textTransform: "uppercase" }}>
-              Next Stop: Eldoret
+              Next Stop: Kisumu
             </h2>
             <p className="text-lg mb-4 text-gray-700 dark:text-gray-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-              The Impact360 Roadshow is heading to Eldoret, the heart of Kenya's North Rift and a city known for its enterprising spirit, agricultural innovation, and a fast-growing startup scene.
+              The Impact360 Roadshow is heading to Kisumu, the heart of Kenya's North Rift and a city known for its enterprising spirit, agricultural innovation, and a fast-growing startup scene.
             </p>
             <ul className="list-disc pl-6 mb-4 text-base text-gray-700 dark:text-gray-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
               <li>Meet founders building solutions for agritech, fintech, and logistics</li>
@@ -288,7 +288,7 @@ export default function EventsPage() {
             Planned Roadshow Towns
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            { [
+            {[
               {
                 name: "Nakuru",
                 img: "/events/Nakuru.jpg",
@@ -307,7 +307,7 @@ export default function EventsPage() {
                 name: "Kisumu",
                 img: "/events/Kisumu.jpg",
                 desc: "A lakeside city with a rising innovation scene.",
-                date: "June 6, 2026",
+                date: "July 4th, 2026",
                 formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScFx9A1ybkhFQ8ooByPDaHMHc31ufVHBeWK_A-r3VLDxVczDg/viewform?usp=publish-editor"
               },
               {
@@ -444,7 +444,7 @@ export default function EventsPage() {
             Who It’s For
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-            { [
+            {[
               { label: "Founders & early‑stage entrepreneurs", icon: Users },
               { label: "Students & young innovators", icon: Lightbulb },
               { label: "SME builders", icon: Network },
@@ -609,7 +609,7 @@ export default function EventsPage() {
           <div className="text-base text-gray-700 dark:text-gray-300 mb-6" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
             Reach out to the Impact360 team to start the conversation.
           </div>
-          
+
         </div>
       </motion.section>
 
@@ -730,7 +730,7 @@ const videos = [
     id: 3,
     title: "Innovation On The Ground",
     location: "Kisumu, Kenya",
-    date: "June 6, 2026",
+    date: "July 4th, 2026",
     tag: "PANEL",
     youtubeId: "Mbl0osnVSHI",
     thumb: "https://i.ytimg.com/vi/Mbl0osnVSHI/hqdefault.jpg",
@@ -961,7 +961,7 @@ function VideoCard({ video, cardIndex, cardRef, darkMode }) {
           display: "flex", alignItems: "center", gap: "3px",
         }}>
           <svg width="10" height="12" viewBox="0 0 24 24" fill="#fff">
-            <path d="M13.5 2.14L11 6.27l-1.55-.9A5 5 0 004 10a5 5 0 005 5h1v2H9a7 7 0 110-14 7 7 0 011.5.16L13.5 2.14zM15 5a7 7 0 11-1.5 13.84l-2.5-4.13L12.55 13A5 5 0 0020 10a5 5 0 00-5-5z"/>
+            <path d="M13.5 2.14L11 6.27l-1.55-.9A5 5 0 004 10a5 5 0 005 5h1v2H9a7 7 0 110-14 7 7 0 011.5.16L13.5 2.14zM15 5a7 7 0 11-1.5 13.84l-2.5-4.13L12.55 13A5 5 0 0020 10a5 5 0 00-5-5z" />
           </svg>
           <span style={{ color: "#fff", fontSize: "8px", fontWeight: 800, fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.06em" }}>SHORTS</span>
         </div>
@@ -981,17 +981,17 @@ function VideoCard({ video, cardIndex, cardRef, darkMode }) {
 
 function VideoHighlights({ darkMode }) {
   const containerRef = React.useRef(null);
-  const cardRefs     = React.useRef(displayedVideos.map(() => React.createRef()));
-  const pipRefs      = React.useRef(displayedVideos.map(() => React.createRef()));
-  const tagRef       = React.useRef(null);
-  const titleRef     = React.useRef(null);
-  const locationRef  = React.useRef(null);
-  const counterRef   = React.useRef(null);
-  const hintRef      = React.useRef(null);
-  const rawRef       = React.useRef(0);
-  const smoothRef    = React.useRef(0);
-  const rafRef       = React.useRef(null);
-  const prevIdxRef   = React.useRef(0);
+  const cardRefs = React.useRef(displayedVideos.map(() => React.createRef()));
+  const pipRefs = React.useRef(displayedVideos.map(() => React.createRef()));
+  const tagRef = React.useRef(null);
+  const titleRef = React.useRef(null);
+  const locationRef = React.useRef(null);
+  const counterRef = React.useRef(null);
+  const hintRef = React.useRef(null);
+  const rawRef = React.useRef(0);
+  const smoothRef = React.useRef(0);
+  const rafRef = React.useRef(null);
+  const prevIdxRef = React.useRef(0);
 
   React.useEffect(() => {
     const LERP = 0.08;
@@ -999,38 +999,38 @@ function VideoHighlights({ darkMode }) {
     const onScroll = () => {
       const el = containerRef.current;
       if (!el) return;
-      const rect       = el.getBoundingClientRect();
+      const rect = el.getBoundingClientRect();
       const scrollable = el.scrollHeight - window.innerHeight;
-      const scrolled   = Math.max(0, -rect.top);
-      rawRef.current   = Math.min(1, scrolled / Math.max(1, scrollable)) * displayedVideos.length;
+      const scrolled = Math.max(0, -rect.top);
+      rawRef.current = Math.min(1, scrolled / Math.max(1, scrollable)) * displayedVideos.length;
     };
 
     const applyCard = (el, sp, i) => {
-      const cp  = sp - i;
-      const cl  = Math.max(0, Math.min(1, cp));
-      const qd  = Math.max(0, -cp);
-      const gone   = cp >= 1;
+      const cp = sp - i;
+      const cl = Math.max(0, Math.min(1, cp));
+      const qd = Math.max(0, -cp);
+      const gone = cp >= 1;
       const queued = cp < 0;
 
-      const tx  = gone ? -130 : queued ?  qd * 9 : -cl * 130;
-      const ty  = queued ? qd * 6 : 0;
-      const sc  = gone ? 0.85 : queued ? Math.max(0.75, 1 - qd * 0.045) : 1 - cl * 0.06;
-      const op  = gone ? 0    : queued ? Math.max(0.2,  1 - qd * 0.13)  : 1 - cl * 0.55;
-      const rot = gone ? -10  : queued ? Math.min(qd * 1.8, 8)          : cl * -8;
-      const br  = queued ? Math.max(0.55, 1 - qd * 0.13) : 1;
-      const zi  = gone ? 0    : queued ? Math.max(1, 45 - Math.floor(qd) * 5) : 50;
+      const tx = gone ? -130 : queued ? qd * 9 : -cl * 130;
+      const ty = queued ? qd * 6 : 0;
+      const sc = gone ? 0.85 : queued ? Math.max(0.75, 1 - qd * 0.045) : 1 - cl * 0.06;
+      const op = gone ? 0 : queued ? Math.max(0.2, 1 - qd * 0.13) : 1 - cl * 0.55;
+      const rot = gone ? -10 : queued ? Math.min(qd * 1.8, 8) : cl * -8;
+      const br = queued ? Math.max(0.55, 1 - qd * 0.13) : 1;
+      const zi = gone ? 0 : queued ? Math.max(1, 45 - Math.floor(qd) * 5) : 50;
 
-      el.style.transform  = `translateX(${tx}%) translateY(${ty}px) scale(${sc}) rotate(${rot}deg)`;
-      el.style.opacity    = op;
-      el.style.filter     = `brightness(${br})`;
-      el.style.zIndex     = zi;
+      el.style.transform = `translateX(${tx}%) translateY(${ty}px) scale(${sc}) rotate(${rot}deg)`;
+      el.style.opacity = op;
+      el.style.filter = `brightness(${br})`;
+      el.style.zIndex = zi;
 
       const btn = el.querySelector(".play-btn");
       if (btn) btn.style.opacity = (cp >= 0 && cp < 1) ? String(Math.max(0, 1 - cl * 2)) : "0";
     };
 
     const tick = () => {
-      const sp   = smoothRef.current + (rawRef.current - smoothRef.current) * LERP;
+      const sp = smoothRef.current + (rawRef.current - smoothRef.current) * LERP;
       smoothRef.current = sp;
 
       cardRefs.current.forEach((ref, i) => {
@@ -1040,22 +1040,22 @@ function VideoHighlights({ darkMode }) {
       const ai = Math.min(Math.floor(sp), displayedVideos.length - 1);
 
       if (counterRef.current) {
-        counterRef.current.textContent = `${String(ai + 1).padStart(2,"0")} / ${String(displayedVideos.length).padStart(2,"0")}`;
+        counterRef.current.textContent = `${String(ai + 1).padStart(2, "0")} / ${String(displayedVideos.length).padStart(2, "0")}`;
       }
       if (hintRef.current) {
         hintRef.current.style.opacity = String(Math.max(0, 1 - sp * 2));
       }
       pipRefs.current.forEach((ref, i) => {
         if (!ref.current) return;
-        ref.current.style.width      = i === ai ? "28px" : "10px";
+        ref.current.style.width = i === ai ? "28px" : "10px";
         ref.current.style.background = i === ai ? "#306CEC" : (darkMode ? "rgba(255,255,255,0.12)" : "#ddd");
       });
 
       if (ai !== prevIdxRef.current) {
         prevIdxRef.current = ai;
         const v = displayedVideos[ai];
-        if (tagRef.current)      tagRef.current.textContent      = v.tag;
-        if (titleRef.current)    titleRef.current.textContent    = v.title;
+        if (tagRef.current) tagRef.current.textContent = v.tag;
+        if (titleRef.current) titleRef.current.textContent = v.title;
         if (locationRef.current) locationRef.current.textContent = `${v.location} · ${v.date}`;
       }
 

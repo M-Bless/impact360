@@ -8,9 +8,9 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import emailjs from "@emailjs/browser";
 
-const EMAILJS_SERVICE_ID  = process.env.REACT_APP_EMAILJS_SERVICE_ID;
-const EMAILJS_PUBLIC_KEY  = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
-const EMAILJS_TEMPLATE    = process.env.REACT_APP_EMAILJS_TEMPLATE_USER;
+const EMAILJS_SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+const EMAILJS_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+const EMAILJS_TEMPLATE = process.env.REACT_APP_EMAILJS_TEMPLATE_USER;
 
 const sendRoadshowEmail = async (form, town) => {
   try {
@@ -65,7 +65,7 @@ const sendRoadshowEmail = async (form, town) => {
 const videos = [
   { id: 1, title: "Impact360 Nakuru Roadshow", location: "Nakuru, Kenya", date: "Feb 7, 2026", tag: "RECAP", youtubeId: "lGnBbmGK6V8", thumb: "https://i.ytimg.com/vi/lGnBbmGK6V8/hqdefault.jpg" },
   { id: 2, title: "Founders Taking The Stage", location: "Eldoret, Kenya", date: "May 9th, 2026", tag: "PITCHES", youtubeId: "DDM1aMN1YRE", thumb: "https://i.ytimg.com/vi/DDM1aMN1YRE/hqdefault.jpg" },
-  { id: 3, title: "Innovation On The Ground", location: "Kisumu, Kenya", date: "June 6, 2026", tag: "PANEL", youtubeId: "Mbl0osnVSHI", thumb: "https://i.ytimg.com/vi/Mbl0osnVSHI/hqdefault.jpg" },
+  { id: 3, title: "Innovation On The Ground", location: "Kisumu, Kenya", date: "July 4th, 2026", tag: "PANEL", youtubeId: "Mbl0osnVSHI", thumb: "https://i.ytimg.com/vi/Mbl0osnVSHI/hqdefault.jpg" },
   { id: 4, title: "Decentralising Opportunity", location: "Nairobi, Kenya", date: "Coming Soon", tag: "KEYNOTE", youtubeId: "sUzzM2vPBLo", thumb: "https://i.ytimg.com/vi/sUzzM2vPBLo/hqdefault.jpg" },
   { id: 5, title: "Coastal Innovation Highlight", location: "Mombasa, Kenya", date: "Coming Soon", tag: "HIGHLIGHT", youtubeId: "ExUopo1-Zh4", thumb: "https://i.ytimg.com/vi/ExUopo1-Zh4/hqdefault.jpg" },
 ];
@@ -73,15 +73,15 @@ const displayedVideos = videos.slice(0, 5);
 
 /* ─── TOWNS ─── */
 const towns = [
-  { name: "Nakuru",      img: "/events/Nakuru.jpg",        date: "Feb 7, 2026",    status: "past",     formUrl: null },
-  { name: "Eldoret",     img: "/events/Eldoret.jpg",       date: "May 23, 2026",   status: "next",     formUrl: "https://forms.gle/FoEdvsEvgt3ohDm48" },
-  { name: "Kisumu",      img: "/events/Kisumu.jpg",        date: "June 6, 2026",   status: "upcoming", formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScFx9A1ybkhFQ8ooByPDaHMHc31ufVHBeWK_A-r3VLDxVczDg/viewform?usp=publish-editor" },
-  { name: "Nairobi",     img: "/events/Nairobi.jpg",       date: "Coming Soon",    status: "tba",      formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfBnrBvB8v6THmM1-_bzauyY3lymRe7ULXrVC9iHUn1TXy4Hg/viewform?usp=publish-editor" },
-  { name: "Mombasa",     img: "/events/Mombasa.jpg",       date: "Coming Soon",    status: "tba",      formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfOYPX3TuQl14679C2UaAXElzUcP5x4iVd0tJrQAIlB8nQa-w/viewform?usp=publish-editor" },
-  { name: "Arusha",      img: "/events/Arusha.jpg",        date: "Coming Soon",    status: "tba",      formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScbaFJyZ6az4BkW93Of8YHi5sRSCmkeqTzanJDQcoXJibV_RQ/viewform?usp=publish-editor" },
-  { name: "Kigali",      img: "/events/Kigali.jpg",        date: "Coming Soon",    status: "tba",      formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSeqU-HkwV1JpShk-Ucme6DcusnA23L7XuPt6eebuZvxSjQpBg/viewform?usp=publish-editor" },
-  { name: "Addis Ababa", img: "/events/Addis ababa.jpg",   date: "Coming Soon",    status: "tba",      formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSf-NKlWnfDjdJOttoQIx0Ff3Ix97WJju0DV2qeRCkDI5PBN3w/viewform?usp=publish-editor" },
-  { name: "Kampala",     img: "/events/Kampala.jpg",       date: "Coming Soon",    status: "tba",      formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSckl1mHRVrdRj_bEWtRXKKAiTmttOtdQCoNiCPzy4e54SgElQ/viewform?usp=publish-editor" },
+  { name: "Nakuru", img: "/events/Nakuru.jpg", date: "Feb 7, 2026", status: "past", formUrl: null },
+  { name: "Eldoret", img: "/events/Eldoret.jpg", date: "May 23, 2026", status: "concluded", formUrl: "https://forms.gle/FoEdvsEvgt3ohDm48" },
+  { name: "Kisumu", img: "/events/Kisumu.jpg", date: "July 4th, 2026", status: "next", formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScFx9A1ybkhFQ8ooByPDaHMHc31ufVHBeWK_A-r3VLDxVczDg/viewform?usp=publish-editor" },
+  { name: "Nairobi", img: "/events/Nairobi.jpg", date: "Coming Soon", status: "tba", formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfBnrBvB8v6THmM1-_bzauyY3lymRe7ULXrVC9iHUn1TXy4Hg/viewform?usp=publish-editor" },
+  { name: "Mombasa", img: "/events/Mombasa.jpg", date: "Coming Soon", status: "tba", formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfOYPX3TuQl14679C2UaAXElzUcP5x4iVd0tJrQAIlB8nQa-w/viewform?usp=publish-editor" },
+  { name: "Arusha", img: "/events/Arusha.jpg", date: "Coming Soon", status: "tba", formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScbaFJyZ6az4BkW93Of8YHi5sRSCmkeqTzanJDQcoXJibV_RQ/viewform?usp=publish-editor" },
+  { name: "Kigali", img: "/events/Kigali.jpg", date: "Coming Soon", status: "tba", formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSeqU-HkwV1JpShk-Ucme6DcusnA23L7XuPt6eebuZvxSjQpBg/viewform?usp=publish-editor" },
+  { name: "Addis Ababa", img: "/events/Addis ababa.jpg", date: "Coming Soon", status: "tba", formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSf-NKlWnfDjdJOttoQIx0Ff3Ix97WJju0DV2qeRCkDI5PBN3w/viewform?usp=publish-editor" },
+  { name: "Kampala", img: "/events/Kampala.jpg", date: "Coming Soon", status: "tba", formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSckl1mHRVrdRj_bEWtRXKKAiTmttOtdQCoNiCPzy4e54SgElQ/viewform?usp=publish-editor" },
 ];
 
 /* ─── VIDEO CARD ─── */
@@ -113,7 +113,7 @@ function VideoCard({ video, cardRef, darkMode }) {
 function VideoHighlights({ darkMode }) {
   const containerRef = React.useRef(null);
   const cardRefs = React.useRef(displayedVideos.map(() => React.createRef()));
-  const pipRefs  = React.useRef(displayedVideos.map(() => React.createRef()));
+  const pipRefs = React.useRef(displayedVideos.map(() => React.createRef()));
   const tagRef = React.useRef(null); const titleRef = React.useRef(null);
   const locationRef = React.useRef(null); const counterRef = React.useRef(null);
   const hintRef = React.useRef(null); const rawRef = React.useRef(0);
@@ -232,9 +232,9 @@ function RegisterModal({ town, darkMode, onClose }) {
 
   const s = {
     overlay: { position: "fixed", inset: 0, zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px", background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" },
-    card:    { background: darkMode ? "#0f0f0f" : "#fff", borderRadius: "20px", padding: "36px", width: "100%", maxWidth: "480px", maxHeight: "90vh", overflowY: "auto", position: "relative", border: `1px solid ${darkMode ? "rgba(255,255,255,0.08)" : "rgba(10,10,20,0.1)"}`, boxShadow: "0 32px 80px rgba(0,0,0,0.45)" },
-    label:   { display: "block", fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px", color: darkMode ? "rgba(255,255,255,0.45)" : "rgba(10,10,20,0.45)", fontFamily: "'DM Sans', sans-serif" },
-    input:   { width: "100%", padding: "12px 14px", borderRadius: "10px", border: `1px solid ${darkMode ? "rgba(255,255,255,0.1)" : "rgba(10,10,20,0.12)"}`, background: darkMode ? "rgba(255,255,255,0.04)" : "#f7f8fa", color: darkMode ? "#fff" : "#0a0a14", fontSize: "14px", fontFamily: "'DM Sans', sans-serif", outline: "none", boxSizing: "border-box" },
+    card: { background: darkMode ? "#0f0f0f" : "#fff", borderRadius: "20px", padding: "36px", width: "100%", maxWidth: "480px", maxHeight: "90vh", overflowY: "auto", position: "relative", border: `1px solid ${darkMode ? "rgba(255,255,255,0.08)" : "rgba(10,10,20,0.1)"}`, boxShadow: "0 32px 80px rgba(0,0,0,0.45)" },
+    label: { display: "block", fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px", color: darkMode ? "rgba(255,255,255,0.45)" : "rgba(10,10,20,0.45)", fontFamily: "'DM Sans', sans-serif" },
+    input: { width: "100%", padding: "12px 14px", borderRadius: "10px", border: `1px solid ${darkMode ? "rgba(255,255,255,0.1)" : "rgba(10,10,20,0.12)"}`, background: darkMode ? "rgba(255,255,255,0.04)" : "#f7f8fa", color: darkMode ? "#fff" : "#0a0a14", fontSize: "14px", fontFamily: "'DM Sans', sans-serif", outline: "none", boxSizing: "border-box" },
   };
 
   return (
@@ -317,12 +317,12 @@ function TourCarousel({ towns, darkMode, onRegister }) {
   const [paused, setPaused] = React.useState(false);
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragDelta, setDragDelta] = React.useState(0);
-  const dragStartX   = React.useRef(null);
-  const dragging     = React.useRef(false);
+  const dragStartX = React.useRef(null);
+  const dragging = React.useRef(false);
   const dragDeltaRef = React.useRef(0);
-  const CARD_W       = 220;
-  const CARD_H       = 320;
-  const RADIUS       = Math.round(CARD_W / (2 * Math.tan(Math.PI / N))) + 40;
+  const CARD_W = 220;
+  const CARD_H = 320;
+  const RADIUS = Math.round(CARD_W / (2 * Math.tan(Math.PI / N))) + 40;
   const DEG_PER_CARD = 360 / N;
 
   // auto-rotate
@@ -356,25 +356,25 @@ function TourCarousel({ towns, darkMode, onRegister }) {
     };
 
     window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup",   onUp);
+    window.addEventListener("mouseup", onUp);
     window.addEventListener("touchmove", onMove, { passive: true });
-    window.addEventListener("touchend",  onUp);
+    window.addEventListener("touchend", onUp);
     return () => {
       window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup",   onUp);
+      window.removeEventListener("mouseup", onUp);
       window.removeEventListener("touchmove", onMove);
-      window.removeEventListener("touchend",  onUp);
+      window.removeEventListener("touchend", onUp);
     };
   }, [N, DEG_PER_CARD]);
 
   const onPointerDown = (e) => {
-    dragging.current   = true;
+    dragging.current = true;
     dragStartX.current = e.touches ? e.touches[0].clientX : e.clientX;
     setIsDragging(true);
     setPaused(true);
   };
 
-  const bg    = darkMode ? "#000" : "#FFFEF9";
+  const bg = darkMode ? "#000" : "#FFFEF9";
   const muted = darkMode ? "rgba(255,255,255,0.45)" : "rgba(10,10,20,0.45)";
 
   return (
@@ -421,112 +421,112 @@ function TourCarousel({ towns, darkMode, onRegister }) {
         {/* RIGHT: 3D carousel */}
         <div style={{ flex: 1, minWidth: "320px", position: "relative" }}>
 
-      {/* 3D Stage */}
-      <div
-        style={{ perspective: "1100px", height: CARD_H + 80, position: "relative", userSelect: "none" }}
-        onMouseDown={onPointerDown}
-        onTouchStart={onPointerDown}
-      >
-        <div style={{
-          width: "100%", height: "100%",
-          position: "relative",
-          transformStyle: "preserve-3d",
-          transform: `rotateY(${-active * DEG_PER_CARD + dragDelta}deg)`,
-          transition: dragDelta !== 0 ? "none" : "transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
-        }}>
-          {towns.map((town, i) => {
-            const angle  = i * (360 / N);
-            const isActive = i === active;
-            return (
-              <div
-                key={town.name}
-                onClick={() => setActive(i)}
-                style={{
-                  position: "absolute",
-                  width: CARD_W,
-                  height: CARD_H,
-                  top: "50%", left: "50%",
-                  marginLeft: -CARD_W / 2,
-                  marginTop: -CARD_H / 2,
-                  transform: `rotateY(${angle}deg) translateZ(${RADIUS}px)`,
-                  borderRadius: "16px",
-                  overflow: "hidden",
-                  cursor: isDragging ? "grabbing" : "grab",
-                  transition: "box-shadow 0.4s, opacity 0.4s",
-                  opacity: town.status === "past" && !isActive ? 0.7 : 1,
-                  boxShadow: town.status === "next"
-                    ? isActive
-                      ? "0 0 0 2px #306CEC, 0 32px 80px rgba(48,108,236,0.6)"
-                      : "0 0 0 2px rgba(48,108,236,0.55), 0 12px 40px rgba(48,108,236,0.2)"
-                    : isActive
-                      ? "0 24px 60px rgba(48,108,236,0.35)"
-                      : "0 8px 24px rgba(0,0,0,0.3)",
-                }}
-              >
-                <img
-                  src={town.img} alt={town.name} loading="lazy"
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: town.status === "past" ? "grayscale(70%) brightness(0.65)" : "none", transition: "filter 0.4s" }}
+          {/* 3D Stage */}
+          <div
+            style={{ perspective: "1100px", height: CARD_H + 80, position: "relative", userSelect: "none" }}
+            onMouseDown={onPointerDown}
+            onTouchStart={onPointerDown}
+          >
+            <div style={{
+              width: "100%", height: "100%",
+              position: "relative",
+              transformStyle: "preserve-3d",
+              transform: `rotateY(${-active * DEG_PER_CARD + dragDelta}deg)`,
+              transition: dragDelta !== 0 ? "none" : "transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
+            }}>
+              {towns.map((town, i) => {
+                const angle = i * (360 / N);
+                const isActive = i === active;
+                return (
+                  <div
+                    key={town.name}
+                    onClick={() => setActive(i)}
+                    style={{
+                      position: "absolute",
+                      width: CARD_W,
+                      height: CARD_H,
+                      top: "50%", left: "50%",
+                      marginLeft: -CARD_W / 2,
+                      marginTop: -CARD_H / 2,
+                      transform: `rotateY(${angle}deg) translateZ(${RADIUS}px)`,
+                      borderRadius: "16px",
+                      overflow: "hidden",
+                      cursor: isDragging ? "grabbing" : "grab",
+                      transition: "box-shadow 0.4s, opacity 0.4s",
+                      opacity: town.status === "past" && !isActive ? 0.7 : 1,
+                      boxShadow: town.status === "next"
+                        ? isActive
+                          ? "0 0 0 2px #306CEC, 0 32px 80px rgba(48,108,236,0.6)"
+                          : "0 0 0 2px rgba(48,108,236,0.55), 0 12px 40px rgba(48,108,236,0.2)"
+                        : isActive
+                          ? "0 24px 60px rgba(48,108,236,0.35)"
+                          : "0 8px 24px rgba(0,0,0,0.3)",
+                    }}
+                  >
+                    <img
+                      src={town.img} alt={town.name} loading="lazy"
+                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: town.status === "past" ? "grayscale(70%) brightness(0.65)" : "none", transition: "filter 0.4s" }}
+                    />
+                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.1) 55%, transparent 100%)", pointerEvents: "none" }} />
+                    {town.status === "past" && <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.3)", pointerEvents: "none" }} />}
+                    {town.status === "next" && <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(48,108,236,0.45) 0%, transparent 55%)", pointerEvents: "none" }} />}
+                    {isActive && town.status !== "next" && <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(48,108,236,0.5) 0%, transparent 60%)", pointerEvents: "none" }} />}
+
+                    {/* Status badge */}
+                    <div style={{ position: "absolute", top: "12px", left: "12px" }}>
+                      {town.status === "past" && <span style={{ fontSize: "8px", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.55)", background: "rgba(0,0,0,0.5)", backdropFilter: "blur(6px)", padding: "4px 10px", borderRadius: "100px", border: "1px solid rgba(255,255,255,0.12)", fontFamily: "'DM Sans', sans-serif" }}>✓ Concluded</span>}
+                      {town.status === "next" && <span style={{ fontSize: "8px", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: "#fff", background: "#306CEC", padding: "4px 10px", borderRadius: "100px", fontFamily: "'DM Sans', sans-serif", boxShadow: "0 0 14px rgba(48,108,236,0.8)" }}>● Next Stop</span>}
+                      {town.status === "upcoming" && <span style={{ fontSize: "8px", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: "#fff", background: "rgba(255,255,255,0.15)", backdropFilter: "blur(6px)", padding: "4px 10px", borderRadius: "100px", border: "1px solid rgba(255,255,255,0.2)", fontFamily: "'DM Sans', sans-serif" }}>Upcoming</span>}
+                    </div>
+
+                    {/* Bottom info */}
+                    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px", pointerEvents: "none" }}>
+                      <div style={{ fontSize: "16px", fontWeight: 900, color: "#fff", textTransform: "uppercase", fontFamily: "'League Spartan', sans-serif", letterSpacing: "-0.01em", marginBottom: "3px" }}>{town.name}</div>
+                      <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.65)", fontFamily: "'DM Sans', sans-serif" }}>{town.date}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Dot nav + arrows */}
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "20px", marginTop: "28px" }}>
+
+            {/* Left arrow */}
+            <button
+              onClick={() => { setActive(i => ((i - 1) + N) % N); setPaused(true); setTimeout(() => setPaused(false), 1000); }}
+              style={{ width: "40px", height: "40px", borderRadius: "50%", border: `1px solid ${darkMode ? "rgba(255,255,255,0.15)" : "rgba(10,10,20,0.15)"}`, background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(10,10,20,0.04)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: darkMode ? "rgba(255,255,255,0.7)" : "rgba(10,10,20,0.7)", transition: "all 0.2s", flexShrink: 0 }}
+              onMouseEnter={e => { e.currentTarget.style.background = "#306CEC"; e.currentTarget.style.borderColor = "#306CEC"; e.currentTarget.style.color = "#fff"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.05)" : "rgba(10,10,20,0.04)"; e.currentTarget.style.borderColor = darkMode ? "rgba(255,255,255,0.15)" : "rgba(10,10,20,0.15)"; e.currentTarget.style.color = darkMode ? "rgba(255,255,255,0.7)" : "rgba(10,10,20,0.7)"; }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+
+            {/* Dots */}
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+              {towns.map((_, i) => (
+                <button key={i} onClick={() => setActive(i)}
+                  style={{ height: "3px", borderRadius: "2px", border: "none", cursor: "pointer", padding: 0, transition: "all 0.3s", width: i === active ? "28px" : "8px", background: i === active ? "#306CEC" : (darkMode ? "rgba(255,255,255,0.15)" : "rgba(10,10,20,0.15)") }}
                 />
-                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.1) 55%, transparent 100%)", pointerEvents: "none" }} />
-                {town.status === "past" && <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.3)", pointerEvents: "none" }} />}
-                {town.status === "next" && <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(48,108,236,0.45) 0%, transparent 55%)", pointerEvents: "none" }} />}
-                {isActive && town.status !== "next" && <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(48,108,236,0.5) 0%, transparent 60%)", pointerEvents: "none" }} />}
+              ))}
+            </div>
 
-                {/* Status badge */}
-                <div style={{ position: "absolute", top: "12px", left: "12px" }}>
-                  {town.status === "past"     && <span style={{ fontSize: "8px", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.55)", background: "rgba(0,0,0,0.5)", backdropFilter: "blur(6px)", padding: "4px 10px", borderRadius: "100px", border: "1px solid rgba(255,255,255,0.12)", fontFamily: "'DM Sans', sans-serif" }}>✓ Concluded</span>}
-                  {town.status === "next"     && <span style={{ fontSize: "8px", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: "#fff", background: "#306CEC", padding: "4px 10px", borderRadius: "100px", fontFamily: "'DM Sans', sans-serif", boxShadow: "0 0 14px rgba(48,108,236,0.8)" }}>● Next Stop</span>}
-                  {town.status === "upcoming" && <span style={{ fontSize: "8px", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: "#fff", background: "rgba(255,255,255,0.15)", backdropFilter: "blur(6px)", padding: "4px 10px", borderRadius: "100px", border: "1px solid rgba(255,255,255,0.2)", fontFamily: "'DM Sans', sans-serif" }}>Upcoming</span>}
-                </div>
+            {/* Right arrow */}
+            <button
+              onClick={() => { setActive(i => (i + 1) % N); setPaused(true); setTimeout(() => setPaused(false), 1000); }}
+              style={{ width: "40px", height: "40px", borderRadius: "50%", border: `1px solid ${darkMode ? "rgba(255,255,255,0.15)" : "rgba(10,10,20,0.15)"}`, background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(10,10,20,0.04)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: darkMode ? "rgba(255,255,255,0.7)" : "rgba(10,10,20,0.7)", transition: "all 0.2s", flexShrink: 0 }}
+              onMouseEnter={e => { e.currentTarget.style.background = "#306CEC"; e.currentTarget.style.borderColor = "#306CEC"; e.currentTarget.style.color = "#fff"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.05)" : "rgba(10,10,20,0.04)"; e.currentTarget.style.borderColor = darkMode ? "rgba(255,255,255,0.15)" : "rgba(10,10,20,0.15)"; e.currentTarget.style.color = darkMode ? "rgba(255,255,255,0.7)" : "rgba(10,10,20,0.7)"; }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
 
-                {/* Bottom info */}
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px", pointerEvents: "none" }}>
-                  <div style={{ fontSize: "16px", fontWeight: 900, color: "#fff", textTransform: "uppercase", fontFamily: "'League Spartan', sans-serif", letterSpacing: "-0.01em", marginBottom: "3px" }}>{town.name}</div>
-                  <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.65)", fontFamily: "'DM Sans', sans-serif" }}>{town.date}</div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Dot nav + arrows */}
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "20px", marginTop: "28px" }}>
-
-        {/* Left arrow */}
-        <button
-          onClick={() => { setActive(i => ((i - 1) + N) % N); setPaused(true); setTimeout(() => setPaused(false), 1000); }}
-          style={{ width: "40px", height: "40px", borderRadius: "50%", border: `1px solid ${darkMode ? "rgba(255,255,255,0.15)" : "rgba(10,10,20,0.15)"}`, background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(10,10,20,0.04)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: darkMode ? "rgba(255,255,255,0.7)" : "rgba(10,10,20,0.7)", transition: "all 0.2s", flexShrink: 0 }}
-          onMouseEnter={e => { e.currentTarget.style.background = "#306CEC"; e.currentTarget.style.borderColor = "#306CEC"; e.currentTarget.style.color = "#fff"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.05)" : "rgba(10,10,20,0.04)"; e.currentTarget.style.borderColor = darkMode ? "rgba(255,255,255,0.15)" : "rgba(10,10,20,0.15)"; e.currentTarget.style.color = darkMode ? "rgba(255,255,255,0.7)" : "rgba(10,10,20,0.7)"; }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
-        </button>
-
-        {/* Dots */}
-        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-          {towns.map((_, i) => (
-            <button key={i} onClick={() => setActive(i)}
-              style={{ height: "3px", borderRadius: "2px", border: "none", cursor: "pointer", padding: 0, transition: "all 0.3s", width: i === active ? "28px" : "8px", background: i === active ? "#306CEC" : (darkMode ? "rgba(255,255,255,0.15)" : "rgba(10,10,20,0.15)") }}
-            />
-          ))}
-        </div>
-
-        {/* Right arrow */}
-        <button
-          onClick={() => { setActive(i => (i + 1) % N); setPaused(true); setTimeout(() => setPaused(false), 1000); }}
-          style={{ width: "40px", height: "40px", borderRadius: "50%", border: `1px solid ${darkMode ? "rgba(255,255,255,0.15)" : "rgba(10,10,20,0.15)"}`, background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(10,10,20,0.04)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: darkMode ? "rgba(255,255,255,0.7)" : "rgba(10,10,20,0.7)", transition: "all 0.2s", flexShrink: 0 }}
-          onMouseEnter={e => { e.currentTarget.style.background = "#306CEC"; e.currentTarget.style.borderColor = "#306CEC"; e.currentTarget.style.color = "#fff"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.05)" : "rgba(10,10,20,0.04)"; e.currentTarget.style.borderColor = darkMode ? "rgba(255,255,255,0.15)" : "rgba(10,10,20,0.15)"; e.currentTarget.style.color = darkMode ? "rgba(255,255,255,0.7)" : "rgba(10,10,20,0.7)"; }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 18l6-6-6-6" />
-          </svg>
-        </button>
-
-      </div>
+          </div>
 
           {/* Far-edge arrows overlaid on stage */}
           <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: CARD_H + 80, pointerEvents: "none", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 8px", zIndex: 10 }}>
@@ -568,6 +568,8 @@ export default function RoadshowPage() {
   const { darkMode } = useDarkMode();
   const [showQR, setShowQR] = React.useState(false);
   const [registerTown, setRegisterTown] = React.useState(null);
+
+  const kisumuTown = towns.find(t => t.name === "Kisumu");
 
   const speakerImages = ["/events/Timothy.jpeg", "/events/Deborah.jpeg", "/events/geofrey.jpeg", "/events/Gilbert.jpeg"];
   const [activeSpeaker, setActiveSpeaker] = React.useState(0);
@@ -672,12 +674,12 @@ export default function RoadshowPage() {
             transition={{ duration: 0.6, delay: 0.42 }}
             style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginBottom: "52px" }}
           >
-            <a href="https://forms.gle/FoEdvsEvgt3ohDm48" target="_blank" rel="noopener noreferrer"
+            <button onClick={() => setRegisterTown(kisumuTown)}
               className="inline-flex items-center gap-2 hover:scale-105 active:scale-95 transition-transform duration-200"
-              style={{ background: "#306CEC", color: "#fff", padding: "13px 28px", borderRadius: "100px", fontFamily: "'League Spartan', sans-serif", fontWeight: 800, fontSize: "13px", textDecoration: "none" }}
+              style={{ background: "#306CEC", color: "#fff", padding: "13px 28px", borderRadius: "100px", fontFamily: "'League Spartan', sans-serif", fontWeight: 800, fontSize: "13px", cursor: "pointer", border: "none" }}
             >
-              Register for Eldoret <ArrowRight size={14} />
-            </a>
+              Register for Kisumu <ArrowRight size={14} />
+            </button>
             <button onClick={() => setShowQR(true)}
               className="inline-flex items-center gap-2 hover:scale-105 active:scale-95 transition-transform duration-200"
               style={{ background: "rgba(255,255,255,0.1)", color: "#fff", padding: "13px 28px", borderRadius: "100px", fontFamily: "'League Spartan', sans-serif", fontWeight: 800, fontSize: "13px", border: "1px solid rgba(255,255,255,0.2)", cursor: "pointer" }}
@@ -694,7 +696,7 @@ export default function RoadshowPage() {
           >
             <span style={{ fontSize: "10px", fontWeight: 700, color: "#306CEC", letterSpacing: "0.14em", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>Next Stop</span>
             <div style={{ width: "1px", height: "10px", background: "rgba(255,255,255,0.14)" }} />
-            <span style={{ fontSize: "12px", fontWeight: 600, color: "rgba(255,255,255,0.6)", fontFamily: "'DM Sans', sans-serif" }}>Eldoret · May 23, 2026</span>
+            <span style={{ fontSize: "12px", fontWeight: 600, color: "rgba(255,255,255,0.6)", fontFamily: "'DM Sans', sans-serif" }}>Kisumu · July 4th, 2026</span>
           </motion.div>
         </div>
 
@@ -705,7 +707,7 @@ export default function RoadshowPage() {
         </div>
       </section>
 
-      {/* ══ 2. NEXT STOP: ELDORET ══ */}
+      {/* ══ 2. NEXT STOP: KISUMU ══ */}
       <section className="relative overflow-hidden" style={{ background: darkMode ? "#0a0a14" : "#EEF3FF" }}>
         {/* BG glow */}
         <div className="absolute inset-0 pointer-events-none" style={{ background: darkMode ? "radial-gradient(ellipse at 70% 50%, rgba(48,108,236,0.18) 0%, transparent 65%)" : "radial-gradient(ellipse at 70% 50%, rgba(48,108,236,0.12) 0%, transparent 65%)" }} />
@@ -718,10 +720,10 @@ export default function RoadshowPage() {
               <span className="text-[10px] font-black tracking-[0.3em] uppercase text-[#306CEC]" style={{ fontFamily: "'DM Sans', sans-serif" }}>Next Stop</span>
             </div>
             <h2 className="font-black uppercase leading-[0.85] mb-6" style={{ fontFamily: "'League Spartan', sans-serif", fontSize: "clamp(3rem, 8vw, 7rem)", letterSpacing: "-0.03em", color: darkMode ? "#fff" : "#0a0a14" }}>
-              Eldo<span style={{ color: "#306CEC" }}>ret</span>
+              Kis<span style={{ color: "#306CEC" }}>umu</span>
             </h2>
             <div className="inline-block bg-[#306CEC]/15 border border-[#306CEC]/30 text-[#306CEC] text-sm font-bold px-4 py-2 rounded-full mb-8" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-              May 23, 2026
+              July 4th, 2026
             </div>
             <p className="text-base md:text-lg mb-10 max-w-lg" style={{ fontFamily: "'DM Sans', sans-serif", color: darkMode ? "rgba(255,255,255,0.55)" : "rgba(10,10,20,0.6)", lineHeight: 1.75 }}>
               Kenya's North Rift heartbeat. A city of champions, entrepreneurs, and bold ideas. The Roadshow is coming. Be there.
@@ -734,26 +736,26 @@ export default function RoadshowPage() {
               ))}
             </div>
 
-            <a href="https://forms.gle/FoEdvsEvgt3ohDm48" target="_blank" rel="noopener noreferrer"
+            <button onClick={() => setRegisterTown(kisumuTown)}
               className="inline-flex items-center gap-2 bg-[#306CEC] text-white px-8 py-4 rounded-full font-black text-sm hover:bg-[#4A80FF] transition-all duration-300 hover:scale-105"
-              style={{ fontFamily: "'League Spartan', sans-serif" }}
+              style={{ fontFamily: "'League Spartan', sans-serif", cursor: "pointer", border: "none" }}
             >
               Register Now <ArrowRight className="w-4 h-4" />
-            </a>
+            </button>
           </motion.div>
 
           {/* Right image */}
           <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }} className="relative">
             <div className="absolute -inset-3 rounded-3xl" style={{ background: "linear-gradient(135deg, rgba(48,108,236,0.3) 0%, transparent 60%)", filter: "blur(20px)" }} />
             <img
-              src="/gallery/eldoretposter.png"
-              alt="Eldoret Roadshow"
+              src="/kisumuposter.jpg"
+              alt="Kisumu Roadshow"
               className="relative rounded-2xl w-full object-contain"
             />
             {/* Overlay badge */}
             <div className="absolute top-5 left-5 bg-black/60 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-white/10">
-              <div className="text-[9px] font-black tracking-[0.2em] uppercase text-[#306CEC]" style={{ fontFamily: "'DM Sans', sans-serif" }}>Eldoret, Kenya</div>
-              <div className="text-sm font-black text-white mt-0.5" style={{ fontFamily: "'League Spartan', sans-serif" }}>NORTH RIFT EDITION</div>
+              <div className="text-[9px] font-black tracking-[0.2em] uppercase text-[#306CEC]" style={{ fontFamily: "'DM Sans', sans-serif" }}>Kisumu, Kenya</div>
+              <div className="text-sm font-black text-white mt-0.5" style={{ fontFamily: "'League Spartan', sans-serif" }}>LAKE SIDE EDITION</div>
             </div>
           </motion.div>
         </div>
@@ -827,18 +829,18 @@ export default function RoadshowPage() {
         <div className="max-w-4xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
             <h2 className="font-black uppercase mb-4" style={{ fontFamily: "'League Spartan', sans-serif", fontSize: "clamp(2rem, 5vw, 4rem)", letterSpacing: "-0.02em", color: "#fff" }}>
-              Don't miss<br /><span style={{ color: darkMode ? "#306CEC" : "rgba(255,255,255,0.75)" }}>Eldoret.</span>
+              Don't miss<br /><span style={{ color: darkMode ? "#306CEC" : "rgba(255,255,255,0.75)" }}>Kisumu.</span>
             </h2>
             <p className="text-base mb-10" style={{ fontFamily: "'DM Sans', sans-serif", color: "rgba(255,255,255,0.65)" }}>
-              May 23, 2026 · Register now before spots fill up.
+              July 4th, 2026 · Register now before spots fill up.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <a href="https://forms.gle/FoEdvsEvgt3ohDm48" target="_blank" rel="noopener noreferrer"
+              <button onClick={() => setRegisterTown(kisumuTown)}
                 className="inline-flex items-center gap-2 text-sm hover:scale-105 transition-all duration-300"
-                style={{ fontFamily: "'League Spartan', sans-serif", fontWeight: 800, background: "#fff", color: "#306CEC", padding: "14px 32px", borderRadius: "100px" }}
+                style={{ fontFamily: "'League Spartan', sans-serif", fontWeight: 800, background: "#fff", color: "#306CEC", padding: "14px 32px", borderRadius: "100px", cursor: "pointer", border: "none" }}
               >
                 Register Now <ArrowRight className="w-4 h-4" />
-              </a>
+              </button>
               <button onClick={() => setShowQR(true)}
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-black text-sm text-white border border-white/30 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
                 style={{ fontFamily: "'League Spartan', sans-serif" }}

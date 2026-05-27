@@ -6,7 +6,7 @@ import Footer from "./Footer";
 const videos = [
   { id: 1, title: "Impact360 Nakuru Roadshow", location: "Nakuru, Kenya", date: "Feb 7, 2026", tag: "RECAP", youtubeId: "lGnBbmGK6V8", thumb: "https://i.ytimg.com/vi/lGnBbmGK6V8/hqdefault.jpg" },
   { id: 2, title: "Founders Taking The Stage", location: "Eldoret, Kenya", date: "May 9th, 2026", tag: "PITCHES", youtubeId: "DDM1aMN1YRE", thumb: "https://i.ytimg.com/vi/DDM1aMN1YRE/hqdefault.jpg" },
-  { id: 3, title: "Innovation On The Ground", location: "Kisumu, Kenya", date: "June 6, 2026", tag: "PANEL", youtubeId: "Mbl0osnVSHI", thumb: "https://i.ytimg.com/vi/Mbl0osnVSHI/hqdefault.jpg" },
+  { id: 3, title: "Innovation On The Ground", location: "Kisumu, Kenya", date: "July 4th, 2026", tag: "PANEL", youtubeId: "Mbl0osnVSHI", thumb: "https://i.ytimg.com/vi/Mbl0osnVSHI/hqdefault.jpg" },
   { id: 4, title: "Decentralising Opportunity", location: "Nairobi, Kenya", date: "Coming Soon", tag: "KEYNOTE", youtubeId: "sUzzM2vPBLo", thumb: "https://i.ytimg.com/vi/sUzzM2vPBLo/hqdefault.jpg" },
   { id: 5, title: "Coastal Innovation Highlight", location: "Mombasa, Kenya", date: "Coming Soon", tag: "HIGHLIGHT", youtubeId: "ExUopo1-Zh4", thumb: "https://i.ytimg.com/vi/ExUopo1-Zh4/hqdefault.jpg" },
   { id: 6, title: "Ecosystem Builders Unite", location: "Kigali, Rwanda", date: "Coming Soon", tag: "ECOSYSTEM", youtubeId: "M3upIInuQN0", thumb: "https://i.ytimg.com/vi/M3upIInuQN0/hqdefault.jpg" },
