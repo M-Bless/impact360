@@ -1245,25 +1245,7 @@ Dear John Doe, you have sent Ksh. 999.0 to THE O'GAD IMPACT GROUP LTD for 111855
           </motion.div>
 
           <div className="space-y-4 sm:space-y-5 md:space-y-6">
-            {[
-
-              {
-                question: "Can I upgrade my plan later?",
-                answer: "Yes! You can upgrade your subscription at any time and we'll prorate the difference."
-              },
-              {
-                question: "What happens if I miss an event?",
-                answer: "Most plans include replay access, so you can watch recorded sessions at your convenience."
-              },
-              {
-                question: "Are there refunds available?",
-                answer: "We offer a 7-day money-back guarantee if you're not satisfied with your subscription."
-              },
-              {
-                question: "Can I bring guests to events?",
-                answer: "Student and Pro quarterly plans include guest passes. Premium plans offer additional guest invites."
-              }
-            ].map((faq, index) => (
+            {faqs.map((faq, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
