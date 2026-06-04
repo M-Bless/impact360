@@ -206,7 +206,7 @@ function VideoHighlights({ darkMode }) {
 
 
 /* ── REGISTRATION MODAL ── */
-function RegisterModal({ town, darkMode, onClose }) {
+export function RegisterModal({ town, darkMode, onClose }) {
   const [form, setForm] = React.useState({ name: "", email: "", phone: "", organization: "", whatYouDo: "", whySigningUp: "", expectations: "" });
   const [status, setStatus] = React.useState("idle");
 

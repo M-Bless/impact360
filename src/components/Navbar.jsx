@@ -112,7 +112,8 @@ const Navbar = () => {
                       onMouseEnter={() => setEventsOpen(true)}
                       onMouseLeave={() => setEventsOpen(false)}
                     >
-                      <button
+                      <Link
+                        to="/events"
                         className={`inline-flex items-center gap-1 px-4 py-2 rounded-xl text-[13px] font-medium leading-none transition-all duration-200 ${
                           active
                             ? "text-[#306CEC] bg-[#306CEC]/8 dark:text-white dark:bg-white/10"
@@ -127,9 +128,8 @@ const Navbar = () => {
                         >
                           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
-                      </button>
+                      </Link>
 
-                      {/* Dropdown */}
                       <AnimatePresence>
                         {eventsOpen && (
                           <motion.div
@@ -241,21 +241,27 @@ const Navbar = () => {
                   if (item.name === "Events") {
                     return (
                       <motion.div key="Events" initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}>
-                        <button
-                          onClick={() => setEventsExpandedMobile(v => !v)}
-                          className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl font-semibold text-[15px] transition-all duration-200 ${
-                            active ? "bg-white/10 text-white" : "text-white/50 hover:text-white hover:bg-white/6"
-                          }`}
-                          style={{ fontFamily: 'DM Sans, sans-serif' }}
-                        >
-                          Events
-                          <svg
-                            className={`w-4 h-4 transition-transform duration-200 ${eventsExpandedMobile ? "rotate-180" : ""}`}
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+                        <div className={`flex items-center justify-between px-4 py-3.5 rounded-xl transition-all duration-200 ${active ? "bg-white/10" : "hover:bg-white/6"}`}>
+                          <Link
+                            to="/events"
+                            onClick={() => setMenuOpen(false)}
+                            className={`flex-1 font-semibold text-[15px] ${active ? "text-white" : "text-white/50 hover:text-white"}`}
+                            style={{ fontFamily: 'DM Sans, sans-serif' }}
                           >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </button>
+                            Events
+                          </Link>
+                          <button
+                            onClick={() => setEventsExpandedMobile(v => !v)}
+                            className="p-1 text-white/50 hover:text-white"
+                          >
+                            <svg
+                              className={`w-4 h-4 transition-transform duration-200 ${eventsExpandedMobile ? "rotate-180" : ""}`}
+                              fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
+                        </div>
                         <AnimatePresence>
                           {eventsExpandedMobile && (
                             <motion.div

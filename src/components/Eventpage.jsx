@@ -1,1185 +1,310 @@
 import React from "react";
-import { motion } from "framer-motion";
-import { MapPin, Users, Lightbulb, Network, MessageCircle, ArrowDown } from "lucide-react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import { RegisterModal } from "./RoadshowPage";
 import { useDarkMode } from "../DarkModeContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import LocalEventsCarousel from "./LocalEventsCarousel";
 
-/* ---------------------------- Main Events Page --------------------------- */
-
-export default function EventsPage() {
-  const { darkMode } = useDarkMode();
-  const [showQR, setShowQR] = React.useState(false);
-
-  // --- Speakers Section State ---
-  const speakerImages = [
-    "/events/Timothy.jpeg",
-    "/events/Deborah.jpeg",
-    "/events/geofrey.jpeg",
-    "/events/Gilbert.jpeg"
-  ];
-  const [currentSpeaker, setCurrentSpeaker] = React.useState(0);
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSpeaker(prev => (prev + 1) % speakerImages.length);
-    }, 10000);
-    return () => clearInterval(interval);
-  }, [speakerImages.length]);
-
-  // --- Eldoret Section State ---
-  const eldoretImages = ["/gallery/eldoretposter.png"];
-  // No auto-rotation needed for single image
-
-  return (
-    <div
-      className={`font-sans transition-colors duration-1000 min-h-screen ${darkMode ? 'bg-black' : 'bg-[#FFFEF9]'}`}
-      style={darkMode ? { backgroundColor: '#000000' } : {}}
-    >
-      <Navbar />
-
-      {/* WhatsApp QR Code Modal */}
-      {showQR && (
-        <motion.div
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          onClick={() => setShowQR(false)}
-        >
-          <motion.div
-            className={`rounded-3xl p-8 max-w-md w-full relative shadow-2xl ${darkMode ? 'bg-[#1a1f3a]' : 'bg-white'}`}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setShowQR(false)}
-              className={`absolute top-4 right-4 text-2xl font-bold ${darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'}`}
-            >
-              ×
-            </button>
-            <div className="text-center space-y-6">
-              <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Join Our Community</h2>
-              <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Scan the QR code to join our WhatsApp community</p>
-              <div className={`p-8 rounded-2xl flex items-center justify-center ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
-                <img
-                  src="/frame.png"
-                  alt="WhatsApp QR Code"
-                  className="w-64 h-64 object-contain"
-                />
-              </div>
-              <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Or click below to join directly</p>
-              <a
-                href="https://chat.whatsapp.com/I0g8kpCNvSn84yWQxybzHa"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-green-500 text-white px-8 py-3 rounded-full font-bold hover:bg-green-600 transition-all duration-300"
-              >
-                Open WhatsApp
-              </a>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-
-      {/* HERO SECTION */}
-      <section
-        className="relative min-h-[140vh] flex items-center justify-center px-6 pt-12 pb-32"
-        style={{
-          backgroundImage: `url('/events/Roadshow-event.png')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'top',
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-transparent z-0" />
-        <div className="relative z-10 max-w-3xl mx-auto text-center">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            className="text-5xl md:text-7xl mb-6 text-white font-extrabold drop-shadow-lg"
-            style={{ fontFamily: "'League Spartan', 'DM Sans', Arial, sans-serif", textTransform: "uppercase" }}
-          >
-            Impact360 Roadshow
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-lg md:text-xl mb-8 text-gray-300"
-            style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}
-          >
-            Join us for a transformative journey connecting founders, investors, and changemakers across Africa. Discover new opportunities, build lasting partnerships, and shape the future of innovation.
-          </motion.p>
-        </div>
-        {/* Animated scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center">
-          <motion.div
-            animate={{ y: [0, 12, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-          >
-            <ArrowDown className="w-8 h-8 text-white opacity-70" />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* WHY SECTION */}
-      <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={{
-          hidden: { opacity: 0, y: 40 },
-          visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.15 } }
-        }}
-        className="py-20 px-4 md:px-0 transition-colors"
-      >
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}>
-            <h2
-              style={{
-                fontFamily: "'League Spartan', 'DM Sans', Arial, sans-serif",
-                textTransform: "uppercase",
-                color: '#306CEC',
-                fontWeight: 700,
-                // @ts-ignore
-                '--tw-text-opacity': '1',
-              }}
-              className="text-2xl md:text-4xl font-bold mb-4"
-            >
-              Why the Decentralization Roadshow?
-            </h2>
-            <p className="text-lg mb-4" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-              Most innovation conversations, capital, and infrastructure remain concentrated in major cities. Yet talent, ideas, and real problems exist everywhere.
-            </p>
-            <ul className="space-y-3 text-base md:text-lg" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-              <li className="flex items-center gap-2"><Network className="w-5 h-5 text-[#306CEC]" /> Bring opportunity closer to founders outside capital cities</li>
-              <li className="flex items-center gap-2"><Lightbulb className="w-5 h-5 text-[#306CEC]" /> Surface local solutions built within real local contexts</li>
-              <li className="flex items-center gap-2"><Users className="w-5 h-5 text-[#306CEC]" /> Connect regional founders to networks, knowledge, and capital</li>
-              <li className="flex items-center gap-2"><MapPin className="w-5 h-5 text-[#306CEC]" /> Strengthen grassroots ecosystems town by town</li>
-            </ul>
-          </motion.div>
-          <motion.div variants={{ hidden: { opacity: 0, scale: 0.95 }, visible: { opacity: 1, scale: 1 } }} className="flex justify-center">
-            <img src="/events/map.jpg" alt="Roadshow Map" className="rounded-2xl shadow-xl w-full max-w-md" />
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* TESTIMONIAL SECTION */}
-      <motion.section
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="py-12 px-4 md:px-0 bg-gradient-to-r from-[#306CEC]/10 to-[#4A80FF]/10"
-      >
-        <div className="max-w-3xl mx-auto text-center">
-          <blockquote className="italic text-xl md:text-2xl text-gray-700 dark:text-gray-200" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-            “The Impact360 Roadshow brought real opportunities to our town. It’s more than an event—it's a movement for local founders.”
-          </blockquote>
-          <div className="mt-4 text-[#306CEC] font-bold" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-            Local Founder, Nakuru
-          </div>
-        </div>
-      </motion.section>
-
-      {/* WHAT HAPPENS SECTION */}
-      <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={{
-          hidden: { opacity: 0, y: 40 },
-          visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.15 } }
-        }}
-        className="py-20 px-4 md:px-0 transition-colors"
-      >
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-4xl font-bold mb-8 text-center text-[#306CEC]"
-            style={{
-              fontFamily: "'League Spartan', 'DM Sans', Arial, sans-serif",
-              textTransform: "uppercase"
-            }}
-          >
-            What Happens at Each Roadshow Stop
-          </h2>
-          <div className="grid md:grid-cols-2 grid-cols-1 justify-center gap-4 items-stretch">
-            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }} className="rounded-2xl shadow p-8 flex flex-col gap-4 mx-auto items-start text-left h-full justify-center">
-              <div className="flex items-center gap-3">
-                <MessageCircle className="w-7 h-7 text-[#306CEC]" />
-                <span className="font-bold text-lg" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>Founder conversations & ecosystem dialogues</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Lightbulb className="w-7 h-7 text-[#306CEC]" />
-                <span className="font-bold text-lg" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>Entrepreneurship & innovation sessions</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Network className="w-7 h-7 text-[#306CEC]" />
-                <span className="font-bold text-lg" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>Technology as an enabler for local solutions</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Users className="w-7 h-7 text-[#306CEC]" />
-                <span className="font-bold text-lg" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>Community, partner, and stakeholder engagement</span>
-              </div>
-              <div className="italic text-sm mt-2 text-gray-500 dark:text-gray-400" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-                (Session formats may vary by town to reflect local context.)
-              </div>
-            </motion.div>
-            <div className="flex justify-center items-center h-full w-full">
-              <Lightbulb className="w-40 h-40 text-[#306CEC] drop-shadow-xl" />
-            </div>
-          </div>
-        </div>
-      </motion.section>
-
-      {/* ROADSHOW HIGHLIGHTS SECTION */}
-      <section className="py-20 px-4 md:px-0 transition-colors">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          {/* Left: Eldoret Image */}
-          <div className="relative w-full h-[500px] overflow-hidden rounded-2xl flex items-center justify-center">
-            <img
-              src={eldoretImages[0]}
-              alt="Eldoret Roadshow"
-              className="w-full h-full object-contain rounded-3xl"
-              style={{ display: "block" }}
-            />
-          </div>
-          {/* Right: Eldoret Info */}
-          <div>
-            <h2 className="text-2xl md:text-4xl font-bold mb-6 text-[#306CEC]" style={{ fontFamily: "'League Spartan', 'DM Sans', Arial, sans-serif", textTransform: "uppercase" }}>
-              Next Stop: Kisumu
-            </h2>
-            <p className="text-lg mb-4 text-gray-700 dark:text-gray-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-              The Impact360 Roadshow is heading to Kisumu, the heart of Kenya's North Rift and a city known for its enterprising spirit, agricultural innovation, and a fast-growing startup scene.
-            </p>
-            <ul className="list-disc pl-6 mb-4 text-base text-gray-700 dark:text-gray-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-              <li>Meet founders building solutions for agritech, fintech, and logistics</li>
-              <li>Engage with Eldoret's vibrant university and youth ecosystem</li>
-              <li>Pitch sessions, panels, and hands-on workshops</li>
-              <li>Network with investors and ecosystem leaders from the region</li>
-              <li>Discover opportunities unique to Kenya's breadbasket</li>
-            </ul>
-            <div className="font-bold text-[#306CEC] text-lg mb-6" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-              May 23rd, 2026 · Eldoret, Kenya
-            </div>
-            <a
-              href="https://forms.gle/FoEdvsEvgt3ohDm48"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-[#306CEC] text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-[#4A80FF] transition-all duration-300 hover:scale-105"
-              style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}
-            >
-              Register Now
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* TOWNS SECTION */}
-      <section className="py-20 px-4 md:px-0 transition-colors">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-4xl font-bold mb-8 text-center text-[#306CEC]"
-            style={{
-              fontFamily: "'League Spartan', 'DM Sans', Arial, sans-serif",
-              textTransform: "uppercase"
-            }}
-          >
-            Planned Roadshow Towns
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Nakuru",
-                img: "/events/Nakuru.jpg",
-                desc: "A fast-growing city with a dynamic youth ecosystem.",
-                date: "Feb 7, 2026",
-                formUrl: null
-              },
-              {
-                name: "Eldoret",
-                img: "/events/Eldoret.jpg",
-                desc: "Known for its enterprising spirit and startups.",
-                date: "May 23rd, 2026",
-                formUrl: "https://forms.gle/FoEdvsEvgt3ohDm48"
-              },
-              {
-                name: "Kisumu",
-                img: "/events/Kisumu.jpg",
-                desc: "A lakeside city with a rising innovation scene.",
-                date: "July 4th, 2026",
-                formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScFx9A1ybkhFQ8ooByPDaHMHc31ufVHBeWK_A-r3VLDxVczDg/viewform?usp=publish-editor"
-              },
-              {
-                name: "Nairobi",
-                img: "/events/Nairobi.jpg",
-                desc: "Kenya's capital, a vibrant tech and innovation hub.",
-                date: "Coming Soon",
-                formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfBnrBvB8v6THmM1-_bzauyY3lymRe7ULXrVC9iHUn1TXy4Hg/viewform?usp=publish-editor"
-              },
-              {
-                name: "Mombasa",
-                img: "/events/Mombasa.jpg",
-                desc: "Coastal city blending trade, tourism, and tech.",
-                date: "Coming Soon",
-                formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfOYPX3TuQl14679C2UaAXElzUcP5x4iVd0tJrQAIlB8nQa-w/viewform?usp=publish-editor"
-              },
-              {
-                name: "Arusha",
-                img: "/events/Arusha.jpg",
-                desc: "Tanzania's gateway to East African entrepreneurship.",
-                date: "Coming Soon",
-                formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScbaFJyZ6az4BkW93Of8YHi5sRSCmkeqTzanJDQcoXJibV_RQ/viewform?usp=publish-editor"
-              },
-              {
-                name: "Kigali",
-                img: "/events/Kigali.jpg",
-                desc: "Rwanda's capital, a model for smart city growth.",
-                date: "Coming Soon",
-                formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSeqU-HkwV1JpShk-Ucme6DcusnA23L7XuPt6eebuZvxSjQpBg/viewform?usp=publish-editor"
-              },
-              {
-                name: "Addis Ababa",
-                img: "/events/Addis ababa.jpg",
-                desc: "Ethiopia's capital, a center for continental diplomacy and startups.",
-                date: "Coming Soon",
-                formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSf-NKlWnfDjdJOttoQIx0Ff3Ix97WJju0DV2qeRCkDI5PBN3w/viewform?usp=publish-editor"
-              },
-              {
-                name: "Kampala",
-                img: "/events/Kampala.jpg",
-                desc: "Uganda's capital, a vibrant city with a growing tech ecosystem.",
-                date: "Coming Soon",
-                formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSckl1mHRVrdRj_bEWtRXKKAiTmttOtdQCoNiCPzy4e54SgElQ/viewform?usp=publish-editor"
-              }
-            ].map((town, idx) => (
-              <div
-                key={town.name}
-                className="relative rounded-2xl shadow-lg group transition-all cursor-pointer"
-                style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}
-              >
-                <div className="relative h-40 w-full overflow-hidden rounded-t-2xl">
-                  <img
-                    src={town.img}
-                    alt={town.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <div
-                      className="text-center flex flex-col items-center"
-                    >
-                      <div className="text-white font-bold text-lg mb-2" style={{ fontFamily: "'League Spartan', Arial, sans-serif", textTransform: "uppercase", letterSpacing: "0.1em", textShadow: "0 2px 8px rgba(0, 0, 0, 0.8)" }}>
-                        Event Date
-                      </div>
-                      <div className="text-[#4A80FF] font-extrabold text-2xl mb-4" style={{ fontFamily: "'League Spartan', Arial, sans-serif", textShadow: "0 2px 8px rgba(0, 0, 0, 0.8)" }}>
-                        {town.date}
-                      </div>
-                      {town.formUrl === null ? (
-                        <button disabled className="px-6 py-2 bg-gray-400 text-white rounded-lg font-semibold cursor-not-allowed" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-                          Event Passed
-                        </button>
-                      ) : town.formUrl ? (
-                        <a
-                          href={town.formUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-6 py-2 bg-[#306CEC] text-white rounded-lg font-semibold hover:bg-[#4A80FF] transition-colors duration-300"
-                          style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}
-                        >
-                          Register Now
-                        </a>
-                      ) : (
-                        <a
-                          href="https://forms.gle/FoEdvsEvgt3ohDm48"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-6 py-2 bg-[#306CEC] text-white rounded-lg font-semibold hover:bg-[#4A80FF] transition-colors duration-300"
-                          style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}
-                        >
-                          Register Now
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="absolute top-4 left-4 bg-[#306CEC] text-white rounded-full p-2 shadow-lg">
-                  <MapPin className="w-6 h-6" />
-                </div>
-                <div className="p-6 pt-4 flex flex-col items-start justify-between min-h-32">
-                  <div>
-                    <div className="font-bold text-xl mb-2 text-[#306CEC] group-hover:text-[#4A80FF] transition-colors" style={{ fontFamily: "'League Spartan', Arial, sans-serif", textTransform: "uppercase" }}>
-                      {town.name}
-                    </div>
-                    <div className="text-gray-700 dark:text-gray-300 text-base">{town.desc}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="text-center text-base mt-8 text-gray-600 dark:text-gray-400" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-            Additional towns may be added as partnerships and logistics are confirmed.
-          </p>
-        </div>
-      </section>
-
-      {/* WHO IT'S FOR SECTION */}
-      <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={{
-          hidden: { opacity: 0, y: 40 },
-          visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.1 } }
-        }}
-        className="py-20 px-4 md:px-0 transition-colors"
-      >
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-4xl font-bold mb-8 text-center text-[#306CEC]"
-            style={{
-              fontFamily: "'League Spartan', 'DM Sans', Arial, sans-serif",
-              textTransform: "uppercase"
-            }}
-          >
-            Who It’s For
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-            {[
-              { label: "Founders & early‑stage entrepreneurs", icon: Users },
-              { label: "Students & young innovators", icon: Lightbulb },
-              { label: "SME builders", icon: Network },
-              { label: "Ecosystem enablers, hubs, leaders", icon: MessageCircle },
-              { label: "Policy Makers & Think Tanks", icon: Users },
-              { label: "Partners for decentralization impact", icon: MapPin }
-            ].map(({ label, icon: Icon }, i) => (
-              <motion.div
-                key={i}
-                variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
-                whileHover={{ scale: 1.05, boxShadow: "0 8px 32px #306CEC33" }}
-                className="rounded-2xl shadow p-6 flex flex-col items-center gap-3 transition-all cursor-pointer"
-              >
-                <Icon className="w-10 h-10 text-[#306CEC]" />
-                <span className="font-bold text-lg text-center" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>{label}</span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </motion.section>
-
-      {/* MONTHLY LOCAL EVENT SECTION */}
-      <section className={`relative overflow-hidden ${darkMode ? "bg-black" : "bg-white"}`}>
-        {/* Scrolling ticker */}
-        <div className={`overflow-hidden border-y py-3 ${darkMode ? "border-white/10" : "border-black/10"}`}>
-          <motion.div
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="flex whitespace-nowrap gap-12"
-          >
-            {[...Array(10)].map((_, i) => (
-              <span key={i} className={`text-sm font-bold tracking-[0.3em] uppercase ${darkMode ? "text-white/20" : "text-black/15"}`} style={{ fontFamily: "'League Spartan', sans-serif" }}>
-                Monthly Meetup &nbsp;✦&nbsp; Nakuru &nbsp;✦&nbsp; Real Founders &nbsp;✦&nbsp; No Fluff &nbsp;✦&nbsp;
-              </span>
-            ))}
-          </motion.div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 py-24 md:py-32">
-          {/* Top: Big headline with outlined text */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16 text-center flex flex-col items-center"
-          >
-            <p className="text-[#306CEC] text-sm font-bold tracking-[0.25em] uppercase mb-4" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-              Local Events
-            </p>
-            <h2
-              className={`text-4xl md:text-7xl font-black leading-[0.95] mb-6 ${darkMode ? "text-white" : "text-black"}`}
-              style={{ fontFamily: "'League Spartan', sans-serif", textTransform: "uppercase" }}
-            >
-              <span style={{ WebkitTextStroke: "2px #306CEC", color: "transparent" }}>Locals.</span>
-            </h2>
-            <p className={`text-lg md:text-xl max-w-2xl mx-auto ${darkMode ? "text-white/60" : "text-black/60"}`} style={{ fontFamily: "'DM Sans', sans-serif" }}>
-              A community where established local founders share their real-world experiences to help upcoming businesses thrive.Just genuine connections, mentorship, and practical advice to grow together.
-            </p>
-          </motion.div>
-
-          {/* Cinematic Events Carousel */}
-          <LocalEventsCarousel darkMode={darkMode} />
-
-          {/* Bottom CTA band */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className={`flex flex-col md:flex-row items-center justify-between gap-8 border rounded-2xl px-8 md:px-12 py-8 bg-gradient-to-r from-[#306CEC]/10 to-transparent ${darkMode ? "border-white/10" : "border-black/10"}`}
-          >
-            <div>
-              <p className={`text-2xl md:text-3xl font-bold ${darkMode ? "text-white" : "text-black"}`} style={{ fontFamily: "'League Spartan', sans-serif" }}>
-                Next meetup dropping soon.
-              </p>
-              <p className={`text-base mt-1 ${darkMode ? "text-white/50" : "text-black/50"}`} style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                Join the community so you don't miss it.
-              </p>
-            </div>
-            <button
-              onClick={() => setShowQR(true)}
-              className="shrink-0 bg-[#306CEC] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#4A80FF] transition-all duration-300 hover:scale-105"
-              style={{ fontFamily: "'DM Sans', sans-serif" }}
-            >
-              I'm in →
-            </button>
-          </motion.div>
-        </div>
-
-        {/* Scrolling ticker bottom */}
-        <div className={`overflow-hidden border-y py-3 ${darkMode ? "border-white/10" : "border-black/10"}`}>
-          <motion.div
-            animate={{ x: ["-50%", "0%"] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="flex whitespace-nowrap gap-12"
-          >
-            {[...Array(10)].map((_, i) => (
-              <span key={i} className={`text-sm font-bold tracking-[0.3em] uppercase ${darkMode ? "text-white/20" : "text-black/15"}`} style={{ fontFamily: "'League Spartan', sans-serif" }}>
-                Monthly Meetup &nbsp;✦&nbsp; Nakuru &nbsp;✦&nbsp; Real Founders &nbsp;✦&nbsp; No Fluff &nbsp;✦&nbsp;
-              </span>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* GET INVOLVED SECTION */}
-      <motion.section
-        id="get-involved"
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="py-20 px-4 md:px-0 transition-colors"
-      >
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl md:text-4xl font-bold mb-6 text-[#306CEC]"
-            style={{
-              fontFamily: "'League Spartan', 'DM Sans', Arial, sans-serif",
-              textTransform: "uppercase"
-            }}
-          >
-            Get Involved
-          </h2>
-          <p className="text-lg md:text-xl mb-8 text-gray-700 dark:text-gray-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-            Decentralized innovation thrives when opportunities reach every corner. Help us bring entrepreneurship and technology solutions to underserved communities. There are many ways to champion decentralized growth with the Impact360 Roadshow.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <motion.div
-              whileHover={{ y: -6, boxShadow: "0 8px 32px #306CEC33" }}
-              className="rounded-2xl p-6 flex flex-col items-center gap-3 border border-[#306CEC]/10"
-            >
-              <MessageCircle className="w-8 h-8 text-[#306CEC]" />
-              <div className="font-bold text-lg text-[#306CEC]">Partner & Collaborate</div>
-              <div className="text-gray-700 dark:text-gray-300 text-base text-center">
-                Join as a sponsor, ecosystem partner, or local champion to co-create impact in your region.
-              </div>
-            </motion.div>
-            <motion.div
-              whileHover={{ y: -6, boxShadow: "0 8px 32px #306CEC33" }}
-              className="rounded-2xl p-6 flex flex-col items-center gap-3 border border-[#306CEC]/10"
-            >
-              <MapPin className="w-8 h-8 text-[#306CEC]" />
-              <div className="font-bold text-lg text-[#306CEC]">Host a Stop</div>
-              <div className="text-gray-700 dark:text-gray-300 text-base text-center">
-                Bring the Roadshow to your town, hub, or campus. Help us activate new communities.
-              </div>
-            </motion.div>
-            <motion.div
-              whileHover={{ y: -6, boxShadow: "0 8px 32px #306CEC33" }}
-              className="rounded-2xl p-6 flex flex-col items-center gap-3 border border-[#306CEC]/10"
-            >
-              <Users className="w-8 h-8 text-[#306CEC]" />
-              <div className="font-bold text-lg text-[#306CEC]">Fellowship program</div>
-              <div className="text-gray-700 dark:text-gray-300 text-base text-center">
-                Help with logistics, outreach, or content. Be part of the team making decentralization real.
-              </div>
-            </motion.div>
-          </div>
-          <div className="bg-gradient-to-r from-[#306CEC] to-[#4A80FF] text-white rounded-xl px-6 py-4 font-bold text-lg flex items-center gap-2 justify-center mb-4"
-            style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-            <span role="img" aria-label="mail">📩</span>
-            Interested in hosting, partnering, or supporting a roadshow stop?
-          </div>
-          <div className="text-base text-gray-700 dark:text-gray-300 mb-6" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-            Reach out to the Impact360 team to start the conversation.
-          </div>
-
-        </div>
-      </motion.section>
-
-      {/* SPEAKERS SECTION */}
-      <section className="py-20 px-4 md:px-0 transition-colors">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          {/* Left: Slideshow */}
-          <div className="relative w-full h-96 flex items-center justify-center overflow-hidden rounded-2xl shadow-xl">
-            {speakerImages.map((img, idx) => (
-              <div
-                key={img}
-                className="absolute inset-0 transition-opacity duration-1000"
-                style={{
-                  opacity: currentSpeaker === idx ? 1 : 0,
-                  zIndex: currentSpeaker === idx ? 2 : 1,
-                  backgroundImage: `url(${img})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center"
-                }}
-              >
-                {/* fallback placeholder */}
-                <img
-                  src={img}
-                  alt={`Speaker ${idx + 1}`}
-                  className="w-full h-full object-cover rounded-2xl"
-                  style={{ opacity: 0 }}
-                  onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/600x400?text=Speaker"; }}
-                />
-              </div>
-            ))}
-            {/* Indicators */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-              {speakerImages.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentSpeaker(idx)}
-                  className={`h-2 rounded-full transition-all duration-300 ${currentSpeaker === idx ? "bg-[#306CEC] w-8" : "bg-[#306CEC]/40 w-2"}`}
-                  style={{ outline: "none", border: "none" }}
-                  tabIndex={-1}
-                  aria-label={`Go to speaker ${idx + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-          {/* Right: Speaker Info */}
-          <div>
-            <h2 className="text-2xl md:text-4xl font-bold mb-6 text-[#306CEC]" style={{ fontFamily: "'League Spartan', 'DM Sans', Arial, sans-serif", textTransform: "uppercase" }}>
-              Meet the Speakers
-            </h2>
-            <p className="text-lg mb-4 text-gray-700 dark:text-gray-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-              Our events feature a diverse lineup of visionary founders, investors, industry leaders, and ecosystem builders from across Africa and beyond.
-            </p>
-            <ul className="list-disc pl-6 mb-4 text-base text-gray-700 dark:text-gray-300" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-              <li>Serial entrepreneurs and startup founders</li>
-              <li>Top venture capitalists and angel investors</li>
-              <li>Innovation ecosystem leaders and hub managers</li>
-              <li>Policy makers and thought leaders</li>
-              <li>Technical experts and product builders</li>
-            </ul>
-            <div className="font-bold text-[#306CEC] text-lg" style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}>
-              Get inspired by real stories, actionable insights, and authentic connections.
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Floating Contact Button */}
-      {/* 
-      <a
-        href="mailto:hello@impact360.africa"
-        className="fixed bottom-8 right-8 z-50 bg-gradient-to-r from-[#306CEC] to-[#4A80FF] text-white font-bold px-6 py-3 rounded-full shadow-lg hover:scale-105 transition-transform"
-        style={{ fontFamily: "'DM Sans', Arial, sans-serif" }}
-      >
-        Contact Us
-      </a>
-      */}
-
-      {/* ── VIDEO HIGHLIGHTS SECTION ── */}
-      <VideoHighlights darkMode={darkMode} />
-
-      <Footer />
-    </div>
-  );
-}
-
-/* Add this to the bottom of the file or in your CSS:
-.custom-blue-important {
-  color: #306CEC !important;
-}
-*/
-
-
-
-/* ─────────────────────────────────────────────
-   VIDEO HIGHLIGHTS — horizontal scroll-driven card stack
-───────────────────────────────────────────── */
-
-const videos = [
+const stories = [
   {
-    id: 1,
-    title: "Impact360 Nakuru Roadshow",
-    location: "Nakuru, Kenya",
+    vol: "No. 01",
     date: "Feb 7, 2026",
-    tag: "RECAP",
-    youtubeId: "lGnBbmGK6V8",
-    thumb: "https://i.ytimg.com/vi/lGnBbmGK6V8/hqdefault.jpg",
+    city: "Nakuru",
+    country: "Kenya",
+    headline: "Where it\nall began.",
+    intro: "On 7 February 2026, six speakers and a full room at Taydis, Nakuru spent an afternoon in real conversation: discussions, networking, and the kind of community that doesn't end when the event does.",
+    introColor: "#306CEC",
+    body: "The event began with networking and introductions before moving into RoundXchange, a gamified interaction session where participants exchanged ideas, tackled mini-challenges, and explored thought-provoking topics in small groups. Following a networking break, the audience engaged in The Great Debate, where speakers and participants discussed key issues through structured and solution-focused conversations. The energy continued into the Open Mic session, giving attendees an opportunity to share perspectives, ask questions, and contribute directly to the discussion. The day concluded by highlighting key insights and encouraging participants to stay connected as the roadshow journey continues in other locations. The Nakuru Roadshow successfully demonstrated the power of conversation, collaboration, and community-driven storytelling.",
+    pullQuote: "This isn't an event. It's a live episode in an ongoing story.",
+    stats: [{ v: "120+", l: "people showed up" }, { v: "6", l: "speakers on stage" }, { v: "4", l: "sessions" }],
+    galleryUrl: "https://aroni6.pixieset.com/impact360roadshownakuruedition-1/",
+    cover: "/nakuru/mainNakuru.jpg",
+    photos: [
+      { src: "/nakuru/Nakuru1.jpg", caption: "Founders on stage, Nakuru" },
+      { src: "/nakuru/Nakuru2.jpg", caption: "A workshop in the afternoon" },
+      { src: "/nakuru/Nakuru3.jpg", caption: "Still talking at the end" },
+      { src: "/nakuru/Nakuru4.jpg", caption: "The crowd kept growing" },
+      { src: "/nakuru/Nakuru5.jpg", caption: "A moment at the close" },
+    ],
   },
   {
-    id: 2,
-    title: "Founders Taking The Stage",
-    location: "Eldoret, Kenya",
-    date: "May 9th, 2026",
-    tag: "PITCHES",
-    youtubeId: "DDM1aMN1YRE",
-    thumb: "https://i.ytimg.com/vi/DDM1aMN1YRE/hqdefault.jpg",
-  },
-  {
-    id: 3,
-    title: "Innovation On The Ground",
-    location: "Kisumu, Kenya",
-    date: "July 4th, 2026",
-    tag: "PANEL",
-    youtubeId: "Mbl0osnVSHI",
-    thumb: "https://i.ytimg.com/vi/Mbl0osnVSHI/hqdefault.jpg",
-  },
-  {
-    id: 4,
-    title: "Decentralising Opportunity",
-    location: "Nairobi, Kenya",
-    date: "Coming Soon",
-    tag: "KEYNOTE",
-    youtubeId: "sUzzM2vPBLo",
-    thumb: "https://i.ytimg.com/vi/sUzzM2vPBLo/hqdefault.jpg",
-  },
-  {
-    id: 5,
-    title: "Coastal Innovation Highlight",
-    location: "Mombasa, Kenya",
-    date: "Coming Soon",
-    tag: "HIGHLIGHT",
-    youtubeId: "ExUopo1-Zh4",
-    thumb: "https://i.ytimg.com/vi/ExUopo1-Zh4/hqdefault.jpg",
-  },
-  {
-    id: 6,
-    title: "Ecosystem Builders Unite",
-    location: "Kigali, Rwanda",
-    date: "Coming Soon",
-    tag: "ECOSYSTEM",
-    youtubeId: "M3upIInuQN0",
-    thumb: "https://i.ytimg.com/vi/M3upIInuQN0/hqdefault.jpg",
-  },
-  {
-    id: 7,
-    title: "Africa's Next Wave",
-    location: "Kampala, Uganda",
-    date: "Coming Soon",
-    tag: "FEATURE",
-    youtubeId: "ESMyXLzFpoc",
-    thumb: "https://i.ytimg.com/vi/ESMyXLzFpoc/hqdefault.jpg",
-  },
-  // Additional shorts requested
-  {
-    id: 8,
-    title: "Short Highlight 1",
-    location: "Various",
-    date: "Shorts",
-    tag: "SHORTS",
-    youtubeId: "zEiKL6Qhdm8",
-    thumb: "https://i.ytimg.com/vi/zEiKL6Qhdm8/hqdefault.jpg",
-  },
-  {
-    id: 9,
-    title: "Short Highlight 2",
-    location: "Various",
-    date: "Shorts",
-    tag: "SHORTS",
-    youtubeId: "dPAcsg9q0SM",
-    thumb: "https://i.ytimg.com/vi/dPAcsg9q0SM/hqdefault.jpg",
-  },
-  {
-    id: 10,
-    title: "Short Highlight 3",
-    location: "Various",
-    date: "Shorts",
-    tag: "SHORTS",
-    youtubeId: "DeZKAuRT100",
-    thumb: "https://i.ytimg.com/vi/DeZKAuRT100/hqdefault.jpg",
-  },
-  {
-    id: 11,
-    title: "Short Highlight 4",
-    location: "Various",
-    date: "Shorts",
-    tag: "SHORTS",
-    youtubeId: "UndyYPDi1EI",
-    thumb: "https://i.ytimg.com/vi/UndyYPDi1EI/hqdefault.jpg",
-  },
-  {
-    id: 12,
-    title: "Short Highlight 5",
-    location: "Various",
-    date: "Shorts",
-    tag: "SHORTS",
-    youtubeId: "jSVH6QVFjbY",
-    thumb: "https://i.ytimg.com/vi/jSVH6QVFjbY/hqdefault.jpg",
-  },
-  {
-    id: 13,
-    title: "Short Highlight 6",
-    location: "Various",
-    date: "Shorts",
-    tag: "SHORTS",
-    youtubeId: "AEUy2fEbIto",
-    thumb: "https://i.ytimg.com/vi/AEUy2fEbIto/hqdefault.jpg",
-  },
-  {
-    id: 14,
-    title: "Short Highlight 7",
-    location: "Various",
-    date: "Shorts",
-    tag: "SHORTS",
-    youtubeId: "EhB5HlhdoUo",
-    thumb: "https://i.ytimg.com/vi/EhB5HlhdoUo/hqdefault.jpg",
-  },
-  {
-    id: 15,
-    title: "Short Highlight 8",
-    location: "Various",
-    date: "Shorts",
-    tag: "SHORTS",
-    youtubeId: "HM_mL0OKMBo",
-    thumb: "https://i.ytimg.com/vi/HM_mL0OKMBo/hqdefault.jpg",
-  },
-  {
-    id: 16,
-    title: "Short Highlight 9",
-    location: "Various",
-    date: "Shorts",
-    tag: "SHORTS",
-    youtubeId: "IlenBuymfMY",
-    thumb: "https://i.ytimg.com/vi/IlenBuymfMY/hqdefault.jpg",
-  },
-  {
-    id: 17,
-    title: "Short Highlight 10",
-    location: "Various",
-    date: "Shorts",
-    tag: "SHORTS",
-    youtubeId: "hk7mql-_Jnw",
-    thumb: "https://i.ytimg.com/vi/hk7mql-_Jnw/hqdefault.jpg",
-  },
-  {
-    id: 18,
-    title: "Short Highlight 11",
-    location: "Various",
-    date: "Shorts",
-    tag: "SHORTS",
-    youtubeId: "Wi6_S4Ri5SE",
-    thumb: "https://i.ytimg.com/vi/Wi6_S4Ri5SE/hqdefault.jpg",
-  },
-  {
-    id: 19,
-    title: "Short Highlight 12",
-    location: "Various",
-    date: "Shorts",
-    tag: "SHORTS",
-    youtubeId: "TX6uR5PlgaE",
-    thumb: "https://i.ytimg.com/vi/TX6uR5PlgaE/hqdefault.jpg",
-  },
-  {
-    id: 20,
-    title: "Short Highlight 13",
-    location: "Various",
-    date: "Shorts",
-    tag: "SHORTS",
-    youtubeId: "zIhmOesMVqE",
-    thumb: "https://i.ytimg.com/vi/zIhmOesMVqE/hqdefault.jpg",
+    vol: "No. 02",
+    date: "May 23, 2026",
+    venue: "Comfy Inn",
+    city: "Eldoret",
+    country: "Kenya",
+    headline: "The north\nhas builders.",
+    intro: "On 23 May 2026, Comfy Inn, Eldoret became the room where the real questions got asked: about building outside the capital, leading without a blueprint, and what African ecosystems look like when you stop waiting.",
+    introColor: "#306CEC",
+    body: "The morning opened with Round Exchange, an unfiltered session on ecosystem realities, innovation gaps, and what founders in emerging markets actually need. No slides. No rehearsed answers. The Founder Hotseat followed: honest accounts of building, failing, pivoting, and pushing through in markets that don't always show up on startup maps. The afternoon widened into Architects of the Future, where founders, operators, creatives, and ecosystem leaders asked harder questions about leadership, opportunity, and what comes next for African cities beyond Nairobi. By the time the room wrapped up, it had produced something harder to measure than metrics: real connections, and the quiet conviction that Eldoret was already building something worth watching.",
+    pullQuote: "The north didn't need permission. It needed a room.",
+    stats: [{ v: "180+", l: "people showed up" }, { v: "8", l: "voices on stage" }, { v: "5", l: "sessions" }],
+    galleryUrl: "https://i3studios73.pixieset.com/eldoretroadshow/",
+    cover: "/eldoret/mainEldoret.jpg",
+    photos: [
+      { src: "/eldoret/Eldoret1.jpg", caption: "The panel that wouldn't stop" },
+      { src: "/eldoret/Eldoret2.jpg", caption: "Conversations that mattered" },
+      { src: "/eldoret/Eldoret3.jpg", caption: "Learning by doing" },
+      { src: "/eldoret/Eldoret4.jpg", caption: "Eldoret showed up" },
+      { src: "/eldoret/Eldoret5.jpg", caption: "Still talking outside" },
+    ],
   },
 ];
 
-const displayedVideos = videos.slice(0, 5);
+const appear = {
+  initial: { opacity: 0, y: 18 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-40px" },
+  transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] },
+};
 
-function VideoCard({ video, cardIndex, cardRef, darkMode }) {
-  const isMobile = window.innerWidth < 768;
+const vp = { once: true, margin: "-60px" };
+const fadeUp  = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } } };
+const fadeIn  = { hidden: { opacity: 0 },        show: { opacity: 1,        transition: { duration: 0.7, ease: "easeOut" } } };
 
-  return (
-    <div
-      ref={cardRef}
-      style={{
-        position: "absolute",
-        width: isMobile ? "min(280px, 80vw)" : "min(380px, 30vw)",
-        borderRadius: "20px",
-        overflow: "hidden",
-        willChange: "transform, opacity, filter",
-        background: "#000",
-        border: `1px solid ${darkMode ? "rgba(48,108,236,0.25)" : "rgba(48,108,236,0.15)"}`,
-        cursor: "pointer",
-        opacity: 0,
-        boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
-      }}
-      onClick={() => {
-        if (parseInt(cardRef.current?.style.zIndex) === 50) {
-          window.open(`https://www.youtube.com/watch?v=${video.youtubeId}`, "_blank", "noopener,noreferrer");
-        }
-      }}
-    >
-      {/* Square ratio */}
-      <div style={{ position: "relative", aspectRatio: "1/1", overflow: "hidden", background: "#000" }}>
-        <img
-          src={video.thumb}
-          alt={video.title}
-          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
-          onError={e => { e.target.src = `https://placehold.co/400x711/306CEC/ffffff?text=${encodeURIComponent(video.location)}`; }}
-        />
-        {/* Gradient */}
-        <div style={{
-          position: "absolute", inset: 0,
-          background: "linear-gradient(to top, rgba(48,108,236,0.92) 0%, rgba(48,108,236,0.25) 45%, transparent 70%)",
-        }} />
-        {/* Play button — opacity driven by RAF */}
-        <div className="play-btn" style={{
-          position: "absolute", top: "50%", left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "52px", height: "52px", borderRadius: "50%",
-          background: "rgba(255,255,255,0.95)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          boxShadow: "0 4px 24px rgba(48,108,236,0.5)",
-          opacity: 0, pointerEvents: "none",
-        }}>
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-            <path d="M5 3.5l12 6.5-12 6.5V3.5z" fill="#306CEC" />
-          </svg>
-        </div>
-        {/* Tag */}
-        <div style={{
-          position: "absolute", top: "12px", left: "12px",
-          background: "#306CEC", color: "#fff", borderRadius: "6px",
-          padding: "4px 10px", fontSize: "8px", fontWeight: 800,
-          letterSpacing: "0.12em", fontFamily: "'League Spartan', sans-serif",
-        }}>
-          {video.tag}
-        </div>
-        {/* Shorts badge */}
-        <div style={{
-          position: "absolute", top: "12px", right: "12px",
-          background: "rgba(0,0,0,0.5)", backdropFilter: "blur(6px)",
-          borderRadius: "6px", padding: "3px 7px",
-          display: "flex", alignItems: "center", gap: "3px",
-        }}>
-          <svg width="10" height="12" viewBox="0 0 24 24" fill="#fff">
-            <path d="M13.5 2.14L11 6.27l-1.55-.9A5 5 0 004 10a5 5 0 005 5h1v2H9a7 7 0 110-14 7 7 0 011.5.16L13.5 2.14zM15 5a7 7 0 11-1.5 13.84l-2.5-4.13L12.55 13A5 5 0 0020 10a5 5 0 00-5-5z" />
-          </svg>
-          <span style={{ color: "#fff", fontSize: "8px", fontWeight: 800, fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.06em" }}>SHORTS</span>
-        </div>
-        {/* Bottom title overlay */}
-        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px 14px 14px" }}>
-          <p style={{ color: "rgba(255,255,255,0.65)", fontSize: "8px", fontWeight: 700, letterSpacing: "0.1em", margin: "0 0 4px", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>
-            {video.location}
-          </p>
-          <p style={{ color: "#fff", fontSize: "12px", fontWeight: 800, lineHeight: 1.25, margin: 0, textTransform: "uppercase", letterSpacing: "0.01em", fontFamily: "'League Spartan', sans-serif" }}>
-            {video.title}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function VideoHighlights({ darkMode }) {
-  const containerRef = React.useRef(null);
-  const cardRefs = React.useRef(displayedVideos.map(() => React.createRef()));
-  const pipRefs = React.useRef(displayedVideos.map(() => React.createRef()));
-  const tagRef = React.useRef(null);
-  const titleRef = React.useRef(null);
-  const locationRef = React.useRef(null);
-  const counterRef = React.useRef(null);
-  const hintRef = React.useRef(null);
-  const rawRef = React.useRef(0);
-  const smoothRef = React.useRef(0);
-  const rafRef = React.useRef(null);
-  const prevIdxRef = React.useRef(0);
-
-  React.useEffect(() => {
-    const LERP = 0.08;
-
-    const onScroll = () => {
-      const el = containerRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const scrollable = el.scrollHeight - window.innerHeight;
-      const scrolled = Math.max(0, -rect.top);
-      rawRef.current = Math.min(1, scrolled / Math.max(1, scrollable)) * displayedVideos.length;
-    };
-
-    const applyCard = (el, sp, i) => {
-      const cp = sp - i;
-      const cl = Math.max(0, Math.min(1, cp));
-      const qd = Math.max(0, -cp);
-      const gone = cp >= 1;
-      const queued = cp < 0;
-
-      const tx = gone ? -130 : queued ? qd * 9 : -cl * 130;
-      const ty = queued ? qd * 6 : 0;
-      const sc = gone ? 0.85 : queued ? Math.max(0.75, 1 - qd * 0.045) : 1 - cl * 0.06;
-      const op = gone ? 0 : queued ? Math.max(0.2, 1 - qd * 0.13) : 1 - cl * 0.55;
-      const rot = gone ? -10 : queued ? Math.min(qd * 1.8, 8) : cl * -8;
-      const br = queued ? Math.max(0.55, 1 - qd * 0.13) : 1;
-      const zi = gone ? 0 : queued ? Math.max(1, 45 - Math.floor(qd) * 5) : 50;
-
-      el.style.transform = `translateX(${tx}%) translateY(${ty}px) scale(${sc}) rotate(${rot}deg)`;
-      el.style.opacity = op;
-      el.style.filter = `brightness(${br})`;
-      el.style.zIndex = zi;
-
-      const btn = el.querySelector(".play-btn");
-      if (btn) btn.style.opacity = (cp >= 0 && cp < 1) ? String(Math.max(0, 1 - cl * 2)) : "0";
-    };
-
-    const tick = () => {
-      const sp = smoothRef.current + (rawRef.current - smoothRef.current) * LERP;
-      smoothRef.current = sp;
-
-      cardRefs.current.forEach((ref, i) => {
-        if (ref.current) applyCard(ref.current, sp, i);
-      });
-
-      const ai = Math.min(Math.floor(sp), displayedVideos.length - 1);
-
-      if (counterRef.current) {
-        counterRef.current.textContent = `${String(ai + 1).padStart(2, "0")} / ${String(displayedVideos.length).padStart(2, "0")}`;
-      }
-      if (hintRef.current) {
-        hintRef.current.style.opacity = String(Math.max(0, 1 - sp * 2));
-      }
-      pipRefs.current.forEach((ref, i) => {
-        if (!ref.current) return;
-        ref.current.style.width = i === ai ? "28px" : "10px";
-        ref.current.style.background = i === ai ? "#306CEC" : (darkMode ? "rgba(255,255,255,0.12)" : "#ddd");
-      });
-
-      if (ai !== prevIdxRef.current) {
-        prevIdxRef.current = ai;
-        const v = displayedVideos[ai];
-        if (tagRef.current) tagRef.current.textContent = v.tag;
-        if (titleRef.current) titleRef.current.textContent = v.title;
-        if (locationRef.current) locationRef.current.textContent = `${v.location} · ${v.date}`;
-      }
-
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(rafRef.current);
-    };
-  }, [darkMode]);
-
-  const first = displayedVideos[0];
-
-  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
-
-  React.useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+function Story({ s, i, darkMode }) {
+  const isEven = i % 2 === 0;
+  const c = {
+    dot:       darkMode ? "rgba(255,255,255,0.2)"  : "rgba(0,0,0,0.2)",
+    meta:      darkMode ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.45)",
+    headline:  darkMode ? "#fff"                   : "#0a0a0a",
+    intro:     darkMode ? "rgba(255,255,255,0.55)" : "rgba(0,0,0,0.55)",
+    body:      darkMode ? "rgba(255,255,255,0.78)" : "rgba(0,0,0,0.7)",
+    caption:   darkMode ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.3)",
+    quote:     darkMode ? "rgba(255,255,255,0.8)"  : "rgba(0,0,0,0.75)",
+    separator: darkMode ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)",
+    photoPlaceholder: darkMode ? "#1a1a1a" : "#e0e0e0",
+  };
 
   return (
-    <div ref={containerRef} style={{ position: "relative", height: isMobile ? `${150 + displayedVideos.length * 120}vh` : `${100 + displayedVideos.length * 90}vh` }}>
-      <div style={{
-        position: "sticky", top: 0, height: "100vh", overflow: "hidden",
-        background: darkMode
-          ? "radial-gradient(ellipse at 65% 50%, rgba(48,108,236,0.15) 0%, #000 60%)"
-          : "radial-gradient(ellipse at 65% 50%, rgba(48,108,236,0.08) 0%, #FFFEF9 60%)",
-        display: "flex",
-        flexDirection: isMobile ? "column" : "row",
+    <motion.article style={{ marginBottom: "100px" }}>
+
+      {/* Constrained: vol/date, city, headline, intro — staggered */}
+      <motion.div
+        initial="hidden" whileInView="show" viewport={vp}
+        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
+        style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 80px 40px" }}
+      >
+        <motion.div variants={fadeUp} style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "32px" }}>
+          <span style={{ fontSize: "11px", color: "#306CEC", fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>{s.vol}</span>
+          <span style={{ fontSize: "11px", color: c.dot, fontFamily: "'DM Sans', sans-serif" }}>·</span>
+          <span style={{ fontSize: "11px", color: c.meta, fontFamily: "'DM Sans', sans-serif" }}>{s.date}{s.venue ? ` · ${s.venue}` : ""}</span>
+        </motion.div>
+
+        <motion.p variants={fadeUp} style={{ fontSize: "clamp(0.85rem, 1.5vw, 1rem)", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif", color: "#306CEC", margin: "0 0 10px" }}>
+          {s.city}, {s.country}
+        </motion.p>
+
+        <motion.h2 variants={fadeUp} style={{ fontSize: "clamp(2.4rem, 5.5vw, 5rem)", fontWeight: 800, lineHeight: 1.0, letterSpacing: "-0.03em", fontFamily: "'League Spartan', sans-serif", color: c.headline, margin: "0 0 20px", whiteSpace: "pre-line" }}>
+          {s.headline}
+        </motion.h2>
+
+        <motion.p variants={fadeUp} style={{ fontSize: "16px", fontStyle: "italic", color: s.introColor || c.intro, fontFamily: "'DM Sans', sans-serif", margin: 0, lineHeight: 1.65 }}>
+          {s.intro}
+        </motion.p>
+      </motion.div>
+
+      {/* Full-bleed: image + text */}
+      <div className="story-body" style={{
+        display: "grid",
+        gridTemplateColumns: isEven
+          ? "calc(max(80px, (100vw - 1100px) / 2 + 80px) + 420px) 1fr"
+          : "1fr calc(max(80px, (100vw - 1100px) / 2 + 80px) + 420px)",
+        gap: "0 48px",
+        alignItems: "start",
+        marginBottom: "36px",
       }}>
-
-        {/* LEFT PANEL */}
-        <div style={{
-          width: isMobile ? "100%" : "40%",
-          display: "flex", flexDirection: "column", justifyContent: isMobile ? "flex-start" : "space-between",
-          padding: isMobile ? "40px 20px 30px" : "80px 48px 52px",
-          borderRight: isMobile ? "none" : `1px solid ${darkMode ? "rgba(48,108,236,0.12)" : "rgba(48,108,236,0.08)"}`,
-          borderBottom: isMobile ? `1px solid ${darkMode ? "rgba(48,108,236,0.12)" : "rgba(48,108,236,0.08)"}` : "none",
-          minHeight: isMobile ? "auto" : "100vh",
-        }}>
-          <div>
-            <p style={{ fontSize: isMobile ? "9px" : "10px", fontWeight: 800, letterSpacing: "0.18em", color: "#306CEC", margin: "0 0 12px", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>
-              IMPACT360 ROADSHOW
-            </p>
-            <h2 style={{ fontSize: isMobile ? "clamp(28px, 6vw, 48px)" : "clamp(40px, 5.5vw, 72px)", fontWeight: 900, lineHeight: 0.9, letterSpacing: "-0.04em", margin: "0 0 16px", fontFamily: "'League Spartan', sans-serif", textTransform: "uppercase", color: darkMode ? "#fff" : "#111" }}>
-              EVENT<br /><span style={{ color: "#306CEC" }}>HIGHLIGHTS</span>
-            </h2>
-            <p style={{ fontSize: isMobile ? "13px" : "14px", lineHeight: 1.6, color: darkMode ? "#888" : "#666", fontFamily: "'DM Sans', sans-serif", maxWidth: "280px" }}>
-              Watch moments from across Africa — pitches, panels, and connections that are reshaping innovation.
-            </p>
-          </div>
-          {!isMobile && (
-            <div>
-              <div style={{ borderTop: `1px solid ${darkMode ? "rgba(48,108,236,0.18)" : "rgba(48,108,236,0.12)"}`, paddingTop: "22px", marginBottom: "22px" }}>
-                <span ref={tagRef} style={{ display: "inline-block", background: "#306CEC", color: "#fff", borderRadius: "6px", padding: "3px 10px", fontSize: "9px", fontWeight: 800, letterSpacing: "0.12em", marginBottom: "10px", fontFamily: "'League Spartan', sans-serif" }}>
-                  {first.tag}
-                </span>
-                <p ref={titleRef} style={{ fontSize: "16px", fontWeight: 700, lineHeight: 1.25, color: darkMode ? "#fff" : "#111", fontFamily: "'League Spartan', sans-serif", textTransform: "uppercase", margin: "0 0 6px" }}>
-                  {first.title}
-                </p>
-                <p ref={locationRef} style={{ fontSize: "11px", fontWeight: 600, color: "#306CEC", fontFamily: "'DM Sans', sans-serif", margin: 0, letterSpacing: "0.04em" }}>
-                  {first.location} · {first.date}
-                </p>
-              </div>
-              <div style={{ display: "flex", gap: "7px" }}>
-                {displayedVideos.map((_, i) => (
-                  <div key={i} ref={pipRefs.current[i]} style={{
-                    height: "3px", borderRadius: "2px",
-                    width: i === 0 ? "28px" : "10px",
-                    background: i === 0 ? "#306CEC" : (darkMode ? "rgba(255,255,255,0.12)" : "#ddd"),
-                    transition: "width 0.35s ease, background 0.35s ease",
-                  }} />
-                ))}
-              </div>
+        {/* Image — slides in from its side */}
+        <motion.div
+          initial={{ opacity: 0, x: isEven ? -40 : 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={vp}
+          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+          style={{ order: isEven ? 0 : 1, display: "flex", justifyContent: isEven ? "flex-end" : "flex-start" }}
+        >
+          <div style={{ width: "420px", flexShrink: 0 }}>
+            <div className="story-img-wrap" style={{ overflow: "hidden", aspectRatio: "4/3", borderRadius: "6px" }}>
+              <img src={s.cover} alt={s.city} className="story-img"
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "brightness(0.9)" }}
+                onError={e => { e.target.parentElement.style.background = c.photoPlaceholder; }} />
             </div>
-          )}
-        </div>
-
-        {/* RIGHT PANEL */}
-        <div style={{
-          flex: isMobile ? "none" : 1,
-          width: isMobile ? "100%" : "auto",
-          position: "relative",
-          overflow: "hidden",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: isMobile ? "60vh" : "100vh",
-          padding: isMobile ? "20px" : "0"
-        }}>
-          <div style={{ position: "absolute", width: isMobile ? "200px" : "380px", height: isMobile ? "200px" : "380px", borderRadius: "50%", background: "radial-gradient(circle, rgba(48,108,236,0.18) 0%, transparent 70%)", pointerEvents: "none" }} />
-
-          {displayedVideos.map((video, i) => (
-            <VideoCard
-              key={video.id}
-              video={video}
-              cardIndex={i}
-              cardRef={cardRefs.current[i]}
-              darkMode={darkMode}
-            />
-          ))}
-
-          <div ref={hintRef} style={{ position: "absolute", bottom: isMobile ? "20px" : "44px", right: isMobile ? "20px" : "40px", display: "flex", alignItems: "center", gap: "10px", opacity: 1, pointerEvents: "none" }}>
-            <div style={{ width: "40px", height: "2px", borderRadius: "1px", background: "linear-gradient(to right, transparent, #306CEC)" }} />
-            <p style={{ color: "#306CEC", fontSize: "9px", fontWeight: 800, letterSpacing: "0.16em", margin: 0, textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>SCROLL</p>
+            <p style={{ fontSize: "10px", color: c.caption, fontFamily: "'DM Sans', sans-serif", marginTop: "8px", fontStyle: "italic" }}>
+              {s.city}, {s.date}
+            </p>
           </div>
+        </motion.div>
 
-          <div ref={counterRef} style={{ position: "absolute", top: isMobile ? "20px" : "44px", right: isMobile ? "20px" : "40px", color: darkMode ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.25)", fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em", fontFamily: "'DM Sans', sans-serif" }}>
-            01 / {String(displayedVideos.length).padStart(2, "0")}
-          </div>
-        </div>
-
+        {/* Text — fades in */}
+        <motion.div
+          initial="hidden" whileInView="show" viewport={vp} variants={fadeIn}
+          style={{ order: isEven ? 1 : 0, paddingLeft: isEven ? 0 : "calc(max(80px, (100vw - 1100px) / 2 + 80px))", paddingRight: isEven ? "80px" : 0 }}
+        >
+          <p style={{ fontSize: "15px", lineHeight: 1.95, color: c.body, fontFamily: "'DM Sans', sans-serif", margin: 0 }}>
+            {s.body}
+          </p>
+        </motion.div>
       </div>
-    </div>
+
+      {/* Pull quote */}
+      <motion.div
+        initial="hidden" whileInView="show" viewport={vp} variants={fadeUp}
+        style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 80px", marginTop: "40px", marginBottom: "48px" }}
+      >
+        <div style={{ borderLeft: "2px solid #306CEC", paddingLeft: "18px" }}>
+          <p style={{ fontSize: "1.1rem", fontStyle: "italic", color: c.quote, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6, margin: 0 }}>
+            "{s.pullQuote}"
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Photo strip — photos stagger in */}
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 80px" }}>
+        <motion.div
+          initial="hidden" whileInView="show" viewport={vp}
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+          style={{ position: "relative", height: "220px" }}
+        >
+          {s.photos.map((ph, pi) => {
+            const scatter = [
+              { left: "0%",  top: "40px", rotate: "-6deg", zIndex: 2 },
+              { left: "16%", top: "8px",  rotate: "4deg",  zIndex: 5 },
+              { left: "32%", top: "30px", rotate: "-3deg", zIndex: 3 },
+              { left: "50%", top: "0px",  rotate: "7deg",  zIndex: 4 },
+              { left: "67%", top: "20px", rotate: "-5deg", zIndex: 1 },
+            ];
+            const p = scatter[pi];
+            return (
+              <motion.div
+                key={pi} className="polaroid"
+                variants={{ hidden: { opacity: 0, y: 20, rotate: 0 }, show: { opacity: 1, y: 0, rotate: parseFloat(p.rotate), transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }}
+                style={{ position: "absolute", left: p.left, top: p.top, zIndex: p.zIndex, width: "240px", borderRadius: "3px", overflow: "hidden" }}
+              >
+                <div style={{ aspectRatio: "4/3", background: c.photoPlaceholder }}>
+                  <img src={ph.src} alt={ph.caption}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                    onError={e => { e.target.style.display = "none"; }} />
+                </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+
+        <motion.div initial="hidden" whileInView="show" viewport={vp} variants={fadeUp} style={{ marginTop: "24px", textAlign: "center" }}>
+          <a href={s.galleryUrl || "#"} target="_blank" rel="noopener noreferrer" style={{ fontSize: "13px", color: "#306CEC", fontFamily: "'DM Sans', sans-serif", fontWeight: 600, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+            View more photos <ArrowRight size={13} />
+          </a>
+        </motion.div>
+
+        <div style={{ height: "1px", background: c.separator, marginTop: "48px" }} />
+      </div>
+
+    </motion.article>
   );
 }
 
+export default function EventsPage() {
+  const { darkMode } = useDarkMode();
+  const [kisumuModal, setKisumuModal] = React.useState(false);
+  const kisumuTown = { name: "Kisumu", img: "/events/Kisumu.jpg", date: "July 4th, 2026", status: "next" };
+  const heroRef = React.useRef(null);
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 600], [0, 160]);
 
-/* Add this to the bottom of the file or in your CSS:
-.custom-blue-important {
-  color: #306CEC !important;
+  const stagger = {
+    animate: { transition: { staggerChildren: 0.12 } },
+  };
+  const fadeUp = {
+    initial: { opacity: 0, y: 28 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
+  };
+
+  return (
+    <div style={{ background: darkMode ? "#0a0a0a" : "#fff", color: darkMode ? "#fff" : "#0a0a0a", minHeight: "100vh" }}>
+      <Navbar />
+
+      {/* Hero */}
+      <header ref={heroRef} style={{ position: "relative", width: "100%", height: "100vh", overflow: "hidden" }}>
+        {/* Parallax image */}
+        <motion.img
+          src="/eldoret/heroImg.jpg"
+          alt="Impact360 Roadshow"
+          style={{ width: "100%", height: "110%", objectFit: "cover", objectPosition: "center 20%", display: "block", y: heroY }}
+          initial={{ scale: 1.08 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+        />
+        {/* gradient */}
+        <div style={{ position: "absolute", inset: 0, background: darkMode
+          ? "linear-gradient(to bottom, rgba(10,10,10,0.75) 0%, rgba(10,10,10,0.7) 40%, rgba(10,10,10,0.97) 85%, #0a0a0a 100%)"
+          : "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.45) 40%, rgba(255,255,255,0.92) 85%, #fff 100%)"
+        }} />
+
+        {/* Staggered text */}
+        <motion.div
+          variants={stagger} initial="initial" animate="animate"
+          style={{ position: "absolute", bottom: "72px", left: 0, right: 0, maxWidth: "1100px", margin: "0 auto", padding: "0 80px" }}
+        >
+          <motion.p variants={fadeUp} style={{ fontSize: "11px", color: "#306CEC", fontFamily: "'DM Sans', sans-serif", fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: "16px" }}>
+            Impact360 &nbsp;·&nbsp; 2026
+          </motion.p>
+          <motion.h1 variants={fadeUp} style={{ fontSize: "clamp(2.8rem, 7vw, 6.5rem)", fontWeight: 800, lineHeight: 0.95, letterSpacing: "-0.04em", fontFamily: "'League Spartan', sans-serif", marginBottom: "20px", color: darkMode ? "#fff" : "#0a0a0a" }}>
+            The ground<br />
+            <span style={{ color: "#306CEC" }}>beneath us.</span>
+          </motion.h1>
+          <motion.p variants={fadeUp} style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(255,255,255,0.55)", fontFamily: "'DM Sans', sans-serif", maxWidth: "460px", marginBottom: "32px", fontStyle: "italic" }}>
+            Every city we visit leaves something behind. These are the stories we carried home.
+          </motion.p>
+          <motion.div variants={fadeUp}>
+            <Link to="/events/roadshow"
+              style={{ display: "inline-flex", alignItems: "center", gap: "7px", background: "#306CEC", color: "#fff", padding: "11px 22px", borderRadius: "100px", fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: "13px", textDecoration: "none" }}>
+              See upcoming cities <ArrowRight size={13} />
+            </Link>
+          </motion.div>
+        </motion.div>
+      </header>
+
+      {/* Stories */}
+      <main style={{ width: "100%" }}>
+        {stories.map((s, i) => <Story key={s.city} s={s} i={i} darkMode={darkMode} />)}
+
+        {/* Kisumu */}
+        <motion.div {...appear} style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 80px 100px" }}>
+          <p style={{ fontSize: "11px", color: "#306CEC", fontFamily: "'DM Sans', sans-serif", fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: "12px" }}>
+            No. 03 &nbsp;·&nbsp; Coming up
+          </p>
+          <h3 style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", fontWeight: 800, fontFamily: "'League Spartan', sans-serif", color: darkMode ? "#fff" : "#0a0a0a", margin: "0 0 10px", letterSpacing: "-0.025em", lineHeight: 1 }}>
+            Kisumu, July 4.
+          </h3>
+          <p style={{ fontSize: "14px", color: darkMode ? "rgba(255,255,255,0.38)" : "rgba(0,0,0,0.45)", fontFamily: "'DM Sans', sans-serif", margin: "0 0 28px", fontStyle: "italic" }}>
+            The next page is unwritten. Come help us write it.
+          </p>
+          <button onClick={() => setKisumuModal(true)}
+            style={{ display: "inline-flex", alignItems: "center", gap: "7px", border: `1px solid ${darkMode ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.2)"}`, color: darkMode ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)", padding: "11px 22px", borderRadius: "100px", fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: "13px", background: "none", cursor: "pointer" }}>
+            Register now <ArrowRight size={13} />
+          </button>
+        </motion.div>
+      </main>
+
+      <AnimatePresence>
+        {kisumuModal && <RegisterModal town={kisumuTown} darkMode={true} onClose={() => setKisumuModal(false)} />}
+      </AnimatePresence>
+
+      <Footer />
+
+      <style>{`
+        .story-img { transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+        .story-img-wrap:hover .story-img { transform: scale(1.04); }
+        .polaroid { transition: transform 0.3s ease; cursor: default; }
+        .polaroid:hover { transform: rotate(0deg) scale(1.12) !important; z-index: 10 !important; }
+        @media (max-width: 768px) {
+          .story-body { grid-template-columns: 1fr !important; }
+          .story-body > div:first-child { justify-content: flex-start !important; }
+          .story-body > div:first-child > div { width: 100% !important; }
+          .story-body > div:last-child { padding-right: 24px !important; padding-left: 24px; }
+        }
+      `}</style>
+    </div>
+  );
 }
-*/
