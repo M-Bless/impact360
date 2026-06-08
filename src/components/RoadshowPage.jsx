@@ -18,42 +18,58 @@ const sendRoadshowEmail = async (form, town) => {
     const isTBA = town.status === "tba";
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE, {
       to_email: form.email,
-      email_subject: `Impact360 Roadshow ${town.name} — You're Registered!`,
+      email_subject: isTBA
+        ? `Registration Received: Impact360 Roadshow ${town.name}`
+        : `Registration Confirmed: Impact360 Roadshow ${town.name}`,
       welcome_message: isTBA
-        ? `<div style="padding:36px 28px;background:#F8F9FA;border-radius:14px;margin-bottom:28px;border-left:5px solid #306CEC;">
-            <h2 style="color:#306CEC;margin:0 0 18px;font-size:24px;font-weight:bold;">You're on the list, ${form.name}!</h2>
-            <p style="color:#333;font-size:15px;line-height:1.8;margin:0 0 14px;">
-              Thank you for registering your interest in the <strong>Impact360 Roadshow — ${town.name}</strong>.
+        ? `<div style="font-family:'Segoe UI',Arial,sans-serif;color:#333;line-height:1.8;">
+            <p style="font-size:15px;margin:0 0 20px;">Dear ${form.name},</p>
+            <p style="font-size:15px;margin:0 0 16px;">
+              Thank you for registering your interest in the <strong>${town.name} Roadshow</strong>.
             </p>
-            <p style="color:#333;font-size:15px;line-height:1.8;margin:0 0 14px;">
-              We are still finalising the date for this city. <strong>We will reach out to you as soon as the date is confirmed.</strong> Keep an eye on your inbox!
+            <p style="font-size:15px;margin:0 0 24px;">
+              We are still finalising the date for this city. We will reach out to you as soon as it is confirmed. Keep an eye on your inbox.
             </p>
-            <p style="color:#306CEC;font-size:16px;font-weight:bold;margin:0;">— Impact360 Team</p>
+            <p style="font-size:15px;margin:0 0 32px;">
+              Thank you for being part of this journey.
+            </p>
+            <p style="font-size:15px;margin:0 0 4px;">Best regards,</p>
+            <p style="font-size:15px;font-weight:700;color:#306CEC;margin:0;">Impact360 Team</p>
            </div>`
-        : `<div style="padding:36px 28px;background:#F8F9FA;border-radius:14px;margin-bottom:28px;border-left:5px solid #306CEC;">
-            <h2 style="color:#306CEC;margin:0 0 18px;font-size:24px;font-weight:bold;">You're Registered, ${form.name}!</h2>
-            <p style="color:#333;font-size:15px;line-height:1.8;margin:0 0 14px;">
-              Your spot at the <strong>Impact360 Roadshow — ${town.name}</strong> has been confirmed.
+        : `<div style="font-family:'Segoe UI',Arial,sans-serif;color:#333;line-height:1.8;">
+            <p style="font-size:15px;margin:0 0 20px;">Dear ${form.name},</p>
+            <p style="font-size:15px;margin:0 0 16px;">
+              Thank you for registering for the <strong>${town.name} Roadshow</strong>.
             </p>
-            <p style="color:#333;font-size:15px;line-height:1.8;margin:0 0 14px;">
-              <strong>Date:</strong> <span style="color:#306CEC;">${town.date}</span><br/>
-              <strong>City:</strong> ${town.name}
+            <p style="font-size:15px;margin:0 0 24px;">
+              We are pleased to confirm your registration and look forward to hosting you at this exciting event. The roadshow will bring together innovators, entrepreneurs, students, technology enthusiasts, and ecosystem stakeholders to connect, learn, and explore opportunities within the digital and innovation landscape.
             </p>
-            <p style="color:#333;font-size:15px;line-height:1.8;margin:0;">
-              We'll follow up with the venue details and agenda as the date approaches. See you there!
+            <p style="font-size:15px;font-weight:700;color:#0a0a14;margin:0 0 16px;">Event Details</p>
+            <table style="font-size:15px;border-collapse:collapse;margin-bottom:24px;">
+              <tr><td style="padding:6px 16px 6px 0;font-weight:600;">Event</td><td style="padding:6px 0;">${town.name} Roadshow</td></tr>
+              <tr><td style="padding:6px 16px 6px 0;font-weight:600;">Date</td><td style="padding:6px 0;">${town.date}</td></tr>
+              <tr><td style="padding:6px 16px 6px 0;font-weight:600;">Venue</td><td style="padding:6px 0;">${town.venue || town.name}</td></tr>
+              ${town.time ? `<tr><td style="padding:6px 16px 6px 0;font-weight:600;">Time</td><td style="padding:6px 0;">${town.time}</td></tr>` : ""}
+            </table>
+            <p style="font-size:15px;margin:0 0 16px;">
+              Kindly arrive early to facilitate a smooth registration process. If you have any questions or require further assistance, feel free to contact us.
             </p>
-            <p style="color:#306CEC;font-size:16px;font-weight:bold;margin:20px 0 0;">— Impact360 Team</p>
+            <p style="font-size:15px;margin:0 0 32px;">
+              Thank you for being part of this journey. We look forward to seeing you in ${town.name}.
+            </p>
+            <p style="font-size:15px;margin:0 0 4px;">Best regards,</p>
+            <p style="font-size:15px;font-weight:700;color:#306CEC;margin:0 0 4px;">Impact360 Team</p>
            </div>`,
-      additional_info: `<div style="background:#EEF3FD;padding:28px;border-radius:12px;border-left:5px solid #306CEC;">
-          <h3 style="color:#306CEC;margin:0 0 16px;font-size:18px;font-weight:bold;">Your Registration Details</h3>
-          <ul style="color:#333;font-size:14px;line-height:2;list-style:none;padding:0;margin:0;">
-            <li><strong>Name:</strong> ${form.name}</li>
-            <li><strong>Email:</strong> ${form.email}</li>
-            <li><strong>Phone:</strong> ${form.phone}</li>
-            <li><strong>Organization:</strong> ${form.organization}</li>
-            <li><strong>City:</strong> ${town.name}</li>
-            ${!isTBA ? `<li><strong>Date:</strong> ${town.date}</li>` : ""}
-          </ul>
+      additional_info: `<div style="font-family:'Segoe UI',Arial,sans-serif;background:#EEF3FD;padding:28px 32px;border-radius:12px;">
+          <p style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#306CEC;margin:0 0 14px;">Your Registration Details</p>
+          <table style="width:100%;border-collapse:collapse;font-size:14px;color:#333;">
+            <tr><td style="padding:8px 0;border-bottom:1px solid #dce8fb;font-weight:600;width:120px;">Name</td><td style="padding:8px 0;border-bottom:1px solid #dce8fb;">${form.name}</td></tr>
+            <tr><td style="padding:8px 0;border-bottom:1px solid #dce8fb;font-weight:600;">Email</td><td style="padding:8px 0;border-bottom:1px solid #dce8fb;">${form.email}</td></tr>
+            <tr><td style="padding:8px 0;border-bottom:1px solid #dce8fb;font-weight:600;">Phone</td><td style="padding:8px 0;border-bottom:1px solid #dce8fb;">${form.phone}</td></tr>
+            <tr><td style="padding:8px 0;border-bottom:1px solid #dce8fb;font-weight:600;">Organization</td><td style="padding:8px 0;border-bottom:1px solid #dce8fb;">${form.organization}</td></tr>
+            ${!isTBA ? `<tr><td style="padding:8px 0;border-bottom:1px solid #dce8fb;font-weight:600;">Date</td><td style="padding:8px 0;border-bottom:1px solid #dce8fb;color:#306CEC;font-weight:600;">${town.date}</td></tr>` : ""}
+            ${!isTBA && town.venue ? `<tr><td style="padding:8px 0;font-weight:600;">Venue</td><td style="padding:8px 0;">${town.venue}</td></tr>` : ""}
+          </table>
         </div>`,
     });
   } catch (err) {
@@ -75,7 +91,7 @@ const displayedVideos = videos.slice(0, 5);
 const towns = [
   { name: "Nakuru", img: "/events/Nakuru.jpg", date: "Feb 7, 2026", status: "past", formUrl: null },
   { name: "Eldoret", img: "/events/Eldoret.jpg", date: "May 23, 2026", status: "concluded", formUrl: "https://forms.gle/FoEdvsEvgt3ohDm48" },
-  { name: "Kisumu", img: "/events/Kisumu.jpg", date: "July 4th, 2026", status: "next", formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScFx9A1ybkhFQ8ooByPDaHMHc31ufVHBeWK_A-r3VLDxVczDg/viewform?usp=publish-editor" },
+  { name: "Kisumu", img: "/events/Kisumu.jpg", date: "July 4th, 2026", venue: "Baraza Media Lab", time: "12:00 PM", status: "next", formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScFx9A1ybkhFQ8ooByPDaHMHc31ufVHBeWK_A-r3VLDxVczDg/viewform?usp=publish-editor" },
   { name: "Nairobi", img: "/events/Nairobi.jpg", date: "Coming Soon", status: "tba", formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfBnrBvB8v6THmM1-_bzauyY3lymRe7ULXrVC9iHUn1TXy4Hg/viewform?usp=publish-editor" },
   { name: "Mombasa", img: "/events/Mombasa.jpg", date: "Coming Soon", status: "tba", formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfOYPX3TuQl14679C2UaAXElzUcP5x4iVd0tJrQAIlB8nQa-w/viewform?usp=publish-editor" },
   { name: "Arusha", img: "/events/Arusha.jpg", date: "Coming Soon", status: "tba", formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScbaFJyZ6az4BkW93Of8YHi5sRSCmkeqTzanJDQcoXJibV_RQ/viewform?usp=publish-editor" },
@@ -696,7 +712,7 @@ export default function RoadshowPage() {
           >
             <span style={{ fontSize: "10px", fontWeight: 700, color: "#306CEC", letterSpacing: "0.14em", textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif" }}>Next Stop</span>
             <div style={{ width: "1px", height: "10px", background: "rgba(255,255,255,0.14)" }} />
-            <span style={{ fontSize: "12px", fontWeight: 600, color: "rgba(255,255,255,0.6)", fontFamily: "'DM Sans', sans-serif" }}>Kisumu · July 4th, 2026</span>
+            <span style={{ fontSize: "12px", fontWeight: 600, color: "rgba(255,255,255,0.6)", fontFamily: "'DM Sans', sans-serif" }}>Kisumu · July 4th, 2026 · Baraza Media Lab</span>
           </motion.div>
         </div>
 
@@ -722,8 +738,13 @@ export default function RoadshowPage() {
             <h2 className="font-black uppercase leading-[0.85] mb-6" style={{ fontFamily: "'League Spartan', sans-serif", fontSize: "clamp(3rem, 8vw, 7rem)", letterSpacing: "-0.03em", color: darkMode ? "#fff" : "#0a0a14" }}>
               Kis<span style={{ color: "#306CEC" }}>umu</span>
             </h2>
-            <div className="inline-block bg-[#306CEC]/15 border border-[#306CEC]/30 text-[#306CEC] text-sm font-bold px-4 py-2 rounded-full mb-8" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-              July 4th, 2026
+            <div className="flex flex-wrap items-center gap-3 mb-8">
+              <div className="inline-block bg-[#306CEC]/15 border border-[#306CEC]/30 text-[#306CEC] text-sm font-bold px-4 py-2 rounded-full" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                July 4th, 2026
+              </div>
+              <div className="inline-block bg-[#306CEC]/15 border border-[#306CEC]/30 text-[#306CEC] text-sm font-bold px-4 py-2 rounded-full" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                Baraza Media Lab
+              </div>
             </div>
             <p className="text-base md:text-lg mb-10 max-w-lg" style={{ fontFamily: "'DM Sans', sans-serif", color: darkMode ? "rgba(255,255,255,0.55)" : "rgba(10,10,20,0.6)", lineHeight: 1.75 }}>
               Kenya's North Rift heartbeat. A city of champions, entrepreneurs, and bold ideas. The Roadshow is coming. Be there.
@@ -755,7 +776,7 @@ export default function RoadshowPage() {
             {/* Overlay badge */}
             <div className="absolute top-5 left-5 bg-black/60 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-white/10">
               <div className="text-[9px] font-black tracking-[0.2em] uppercase text-[#306CEC]" style={{ fontFamily: "'DM Sans', sans-serif" }}>Kisumu, Kenya</div>
-              <div className="text-sm font-black text-white mt-0.5" style={{ fontFamily: "'League Spartan', sans-serif" }}>LAKE SIDE EDITION</div>
+              <div className="text-sm font-black text-white mt-0.5" style={{ fontFamily: "'League Spartan', sans-serif" }}>BARAZA MEDIA LAB</div>
             </div>
           </motion.div>
         </div>
