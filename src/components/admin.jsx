@@ -111,6 +111,21 @@ const AdminDashboard = () => {
   const [localTierFilter, setLocalTierFilter] = useState('all');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [clearing, setClearing] = useState(false);
+  const [regToDelete, setRegToDelete] = useState(null);
+
+  const deleteRoadshowReg = async () => {
+    if (!regToDelete) return;
+    try {
+      await deleteDoc(doc(db, 'roadshowRegistrations', regToDelete.id));
+      if (selectedRoadshowReg?.id === regToDelete.id) setSelectedRoadshowReg(null);
+      showNotification(`Deleted registration for ${regToDelete.name}`, 'success');
+    } catch (err) {
+      console.error('Delete failed:', err);
+      showNotification('Failed to delete registration', 'error');
+    } finally {
+      setRegToDelete(null);
+    }
+  };
 
   const clearAllRoadshowRegs = async () => {
     setClearing(true);
@@ -1183,20 +1198,31 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                         <th className="px-4 py-3 text-left font-semibold text-gray-600">Organization</th>
                         <th className="px-4 py-3 text-left font-semibold text-gray-600">City</th>
                         <th className="px-4 py-3 text-left font-semibold text-gray-600">Date</th>
-                        <th className="px-4 py-3"></th>
+                        <th className="px-4 py-3 text-left font-semibold text-gray-600">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filtered.map((reg, idx) => (
                         <>
-                          <tr key={reg.id} className={`border-t cursor-pointer hover:bg-indigo-50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`} onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>
-                            <td className="px-4 py-3 font-medium text-gray-900">{reg.name}</td>
-                            <td className="px-4 py-3 text-gray-600">{reg.email}</td>
-                            <td className="px-4 py-3 text-gray-600">{reg.phone}</td>
-                            <td className="px-4 py-3 text-gray-600">{reg.organization}</td>
-                            <td className="px-4 py-3"><span className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-semibold">{reg.city}</span></td>
-                            <td className="px-4 py-3 text-gray-500 text-xs">{reg.submittedAt?.toDate ? reg.submittedAt.toDate().toLocaleDateString() : '—'}</td>
-                            <td className="px-4 py-3 text-indigo-500 text-xs">{selectedRoadshowReg?.id === reg.id ? '▲' : '▼'}</td>
+                          <tr key={reg.id} className={`border-t hover:bg-indigo-50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                            <td className="px-4 py-3 font-medium text-gray-900 cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{reg.name}</td>
+                            <td className="px-4 py-3 text-gray-600 cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{reg.email}</td>
+                            <td className="px-4 py-3 text-gray-600 cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{reg.phone}</td>
+                            <td className="px-4 py-3 text-gray-600 cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{reg.organization}</td>
+                            <td className="px-4 py-3 cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}><span className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-semibold">{reg.city}</span></td>
+                            <td className="px-4 py-3 text-gray-500 text-xs cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{reg.submittedAt?.toDate ? reg.submittedAt.toDate().toLocaleDateString() : '—'}</td>
+                            <td className="px-4 py-3">
+                              <div className="flex items-center gap-2">
+                                <span className="text-indigo-500 text-xs cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{selectedRoadshowReg?.id === reg.id ? '▲' : '▼'}</span>
+                                <button
+                                  onClick={() => setRegToDelete(reg)}
+                                  className="p-1.5 text-red-500 hover:bg-red-50 rounded transition-colors"
+                                  title="Delete"
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                              </div>
+                            </td>
                           </tr>
                           {selectedRoadshowReg?.id === reg.id && (
                             <tr key={`${reg.id}-detail`} className="bg-indigo-50 border-t">
@@ -1830,6 +1856,32 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
               </table>
             </div>
           )}
+        </div>
+      </div>
+    )}
+
+    {/* Delete individual roadshow registration confirmation */}
+    {regToDelete && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="bg-white rounded-lg max-w-sm w-full p-6 shadow-xl">
+          <h3 className="text-lg font-bold text-gray-900 mb-2">Delete Registration</h3>
+          <p className="text-sm text-gray-600 mb-1">Are you sure you want to delete the registration for:</p>
+          <p className="font-semibold text-gray-900 mb-1">{regToDelete.name}</p>
+          <p className="text-sm text-gray-500 mb-6">{regToDelete.email} &middot; {regToDelete.city}</p>
+          <div className="flex gap-3 justify-end">
+            <button
+              onClick={() => setRegToDelete(null)}
+              className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={deleteRoadshowReg}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-semibold"
+            >
+              Delete
+            </button>
+          </div>
         </div>
       </div>
     )}
