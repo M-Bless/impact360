@@ -227,13 +227,10 @@ function VideoHighlights({ darkMode }) {
 
 /* ── REGISTRATION MODAL ── */
 export function RegisterModal({ town, darkMode, onClose }) {
-  const [form, setForm] = React.useState({ name: "", email: "", phone: "", organization: "", whatYouDo: "", whySigningUp: "", expectations: "", photoConsent: false });
+  const [form, setForm] = React.useState({ name: "", email: "", phone: "", organization: "", whatYouDo: "", whySigningUp: "", expectations: "", photoConsent: "" });
   const [status, setStatus] = React.useState("idle");
 
-  const handleChange = (e) => {
-    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
-    setForm({ ...form, [e.target.name]: value });
-  };
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -319,19 +316,31 @@ export function RegisterModal({ town, darkMode, onClose }) {
                 <textarea style={{ ...s.input, resize: "vertical", minHeight: "80px", lineHeight: 1.6 }} name="expectations" value={form.expectations} onChange={handleChange} placeholder="What you expect from the event..." />
               </div>
 
-              <div style={{ marginBottom: "24px", padding: "16px", borderRadius: "12px", background: darkMode ? "rgba(48,108,236,0.08)" : "rgba(48,108,236,0.06)", border: `1px solid ${darkMode ? "rgba(48,108,236,0.2)" : "rgba(48,108,236,0.15)"}` }}>
-                <label style={{ display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer" }}>
-                  <input
-                    type="checkbox"
-                    name="photoConsent"
-                    checked={form.photoConsent}
-                    onChange={handleChange}
-                    style={{ marginTop: "2px", accentColor: "#306CEC", width: "16px", height: "16px", flexShrink: 0, cursor: "pointer" }}
-                  />
-                  <span style={{ fontSize: "13px", color: darkMode ? "rgba(255,255,255,0.7)" : "rgba(10,10,20,0.65)", fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
-                    I consent to being photographed and/or filmed during the event. These images may be used for Impact360 promotional and documentation purposes.
-                  </span>
-                </label>
+              <div style={{ marginBottom: "24px" }}>
+                <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "10px", color: darkMode ? "rgba(255,255,255,0.45)" : "rgba(10,10,20,0.45)", fontFamily: "'DM Sans', sans-serif" }}>
+                  Photo & Video Consent
+                </p>
+                <p style={{ fontSize: "12px", color: darkMode ? "rgba(255,255,255,0.4)" : "rgba(10,10,20,0.45)", fontFamily: "'DM Sans', sans-serif", marginBottom: "12px", lineHeight: 1.6 }}>
+                  The event will be photographed and filmed for Impact360 use.
+                </p>
+                <div style={{ display: "flex", gap: "12px" }}>
+                  {[{ value: "yes", label: "I consent" }, { value: "no", label: "I do not consent" }].map(opt => (
+                    <label key={opt.value} style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", padding: "10px 16px", borderRadius: "10px", border: `1px solid ${form.photoConsent === opt.value ? "#306CEC" : darkMode ? "rgba(255,255,255,0.1)" : "rgba(10,10,20,0.12)"}`, background: form.photoConsent === opt.value ? "rgba(48,108,236,0.1)" : "transparent", transition: "all 0.15s", flex: 1, justifyContent: "center" }}>
+                      <input
+                        type="radio"
+                        name="photoConsent"
+                        value={opt.value}
+                        checked={form.photoConsent === opt.value}
+                        onChange={handleChange}
+                        required
+                        style={{ accentColor: "#306CEC", cursor: "pointer" }}
+                      />
+                      <span style={{ fontSize: "13px", fontWeight: 600, color: form.photoConsent === opt.value ? "#306CEC" : darkMode ? "rgba(255,255,255,0.7)" : "rgba(10,10,20,0.65)", fontFamily: "'DM Sans', sans-serif" }}>
+                        {opt.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
               </div>
 
               {status === "error" && (
