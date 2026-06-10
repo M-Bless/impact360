@@ -234,6 +234,10 @@ export function RegisterModal({ town, darkMode, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!form.photoConsent) {
+      setStatus("noConsent");
+      return;
+    }
     setStatus("loading");
     try {
       await addDoc(collection(db, "roadshowRegistrations"), {
@@ -318,7 +322,7 @@ export function RegisterModal({ town, darkMode, onClose }) {
 
               <div style={{ marginBottom: "24px" }}>
                 <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "10px", color: darkMode ? "rgba(255,255,255,0.45)" : "rgba(10,10,20,0.45)", fontFamily: "'DM Sans', sans-serif" }}>
-                  Photo & Video Consent
+                  Photo & Video Consent <span style={{ color: "#ef4444" }}>*</span>
                 </p>
                 <p style={{ fontSize: "12px", color: darkMode ? "rgba(255,255,255,0.4)" : "rgba(10,10,20,0.45)", fontFamily: "'DM Sans', sans-serif", marginBottom: "12px", lineHeight: 1.6 }}>
                   The event will be photographed and filmed for Impact360 use.
@@ -343,6 +347,9 @@ export function RegisterModal({ town, darkMode, onClose }) {
                 </div>
               </div>
 
+              {status === "noConsent" && (
+                <p style={{ fontSize: "13px", color: "#ef4444", marginBottom: "12px", fontFamily: "'DM Sans', sans-serif" }}>Please select your photo & video consent before submitting.</p>
+              )}
               {status === "error" && (
                 <p style={{ fontSize: "13px", color: "#ef4444", marginBottom: "12px", fontFamily: "'DM Sans', sans-serif" }}>Something went wrong. Please try again.</p>
               )}
