@@ -54,9 +54,13 @@ const sendRoadshowEmail = async (form, town) => {
             <p style="font-size:15px;margin:0 0 16px;">
               Kindly arrive early to facilitate a smooth registration process. If you have any questions or require further assistance, feel free to contact us.
             </p>
-            <p style="font-size:15px;margin:0 0 32px;">
+            <p style="font-size:15px;margin:0 0 24px;">
               Thank you for being part of this journey. We look forward to seeing you in ${town.name}.
             </p>
+            <div style="background:#FFF8E1;border-left:4px solid #F59E0B;border-radius:8px;padding:14px 18px;margin-bottom:28px;">
+              <p style="font-size:13px;font-weight:700;color:#92400E;margin:0 0 4px;">📷 Please Note</p>
+              <p style="font-size:13px;color:#92400E;margin:0;line-height:1.7;">Photography and videography will take place during the event. By attending, you may appear in photos or footage used for Impact360 promotional and documentation purposes.</p>
+            </div>
             <p style="font-size:15px;margin:0 0 4px;">Best regards,</p>
             <p style="font-size:15px;font-weight:700;color:#306CEC;margin:0 0 4px;">Impact360 Team</p>
            </div>`,
@@ -223,10 +227,13 @@ function VideoHighlights({ darkMode }) {
 
 /* ── REGISTRATION MODAL ── */
 export function RegisterModal({ town, darkMode, onClose }) {
-  const [form, setForm] = React.useState({ name: "", email: "", phone: "", organization: "", whatYouDo: "", whySigningUp: "", expectations: "" });
+  const [form, setForm] = React.useState({ name: "", email: "", phone: "", organization: "", whatYouDo: "", whySigningUp: "", expectations: "", photoConsent: false });
   const [status, setStatus] = React.useState("idle");
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    setForm({ ...form, [e.target.name]: value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -238,6 +245,7 @@ export function RegisterModal({ town, darkMode, onClose }) {
         eventDate: town.date,
         submittedAt: serverTimestamp(),
         status: "registered",
+        photoConsent: form.photoConsent,
       });
       await sendRoadshowEmail(form, town);
       setStatus("success");
@@ -309,6 +317,21 @@ export function RegisterModal({ town, darkMode, onClose }) {
               <div style={{ marginBottom: "24px" }}>
                 <label style={s.label}>What do you hope to gain?</label>
                 <textarea style={{ ...s.input, resize: "vertical", minHeight: "80px", lineHeight: 1.6 }} name="expectations" value={form.expectations} onChange={handleChange} placeholder="What you expect from the event..." />
+              </div>
+
+              <div style={{ marginBottom: "24px", padding: "16px", borderRadius: "12px", background: darkMode ? "rgba(48,108,236,0.08)" : "rgba(48,108,236,0.06)", border: `1px solid ${darkMode ? "rgba(48,108,236,0.2)" : "rgba(48,108,236,0.15)"}` }}>
+                <label style={{ display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer" }}>
+                  <input
+                    type="checkbox"
+                    name="photoConsent"
+                    checked={form.photoConsent}
+                    onChange={handleChange}
+                    style={{ marginTop: "2px", accentColor: "#306CEC", width: "16px", height: "16px", flexShrink: 0, cursor: "pointer" }}
+                  />
+                  <span style={{ fontSize: "13px", color: darkMode ? "rgba(255,255,255,0.7)" : "rgba(10,10,20,0.65)", fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
+                    I consent to being photographed and/or filmed during the event. These images may be used for Impact360 promotional and documentation purposes.
+                  </span>
+                </label>
               </div>
 
               {status === "error" && (
