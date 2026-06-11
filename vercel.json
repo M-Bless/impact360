@@ -2,15 +2,15 @@
   "rewrites": [
     {
       "source": "/os",
-      "destination": "https://impact360-os.vercel.app/os"
+      "destination": "https://impact-grid-kappa.vercel.app/os"
     },
     {
       "source": "/os/:path*",
-      "destination": "https://impact360-os.vercel.app/os/:path*"
+      "destination": "https://impact-grid-kappa.vercel.app/os/:path*"
     },
     {
       "source": "/api/:path*",
-      "destination": "https://impact360-os.vercel.app/os/api/:path*"
+      "destination": "https://impact-grid-kappa.vercel.app/os/api/:path*"
     }
   ]
 }
