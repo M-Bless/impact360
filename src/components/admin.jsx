@@ -1252,12 +1252,6 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                                       <p className="text-gray-800">{reg.expectations}</p>
                                     </div>
                                   )}
-                                  <div>
-                                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Photo Consent</p>
-                                    <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${reg.photoConsent === 'yes' ? 'bg-green-100 text-green-700' : reg.photoConsent === 'no' ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-500'}`}>
-                                      {reg.photoConsent === 'yes' ? 'Consented' : reg.photoConsent === 'no' ? 'Did not consent' : 'Not answered'}
-                                    </span>
-                                  </div>
                                 </div>
                               </td>
                             </tr>
