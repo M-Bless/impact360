@@ -316,7 +316,7 @@ export default function ProgramsPage() {
             </div>
 
             <motion.a
-              href="https://impact360-os.vercel.app/" target="_blank" rel="noopener noreferrer"
+              href="/os"
               whileHover={{ scale: 1.03 }}
               style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: "#306CEC", color: "#fff", padding: "14px 28px", borderRadius: "100px", fontFamily: "'League Spartan', sans-serif", fontWeight: 800, fontSize: "13px", textDecoration: "none" }}
             >
