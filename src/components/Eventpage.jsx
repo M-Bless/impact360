@@ -126,7 +126,7 @@ function Story({ s, i, darkMode }) {
         >
           <div style={{ width: "420px", flexShrink: 0 }}>
             <div className="story-img-wrap" style={{ overflow: "hidden", aspectRatio: "4/3", borderRadius: "6px" }}>
-              <img src={s.cover} alt={s.city} className="story-img"
+              <img onContextMenu={(e) => e.preventDefault()} draggable="false" src={s.cover} alt={s.city} className="story-img"
                 style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "brightness(0.9)" }}
                 onError={e => { e.target.parentElement.style.background = c.photoPlaceholder; }} />
             </div>
@@ -182,7 +182,7 @@ function Story({ s, i, darkMode }) {
                 style={{ position: "absolute", left: p.left, top: p.top, zIndex: p.zIndex, width: "240px", borderRadius: "3px", overflow: "hidden" }}
               >
                 <div style={{ aspectRatio: "4/3", background: c.photoPlaceholder }}>
-                  <img src={ph.src} alt={ph.caption}
+                  <img onContextMenu={(e) => e.preventDefault()} draggable="false" src={ph.src} alt={ph.caption}
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                     onError={e => { e.target.style.display = "none"; }} />
                 </div>

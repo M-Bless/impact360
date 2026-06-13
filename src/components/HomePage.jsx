@@ -112,7 +112,7 @@ export default function HomePage() {
               <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Join Our Community</h2>
               <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Scan the QR code to join our WhatsApp community</p>
               <div className={`p-8 rounded-2xl flex items-center justify-center ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
-                <img 
+                <img onContextMenu={(e) => e.preventDefault()} draggable="false" 
                   src="/frame.png" 
                   alt="WhatsApp QR Code"
                   className="w-64 h-64 object-contain"

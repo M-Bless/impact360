@@ -106,7 +106,7 @@ function ForgeNetwork({ darkMode }) {
                 cursor: "pointer", transition: "border-color 0.2s",
               }}
             >
-              <img src={v.logo} alt={v.name} style={{ height: "64px", width: "64px", objectFit: "contain", marginBottom: "8px" }} onError={e => { e.target.style.opacity = "0"; }} />
+              <img onContextMenu={(e) => e.preventDefault()} draggable="false" src={v.logo} alt={v.name} style={{ height: "64px", width: "64px", objectFit: "contain", marginBottom: "8px" }} onError={e => { e.target.style.opacity = "0"; }} />
               <span style={{ fontSize: "11px", fontWeight: 800, textTransform: "uppercase", color: darkMode ? "#fff" : "#0a0a14", fontFamily: "'League Spartan', sans-serif", textAlign: "center" }}>{v.name}</span>
             </div>
           ))}
@@ -122,7 +122,7 @@ function ForgeNetwork({ darkMode }) {
               style={{ background: card, border: `1px solid ${border}`, borderRadius: "16px", padding: "20px 24px", display: "flex", gap: "16px", alignItems: "center" }}
             >
               <div style={{ width: "48px", height: "48px", background: "#fff", borderRadius: "10px", padding: "6px", flexShrink: 0 }}>
-                <img src={selected.logo} alt={selected.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                <img onContextMenu={(e) => e.preventDefault()} draggable="false" src={selected.logo} alt={selected.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
               </div>
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
@@ -230,7 +230,7 @@ export default function ProgramsPage() {
           {/* Image */}
           <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             style={{ borderRadius: "20px", overflow: "hidden", position: "relative", height: "480px" }} className="group">
-            <img src="/events/forge.png" alt="FORGE Weekly Session" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.7s ease" }} className="group-hover:scale-105" />
+            <img onContextMenu={(e) => e.preventDefault()} draggable="false" src="/events/forge.png" alt="FORGE Weekly Session" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.7s ease" }} className="group-hover:scale-105" />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(48,108,236,0.6) 0%, transparent 55%)" }} />
             <div style={{ position: "absolute", bottom: "24px", left: "24px" }}>
               <span style={{ background: "#306CEC", color: "#fff", fontSize: "9px", fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", padding: "6px 14px", borderRadius: "100px", fontFamily: "'DM Sans', sans-serif" }}>Weekly Session</span>
@@ -327,7 +327,7 @@ export default function ProgramsPage() {
           {/* Image */}
           <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             style={{ borderRadius: "20px", overflow: "hidden", position: "relative", height: "480px" }} className="group">
-            <img src="https://i.pinimg.com/736x/f5/e8/72/f5e87230f73c9811d9f9a69feb392b5a.jpg" alt="Impact360 OS"
+            <img onContextMenu={(e) => e.preventDefault()} draggable="false" src="https://i.pinimg.com/736x/f5/e8/72/f5e87230f73c9811d9f9a69feb392b5a.jpg" alt="Impact360 OS"
               style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.7s ease" }} className="group-hover:scale-105" />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(48,108,236,0.5) 0%, transparent 55%)" }} />
           </motion.div>

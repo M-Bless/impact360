@@ -114,7 +114,7 @@ function VideoCard({ video, cardRef, darkMode }) {
       onClick={() => { if (parseInt(cardRef.current?.style.zIndex) === 50) window.open(`https://www.youtube.com/watch?v=${video.youtubeId}`, "_blank", "noopener,noreferrer"); }}
     >
       <div style={{ position: "relative", aspectRatio: "1/1", overflow: "hidden", background: "#000" }}>
-        <img src={video.thumb} alt={video.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }} onError={e => { e.target.src = `https://placehold.co/400x400/306CEC/ffffff?text=${encodeURIComponent(video.location)}`; }} />
+        <img onContextMenu={(e) => e.preventDefault()} draggable="false" src={video.thumb} alt={video.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }} onError={e => { e.target.src = `https://placehold.co/400x400/306CEC/ffffff?text=${encodeURIComponent(video.location)}`; }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(48,108,236,0.92) 0%, rgba(48,108,236,0.25) 45%, transparent 70%)" }} />
         <div className="play-btn" style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: "52px", height: "52px", borderRadius: "50%", background: "rgba(255,255,255,0.95)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 24px rgba(48,108,236,0.5)", opacity: 0, pointerEvents: "none" }}>
           <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M5 3.5l12 6.5-12 6.5V3.5z" fill="#306CEC" /></svg>
@@ -624,7 +624,7 @@ export default function RoadshowPage() {
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white" style={{ fontFamily: "'League Spartan', sans-serif" }}>JOIN THE COMMUNITY</h2>
                 <p className="text-sm text-gray-500">Scan to join our WhatsApp community</p>
                 <div className="bg-gray-50 dark:bg-white/5 p-6 rounded-2xl flex items-center justify-center">
-                  <img src="/frame.png" alt="WhatsApp QR Code" className="w-56 h-56 object-contain" />
+                  <img onContextMenu={(e) => e.preventDefault()} draggable="false" src="/frame.png" alt="WhatsApp QR Code" className="w-56 h-56 object-contain" />
                 </div>
                 <a href="https://chat.whatsapp.com/I0g8kpCNvSn84yWQxybzHa" target="_blank" rel="noopener noreferrer" className="inline-block bg-green-500 text-white px-8 py-3 rounded-full font-bold hover:bg-green-600 transition-all duration-300 text-sm">Open WhatsApp →</a>
               </div>
@@ -729,7 +729,7 @@ export default function RoadshowPage() {
 
         {/* Mobile: photo underneath on small screens */}
         <div className="lg:hidden absolute bottom-0 left-0 right-0" style={{ height: "45%", zIndex: 0 }}>
-          <img src="/events/Roadshow-event.png" alt="Roadshow" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
+          <img onContextMenu={(e) => e.preventDefault()} draggable="false" src="/events/Roadshow-event.png" alt="Roadshow" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #050508 0%, rgba(5,5,8,0.3) 40%, rgba(5,5,8,0.7) 100%)" }} />
         </div>
       </section>

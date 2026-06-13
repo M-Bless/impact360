@@ -35,7 +35,7 @@ export default function LocalsPage() {
               <h2 className="text-2xl font-black" style={{ fontFamily: "'League Spartan', sans-serif", color: fg }}>JOIN THE COMMUNITY</h2>
               <p className="text-sm" style={{ color: sub }}>Scan to join our WhatsApp community</p>
               <div className={`p-6 rounded-2xl flex items-center justify-center ${darkMode ? "bg-white/5" : "bg-gray-50"}`}>
-                <img src="/frame.png" alt="WhatsApp QR Code" className="w-56 h-56 object-contain" />
+                <img onContextMenu={(e) => e.preventDefault()} draggable="false" src="/frame.png" alt="WhatsApp QR Code" className="w-56 h-56 object-contain" />
               </div>
               <a href="https://chat.whatsapp.com/I0g8kpCNvSn84yWQxybzHa" target="_blank" rel="noopener noreferrer"
                 className="inline-block bg-green-500 text-white px-8 py-3 rounded-full font-bold hover:bg-green-600 transition-all duration-300 text-sm">
