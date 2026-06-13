@@ -12,6 +12,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://impact-grid-kappa.vercel.app/os/api/:path*"
+    },
+    {
+      "source": "/((?!os|api|static|.*\\..*).*)",
+      "destination": "/index.html"
     }
   ]
 }
