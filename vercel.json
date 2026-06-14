@@ -3,11 +3,11 @@
   "rewrites": [
     {
       "source": "/os",
-      "destination": "https://impact-grid-lovat.vercel.app/os"
+      "destination": "https://impact-grid-lovat.vercel.app/"
     },
     {
       "source": "/os/:path*",
-      "destination": "https://impact-grid-lovat.vercel.app/os/:path*"
+      "destination": "https://impact-grid-lovat.vercel.app/:path*"
     },
     {
       "source": "/_next/:path*",
