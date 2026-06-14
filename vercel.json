@@ -1,18 +1,18 @@
 {
   "trailingSlash": false,
-  "redirects": [
-    {
-      "source": "/os",
-      "destination": "https://impact-grid-lovat.vercel.app",
-      "permanent": false
-    },
+  "rewrites": [
     {
       "source": "/os/:path*",
-      "destination": "https://impact-grid-lovat.vercel.app/:path*",
-      "permanent": false
-    }
-  ],
-  "rewrites": [
+      "destination": "https://impact-grid-lovat.vercel.app/os/:path*"
+    },
+    {
+      "source": "/os",
+      "destination": "https://impact-grid-lovat.vercel.app/os"
+    },
+    {
+      "source": "/_next/:path*",
+      "destination": "https://impact-grid-lovat.vercel.app/_next/:path*"
+    },
     {
       "source": "/((?!static|.*\\..*).*)",
       "destination": "/index.html"
