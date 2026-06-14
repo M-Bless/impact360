@@ -2,19 +2,7 @@
   "trailingSlash": true,
   "rewrites": [
     {
-      "source": "/os",
-      "destination": "https://impact-grid-kappa.vercel.app/os"
-    },
-    {
-      "source": "/os/:path*",
-      "destination": "https://impact-grid-kappa.vercel.app/os/:path*"
-    },
-    {
-      "source": "/api/:path*",
-      "destination": "https://impact-grid-kappa.vercel.app/os/api/:path*"
-    },
-    {
-      "source": "/((?!os|api|static|.*\\..*).*)",
+      "source": "/((?!static|.*\\..*).*)",
       "destination": "/index.html"
     }
   ]
