@@ -1,12 +1,13 @@
 {
+  "trailingSlash": false,
   "rewrites": [
-    {
-      "source": "/os/:path*",
-      "destination": "https://impact-grid-lovat.vercel.app/os/:path*"
-    },
     {
       "source": "/os",
       "destination": "https://impact-grid-lovat.vercel.app/os"
+    },
+    {
+      "source": "/os/:path*",
+      "destination": "https://impact-grid-lovat.vercel.app/os/:path*"
     },
     {
       "source": "/_next/:path*",
