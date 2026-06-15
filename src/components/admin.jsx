@@ -1252,6 +1252,12 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                                       <p className="text-gray-800">{reg.expectations}</p>
                                     </div>
                                   )}
+                                  {reg.hearAbout && (
+                                    <div>
+                                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">How they heard about us</p>
+                                      <p className="text-gray-800">{reg.hearAbout}</p>
+                                    </div>
+                                  )}
                                 </div>
                               </td>
                             </tr>

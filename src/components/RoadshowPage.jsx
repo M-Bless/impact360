@@ -227,7 +227,7 @@ function VideoHighlights({ darkMode }) {
 
 /* ── REGISTRATION MODAL ── */
 export function RegisterModal({ town, darkMode, onClose }) {
-  const [form, setForm] = React.useState({ name: "", email: "", phone: "", organization: "", whatYouDo: "", whySigningUp: "", expectations: "" });
+  const [form, setForm] = React.useState({ name: "", email: "", phone: "", organization: "", whatYouDo: "", whySigningUp: "", expectations: "", hearAbout: "" });
   const [status, setStatus] = React.useState("idle");
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -313,6 +313,10 @@ export function RegisterModal({ town, darkMode, onClose }) {
               <div style={{ marginBottom: "24px" }}>
                 <label style={s.label}>What do you hope to gain?</label>
                 <textarea style={{ ...s.input, resize: "vertical", minHeight: "80px", lineHeight: 1.6 }} name="expectations" value={form.expectations} onChange={handleChange} placeholder="What you expect from the event..." />
+              </div>
+              <div style={{ marginBottom: "24px" }}>
+                <label style={s.label}>How did you hear about Impact360?</label>
+                <input style={s.input} type="text" name="hearAbout" value={form.hearAbout} onChange={handleChange} placeholder="e.g. Social media, a friend, event..." />
               </div>
 
               <div style={{ marginBottom: "24px", padding: "14px 16px", borderRadius: "10px", background: darkMode ? "rgba(255,255,255,0.04)" : "#f7f8fa", border: `1px solid ${darkMode ? "rgba(255,255,255,0.08)" : "rgba(10,10,20,0.08)"}`, display: "flex", gap: "10px", alignItems: "flex-start" }}>
@@ -597,6 +601,15 @@ export default function RoadshowPage() {
   const [registerTown, setRegisterTown] = React.useState(null);
 
   const kisumuTown = towns.find(t => t.name === "Kisumu");
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const cityParam = params.get("register");
+    if (cityParam) {
+      const match = towns.find(t => t.name.toLowerCase() === cityParam.toLowerCase());
+      if (match) setRegisterTown(match);
+    }
+  }, []);
 
   const speakerImages = ["/events/Timothy.jpeg", "/events/Deborah.jpeg", "/events/geofrey.jpeg", "/events/Gilbert.jpeg"];
   const [activeSpeaker, setActiveSpeaker] = React.useState(0);
