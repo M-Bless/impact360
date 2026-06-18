@@ -1179,9 +1179,9 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
 
               {roadshowView === 'marketing' && (() => {
                 const sources = ["From a Friend", "Instagram", "LinkedIn", "TikTok", "Other"];
-                const regsWithSource = roadshowRegs.filter(r => r.hearAbout);
+                const regsWithSource = roadshowRegs.filter(r => sources.includes(r.hearAbout));
                 if (regsWithSource.length === 0) return <p className="text-sm text-gray-500 py-6 text-center">No marketing data yet. Data will appear after the next registration.</p>;
-                const counts = sources.map(s => ({ label: s, count: regsWithSource.filter(r => r.hearAbout === s || (s === "Other" && !sources.slice(0,-1).includes(r.hearAbout))).length })).filter(c => c.count > 0);
+                const counts = sources.map(s => ({ label: s, count: regsWithSource.filter(r => r.hearAbout === s).length })).filter(c => c.count > 0);
                 return (
                   <div className="flex flex-wrap gap-4 py-2">
                     {counts.map(({ label, count }) => (
