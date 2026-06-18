@@ -108,6 +108,7 @@ const AdminDashboard = () => {
   const [selectedRoadshowReg, setSelectedRoadshowReg] = useState(null);
   const [activeSection, setActiveSection] = useState('subscriptions');
   const [roadshowCityFilter, setRoadshowCityFilter] = useState('all');
+  const [roadshowView, setRoadshowView] = useState('registrations');
   const [localTierFilter, setLocalTierFilter] = useState('all');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [clearing, setClearing] = useState(false);
@@ -899,7 +900,7 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                 Locals ({submissions.filter(s => s.type === 'event').length})
               </button>
               <button
-                onClick={() => { setActiveSection('roadshow'); setRoadshowCityFilter('all'); setSelectedRoadshowReg(null); }}
+                onClick={() => { setActiveSection('roadshow'); setRoadshowCityFilter('all'); setSelectedRoadshowReg(null); setRoadshowView('registrations'); }}
                 className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
                   activeSection === 'roadshow' ? 'bg-indigo-600 text-white' : 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200 border border-indigo-200'
                 }`}
@@ -1170,6 +1171,30 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                 </div>
               )}
 
+              {/* View toggle */}
+              <div className="flex gap-2 mb-5">
+                <button onClick={() => setRoadshowView('registrations')} className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-colors ${roadshowView === 'registrations' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>Registrations</button>
+                <button onClick={() => setRoadshowView('marketing')} className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-colors ${roadshowView === 'marketing' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>Marketing</button>
+              </div>
+
+              {roadshowView === 'marketing' && (() => {
+                const sources = ["From a Friend", "Instagram", "LinkedIn", "TikTok", "Other"];
+                const regsWithSource = roadshowRegs.filter(r => r.hearAbout);
+                if (regsWithSource.length === 0) return <p className="text-sm text-gray-500 py-6 text-center">No marketing data yet. Data will appear after the next registration.</p>;
+                const counts = sources.map(s => ({ label: s, count: regsWithSource.filter(r => r.hearAbout === s || (s === "Other" && !sources.slice(0,-1).includes(r.hearAbout))).length })).filter(c => c.count > 0);
+                return (
+                  <div className="flex flex-wrap gap-4 py-2">
+                    {counts.map(({ label, count }) => (
+                      <div key={label} className="px-5 py-4 bg-indigo-50 border border-indigo-100 rounded-xl text-center min-w-[100px]">
+                        <p className="text-2xl font-bold text-indigo-700">{count}</p>
+                        <p className="text-xs text-gray-500 mt-1">{label}</p>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+
+              {roadshowView === 'registrations' && <>
               {/* City filters */}
               <div className="flex flex-wrap gap-2 mb-6">
                 <button onClick={() => setRoadshowCityFilter('all')} className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${roadshowCityFilter === 'all' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
@@ -1268,6 +1293,7 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                   </table>
                 </div>
               )}
+              </>}
             </div>
           );
         })()}

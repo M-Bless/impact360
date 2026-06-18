@@ -227,7 +227,7 @@ function VideoHighlights({ darkMode }) {
 
 /* ── REGISTRATION MODAL ── */
 export function RegisterModal({ town, darkMode, onClose }) {
-  const [form, setForm] = React.useState({ name: "", email: "", phone: "", organization: "", whatYouDo: "", whySigningUp: "", expectations: "", hearAbout: "" });
+  const [form, setForm] = React.useState({ name: "", email: "", phone: "", organization: "", whatYouDo: "", whySigningUp: "", expectations: "", hearAbout: "", hearAboutOther: "" });
   const [status, setStatus] = React.useState("idle");
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -238,6 +238,7 @@ export function RegisterModal({ town, darkMode, onClose }) {
     try {
       await addDoc(collection(db, "roadshowRegistrations"), {
         ...form,
+        hearAbout: form.hearAbout === "Other" ? (form.hearAboutOther || "Other") : form.hearAbout,
         city: town.name,
         eventDate: town.date,
         submittedAt: serverTimestamp(),
@@ -316,7 +317,31 @@ export function RegisterModal({ town, darkMode, onClose }) {
               </div>
               <div style={{ marginBottom: "24px" }}>
                 <label style={s.label}>How did you hear about Impact360?</label>
-                <input style={s.input} type="text" name="hearAbout" value={form.hearAbout} onChange={handleChange} placeholder="e.g. Social media, a friend, event..." />
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "8px" }}>
+                  {["From a Friend", "Instagram", "LinkedIn", "TikTok", "Other"].map(option => (
+                    <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", fontSize: "14px", fontFamily: "'DM Sans', sans-serif", color: darkMode ? "rgba(255,255,255,0.8)" : "rgba(10,10,20,0.8)" }}>
+                      <input
+                        type="radio"
+                        name="hearAbout"
+                        value={option}
+                        checked={form.hearAbout === option}
+                        onChange={handleChange}
+                        style={{ accentColor: "#306CEC", width: "16px", height: "16px", cursor: "pointer" }}
+                      />
+                      {option}
+                    </label>
+                  ))}
+                  {form.hearAbout === "Other" && (
+                    <input
+                      style={{ ...s.input, marginTop: "4px" }}
+                      type="text"
+                      name="hearAboutOther"
+                      value={form.hearAboutOther}
+                      onChange={handleChange}
+                      placeholder="Please specify..."
+                    />
+                  )}
+                </div>
               </div>
 
               <div style={{ marginBottom: "24px", padding: "14px 16px", borderRadius: "10px", background: darkMode ? "rgba(255,255,255,0.04)" : "#f7f8fa", border: `1px solid ${darkMode ? "rgba(255,255,255,0.08)" : "rgba(10,10,20,0.08)"}`, display: "flex", gap: "10px", alignItems: "flex-start" }}>
