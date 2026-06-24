@@ -130,8 +130,7 @@ const AdminDashboard = () => {
 
   const toggleInviteSent = async (reg) => {
     try {
-      await updateDoc(doc(db, 'roadshowRegistrations', reg.id), { inviteSent: !reg.inviteSent });
-      setRoadshowRegs(prev => prev.map(r => r.id === reg.id ? { ...r, inviteSent: !r.inviteSent } : r));
+      await updateDoc(doc(db, 'roadshowRegistrations', reg.id), { inviteSent: true });
     } catch (err) {
       showNotification('Failed to update invite status', 'error');
     }
@@ -142,7 +141,6 @@ const AdminDashboard = () => {
     const marked = roadshowRegs.filter(r => r.inviteSent);
     if (marked.length === 0) { showNotification('Nothing to reset', 'error'); return; }
     await Promise.all(marked.map(r => updateDoc(doc(db, 'roadshowRegistrations', r.id), { inviteSent: false })));
-    setRoadshowRegs(prev => prev.map(r => ({ ...r, inviteSent: false })));
     showNotification('All invite marks reset', 'success');
   };
 
