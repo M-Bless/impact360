@@ -109,6 +109,7 @@ const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('subscriptions');
   const [roadshowCityFilter, setRoadshowCityFilter] = useState('all');
   const [roadshowView, setRoadshowView] = useState('registrations');
+  const [selectedRegIds, setSelectedRegIds] = useState(new Set());
   const [localTierFilter, setLocalTierFilter] = useState('all');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [clearing, setClearing] = useState(false);
@@ -137,11 +138,20 @@ const AdminDashboard = () => {
     }
   };
 
-  const copyUnsentNumbers = () => {
-    const unsent = roadshowRegs.filter(r => !r.inviteSent && r.phone);
-    if (unsent.length === 0) { showNotification('All registrants have been sent the invite', 'success'); return; }
-    navigator.clipboard.writeText(unsent.map(r => r.phone).join('\n'));
-    showNotification(`Copied ${unsent.length} unsent number(s) to clipboard`, 'success');
+  const copySelected = () => {
+    const selected = roadshowRegs.filter(r => selectedRegIds.has(r.id) && r.phone);
+    if (selected.length === 0) { showNotification('No registrants selected', 'error'); return; }
+    navigator.clipboard.writeText(selected.map(r => r.phone).join('\n'));
+    showNotification(`Copied ${selected.length} number(s) to clipboard`, 'success');
+  };
+
+  const markSelectedSent = async () => {
+    const toMark = roadshowRegs.filter(r => selectedRegIds.has(r.id) && !r.inviteSent);
+    if (toMark.length === 0) { showNotification('No new selections to mark', 'error'); return; }
+    await Promise.all(toMark.map(r => updateDoc(doc(db, 'roadshowRegistrations', r.id), { inviteSent: true })));
+    setRoadshowRegs(prev => prev.map(r => selectedRegIds.has(r.id) ? { ...r, inviteSent: true } : r));
+    setSelectedRegIds(new Set());
+    showNotification(`Marked ${toMark.length} as sent`, 'success');
   };
 
   const clearAllRoadshowRegs = async () => {
@@ -1156,17 +1166,16 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-gray-900">Roadshow Registrations</h2>
                 {roadshowRegs.length > 0 && (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={copyUnsentNumbers}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 border border-green-200 rounded-lg text-xs font-semibold hover:bg-green-100 transition-colors"
-                    >
-                      📋 Copy Unsent Numbers
-                    </button>
-                    <button
-                      onClick={() => setShowClearConfirm(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs font-semibold hover:bg-red-100 transition-colors"
-                    >
+                  <div className="flex gap-2 flex-wrap">
+                    {selectedRegIds.size > 0 && <>
+                      <button onClick={copySelected} className="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 border border-green-200 rounded-lg text-xs font-semibold hover:bg-green-100 transition-colors">
+                        📋 Copy Selected ({selectedRegIds.size})
+                      </button>
+                      <button onClick={markSelectedSent} className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg text-xs font-semibold hover:bg-indigo-100 transition-colors">
+                        ✓ Mark Sent
+                      </button>
+                    </>}
+                    <button onClick={() => setShowClearConfirm(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs font-semibold hover:bg-red-100 transition-colors">
                       <Trash2 size={13} /> Clear All Data
                     </button>
                   </div>
@@ -1241,6 +1250,7 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                   <table className="min-w-full text-sm">
                     <thead className="bg-gray-50">
                       <tr>
+                        <th className="px-4 py-3"><input type="checkbox" onChange={e => setSelectedRegIds(e.target.checked ? new Set(filtered.map(r => r.id)) : new Set())} checked={filtered.length > 0 && filtered.every(r => selectedRegIds.has(r.id))} /></th>
                         <th className="px-4 py-3 text-left font-semibold text-gray-600">Name</th>
                         <th className="px-4 py-3 text-left font-semibold text-gray-600">Email</th>
                         <th className="px-4 py-3 text-left font-semibold text-gray-600">Phone</th>
@@ -1254,6 +1264,7 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                       {filtered.map((reg, idx) => (
                         <>
                           <tr key={reg.id} className={`border-t hover:bg-indigo-50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                            <td className="px-4 py-3"><input type="checkbox" checked={selectedRegIds.has(reg.id)} onChange={e => { const s = new Set(selectedRegIds); e.target.checked ? s.add(reg.id) : s.delete(reg.id); setSelectedRegIds(s); }} /></td>
                             <td className="px-4 py-3 font-medium text-gray-900 cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{reg.name}</td>
                             <td className="px-4 py-3 text-gray-600 cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{reg.email}</td>
                             <td className="px-4 py-3 text-gray-600 cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>
