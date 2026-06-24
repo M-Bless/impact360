@@ -154,6 +154,15 @@ const AdminDashboard = () => {
     showNotification(`Marked ${toMark.length} as sent`, 'success');
   };
 
+  const resetAllInviteSent = async () => {
+    const marked = roadshowRegs.filter(r => r.inviteSent);
+    if (marked.length === 0) { showNotification('Nothing to reset', 'error'); return; }
+    await Promise.all(marked.map(r => updateDoc(doc(db, 'roadshowRegistrations', r.id), { inviteSent: false })));
+    setRoadshowRegs(prev => prev.map(r => ({ ...r, inviteSent: false })));
+    setSelectedRegIds(new Set());
+    showNotification('All invite marks reset', 'success');
+  };
+
   const clearAllRoadshowRegs = async () => {
     setClearing(true);
     try {
@@ -1175,6 +1184,11 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                         ✓ Mark Sent
                       </button>
                     </>}
+                    {roadshowRegs.some(r => r.inviteSent) && (
+                      <button onClick={resetAllInviteSent} className="flex items-center gap-1.5 px-3 py-1.5 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-lg text-xs font-semibold hover:bg-yellow-100 transition-colors">
+                        ↺ Reset All Sent Marks
+                      </button>
+                    )}
                     <button onClick={() => setShowClearConfirm(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs font-semibold hover:bg-red-100 transition-colors">
                       <Trash2 size={13} /> Clear All Data
                     </button>
