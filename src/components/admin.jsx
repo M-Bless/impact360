@@ -128,6 +128,22 @@ const AdminDashboard = () => {
     }
   };
 
+  const toggleInviteSent = async (reg) => {
+    try {
+      await updateDoc(doc(db, 'roadshowRegistrations', reg.id), { inviteSent: !reg.inviteSent });
+      setRoadshowRegs(prev => prev.map(r => r.id === reg.id ? { ...r, inviteSent: !r.inviteSent } : r));
+    } catch (err) {
+      showNotification('Failed to update invite status', 'error');
+    }
+  };
+
+  const copyUnsentNumbers = () => {
+    const unsent = roadshowRegs.filter(r => !r.inviteSent && r.phone);
+    if (unsent.length === 0) { showNotification('All registrants have been sent the invite', 'success'); return; }
+    navigator.clipboard.writeText(unsent.map(r => r.phone).join('\n'));
+    showNotification(`Copied ${unsent.length} unsent number(s) to clipboard`, 'success');
+  };
+
   const clearAllRoadshowRegs = async () => {
     setClearing(true);
     try {
@@ -1140,12 +1156,20 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-gray-900">Roadshow Registrations</h2>
                 {roadshowRegs.length > 0 && (
-                  <button
-                    onClick={() => setShowClearConfirm(true)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs font-semibold hover:bg-red-100 transition-colors"
-                  >
-                    <Trash2 size={13} /> Clear All Data
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={copyUnsentNumbers}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 border border-green-200 rounded-lg text-xs font-semibold hover:bg-green-100 transition-colors"
+                    >
+                      📋 Copy Unsent Numbers
+                    </button>
+                    <button
+                      onClick={() => setShowClearConfirm(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs font-semibold hover:bg-red-100 transition-colors"
+                    >
+                      <Trash2 size={13} /> Clear All Data
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -1240,6 +1264,12 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                             <td className="px-4 py-3 text-gray-500 text-xs cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{reg.submittedAt?.toDate ? reg.submittedAt.toDate().toLocaleDateString() : '—'}</td>
                             <td className="px-4 py-3">
                               <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => toggleInviteSent(reg)}
+                                  className={`px-2 py-1 rounded-full text-xs font-semibold transition-colors ${reg.inviteSent ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500 hover:bg-green-50 hover:text-green-600'}`}
+                                >
+                                  {reg.inviteSent ? 'Sent ✓' : 'Mark Sent'}
+                                </button>
                                 <span className="text-indigo-500 text-xs cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{selectedRoadshowReg?.id === reg.id ? '▲' : '▼'}</span>
                                 <button
                                   onClick={() => setRegToDelete(reg)}
