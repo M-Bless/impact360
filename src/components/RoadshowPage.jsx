@@ -57,9 +57,14 @@ const sendRoadshowEmail = async (form, town) => {
             <p style="font-size:15px;margin:0 0 24px;">
               Thank you for being part of this journey. We look forward to seeing you in ${town.name}.
             </p>
-            <div style="background:#FFF8E1;border-left:4px solid #F59E0B;border-radius:8px;padding:14px 18px;margin-bottom:28px;">
+            <div style="background:#FFF8E1;border-left:4px solid #F59E0B;border-radius:8px;padding:14px 18px;margin-bottom:24px;">
               <p style="font-size:13px;font-weight:700;color:#92400E;margin:0 0 4px;">📷 Please Note</p>
               <p style="font-size:13px;color:#92400E;margin:0;line-height:1.7;">Photography and videography will take place during the event. By attending, you may appear in photos or footage used for Impact360 promotional and documentation purposes.</p>
+            </div>
+            <div style="background:#E7F8EF;border-left:4px solid #25D366;border-radius:8px;padding:14px 18px;margin-bottom:28px;">
+              <p style="font-size:13px;font-weight:700;color:#1a7a3f;margin:0 0 6px;">💬 Join our WhatsApp Group</p>
+              <p style="font-size:13px;color:#1a7a3f;margin:0 0 8px;line-height:1.7;">Stay updated with event announcements, connect with other attendees, and get reminders by joining our WhatsApp group.</p>
+              <a href="https://chat.whatsapp.com/BGXIn5f4GYbIVLgnaya9Rf" style="display:inline-block;background:#25D366;color:#fff;font-size:13px;font-weight:700;padding:8px 18px;border-radius:100px;text-decoration:none;">Join WhatsApp Group →</a>
             </div>
             <p style="font-size:15px;margin:0 0 4px;">Best regards,</p>
             <p style="font-size:15px;font-weight:700;color:#306CEC;margin:0 0 4px;">Impact360 Team</p>
