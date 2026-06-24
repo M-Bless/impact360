@@ -1263,8 +1263,8 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                             <td className="px-4 py-3">
                               <div className="flex items-center gap-2">
                                 <button
-                                  onClick={() => toggleInviteSent(reg)}
-                                  className={`px-2 py-1 rounded-full text-xs font-semibold transition-colors ${reg.inviteSent ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500 hover:bg-green-50 hover:text-green-600'}`}
+                                  onClick={(e) => { e.stopPropagation(); if (!reg.inviteSent) toggleInviteSent(reg); }}
+                                  className={`px-2 py-1 rounded-full text-xs font-semibold transition-colors ${reg.inviteSent ? 'bg-green-100 text-green-700 cursor-default' : 'bg-gray-100 text-gray-500 hover:bg-green-50 hover:text-green-600 cursor-pointer'}`}
                                 >
                                   {reg.inviteSent ? 'Sent ✓' : 'Mark Sent'}
                                 </button>
