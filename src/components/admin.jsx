@@ -1264,7 +1264,7 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                                   onClick={(e) => { e.stopPropagation(); if (!reg.inviteSent) toggleInviteSent(reg); }}
                                   className={`px-2 py-1 rounded-full text-xs font-semibold transition-colors ${reg.inviteSent ? 'bg-green-100 text-green-700 cursor-default' : 'bg-gray-100 text-gray-500 hover:bg-green-50 hover:text-green-600 cursor-pointer'}`}
                                 >
-                                  {reg.inviteSent ? 'Sent ✓' : 'Mark Sent'}
+                                  {reg.inviteSent ? 'Sent ✓' : 'Mark as Sent'}
                                 </button>
                                 <span className="text-indigo-500 text-xs cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{selectedRoadshowReg?.id === reg.id ? '▲' : '▼'}</span>
                                 <button
