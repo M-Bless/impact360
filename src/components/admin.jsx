@@ -1232,7 +1232,9 @@ const sendApprovalEmailWithTicket = async (submission, ticketId) => {
                           <tr key={reg.id} className={`border-t hover:bg-indigo-50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
                             <td className="px-4 py-3 font-medium text-gray-900 cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{reg.name}</td>
                             <td className="px-4 py-3 text-gray-600 cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{reg.email}</td>
-                            <td className="px-4 py-3 text-gray-600 cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{reg.phone}</td>
+                            <td className="px-4 py-3 text-gray-600 cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>
+                              <a href={`https://wa.me/${reg.phone?.replace(/[\s+\-()]/g, '')}`} target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline" onClick={e => e.stopPropagation()}>{reg.phone}</a>
+                            </td>
                             <td className="px-4 py-3 text-gray-600 cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{reg.organization}</td>
                             <td className="px-4 py-3 cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}><span className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-semibold">{reg.city}</span></td>
                             <td className="px-4 py-3 text-gray-500 text-xs cursor-pointer" onClick={() => setSelectedRoadshowReg(selectedRoadshowReg?.id === reg.id ? null : reg)}>{reg.submittedAt?.toDate ? reg.submittedAt.toDate().toLocaleDateString() : '—'}</td>
