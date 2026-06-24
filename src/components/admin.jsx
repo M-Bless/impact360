@@ -109,7 +109,6 @@ const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('subscriptions');
   const [roadshowCityFilter, setRoadshowCityFilter] = useState('all');
   const [roadshowView, setRoadshowView] = useState('registrations');
-  const [selectedRegIds, setSelectedRegIds] = useState(new Set());
   const [localTierFilter, setLocalTierFilter] = useState('all');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [clearing, setClearing] = useState(false);
@@ -138,28 +137,12 @@ const AdminDashboard = () => {
     }
   };
 
-  const copySelected = () => {
-    const selected = roadshowRegs.filter(r => selectedRegIds.has(r.id) && r.phone);
-    if (selected.length === 0) { showNotification('No registrants selected', 'error'); return; }
-    navigator.clipboard.writeText(selected.map(r => r.phone).join('\n'));
-    showNotification(`Copied ${selected.length} number(s) to clipboard`, 'success');
-  };
-
-  const markSelectedSent = async () => {
-    const toMark = roadshowRegs.filter(r => selectedRegIds.has(r.id) && !r.inviteSent);
-    if (toMark.length === 0) { showNotification('No new selections to mark', 'error'); return; }
-    await Promise.all(toMark.map(r => updateDoc(doc(db, 'roadshowRegistrations', r.id), { inviteSent: true })));
-    setRoadshowRegs(prev => prev.map(r => selectedRegIds.has(r.id) ? { ...r, inviteSent: true } : r));
-    setSelectedRegIds(new Set());
-    showNotification(`Marked ${toMark.length} as sent`, 'success');
-  };
 
   const resetAllInviteSent = async () => {
     const marked = roadshowRegs.filter(r => r.inviteSent);
     if (marked.length === 0) { showNotification('Nothing to reset', 'error'); return; }
     await Promise.all(marked.map(r => updateDoc(doc(db, 'roadshowRegistrations', r.id), { inviteSent: false })));
     setRoadshowRegs(prev => prev.map(r => ({ ...r, inviteSent: false })));
-    setSelectedRegIds(new Set());
     showNotification('All invite marks reset', 'success');
   };
 
